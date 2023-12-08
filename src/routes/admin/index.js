@@ -14,5 +14,5 @@ router.get('/account', AuthMiddleware, AdminController.account)
 router.get('/settings', AuthMiddleware, AdminController.settingAdmin)
 router.get('/changePass', AuthMiddleware, AdminController.changePassword)
 router.post('/changePass', AdminController.handleChangePass)
-
+router.get('/userList', AdminController.userList);
 module.exports = router;

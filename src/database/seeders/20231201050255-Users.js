@@ -8,18 +8,20 @@ const hash = require("../../utils/hash");
 module.exports = {
   async up(queryInterface, Sequelize) {
     const data = [];
-    const password = hash.make("123456");
-    data.push({
-      name: "Nguyễn Đức Thanh",
-      email: "dducthanh04@gmail.com",
-      phone: "0928566686",
-      address: "Hưng Yên",
-      typeId: 1,
-      firstLogin: 1,
-      password: password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    for (let index = 0; index < 20; index++) {
+      const password = hash.make("123456");
+      data.push({
+        name: `User ${index + 1}`,
+        email: `user${index + 1}@gmail.com`,
+        password: password,
+        phone: '0585762666',
+        address: 'Hưng Yên',
+        typeId: 3,
+        firstLogin: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
     return queryInterface.bulkInsert("Users", data, {});
   },
 

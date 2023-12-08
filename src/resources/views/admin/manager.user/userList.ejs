@@ -1,0 +1,49 @@
+<h4>Danh sách giảng viên và học viên</h4>
+<form action="" class="mb-2">
+    <div class="row">
+        <div class="col-3">
+            <select name="typeId" class="form-select">
+                <option value="all">Tất cả</option>
+                <option value="admin">Admin</option>
+                <option value="teacher">Giảng viên</option>
+                <option value="student">Học viên</option>
+            </select>
+        </div>
+        <div class="col-7">
+            <input type="search" name='keyword' class="form-control" placeholder="Từ khóa tìm kiếm">
+        </div>
+        <div class="col-2">
+            <button type="submit" class="btn btn-success">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+<table class='table table-bordered'>
+    <thead>
+        <tr>
+        <th width="5%">STT</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th width='10%'>Chức vụ</th>
+        </tr>
+    </thead>
+    <tbody>
+       <% userList.forEach((user, index) => { %>
+        <tr>
+        <td><%= index + 1 %></td>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+        <td><%= user.phone %></td>
+        <td><%= user.address %></td>
+        <% if(user.typeId === 1) { %>
+             <td>Admin</td>
+       <% }  else if(user.typeId === 2) { %>
+                <td>Giảng viên</td>
+      <% }  else { %>
+            <td>Học viên</td>
+     <% } %>
+        </tr>
+      <% }) %>
+    </tbody>
+</table>

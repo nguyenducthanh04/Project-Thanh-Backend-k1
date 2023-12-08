@@ -1,6 +1,7 @@
 // const model = require("../../../models/index");
 const model = require('../../../models/index');
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 const user_socials = model.user_socials;
 const User = model.User
 class DashboardController {
@@ -110,5 +111,49 @@ class DashboardController {
     });
     return;
   }
+  async userList (req, res) {
+    const user = req.user;
+    const {keyword, typeId} = req.query;
+    // console.log(keyword, typeId);
+    const filters = {};
+    if(typeId === 'teacher' || typeId === 'student' || typeId === 'admin') {
+      // filters.typeId = typeId === 'teacher' ? 2 : 3;
+      if(typeId === 'admin') {
+        filters.typeId = 1;
+      } else if(typeId === 'teacher') {
+        filters.typeId = 2;
+      } else {
+        filters.typeId = 3;
+      }
+    }
+    if(keyword?.length) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like] : `%${keyword}%`
+          }
+        },
+        {
+          email: {
+            [Op.like] : `%${keyword}%`
+          }
+        }
+      ]
+      // filters.name = {
+      //   [Op.like] : `%${keyword}%`
+      // }
+    }
+    console.log(filters);
+    const userList = await User.findAll({
+      // where: {
+      //   typeId: {
+      //     [Op.or]: [2, 3]
+      //   }
+      // }
+      where: filters
+    });
+    // console.log(userList);
+    res.render('admin/manager.user/userList', {userList, user})
+  } 
 }
 module.exports = new DashboardController();
