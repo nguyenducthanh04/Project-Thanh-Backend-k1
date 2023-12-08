@@ -28,4 +28,19 @@ router.get("/forgetPassword", AuthController.forgetPassword);
 router.post("/forgetPassword", AuthController.handleForget);
 router.get("/resetPass/:token", AuthController.resetPass);
 router.post("/resetPass/:token", AuthController.handleReset);
+router.get('/google/redirect', passport.authenticate('google'))
+router.get('/google/callback', passport.authenticate('google', {
+  failureRedirect: "/auth/login",
+    failureMessage: true,
+
+}),AuthController.googleLogin)
+router.get('/github/redirect', passport.authenticate("github"))
+router.get('/github/callback', passport.authenticate('github', {
+  failureRedirect: "/auth/login",
+    failureMessage: true,
+
+}), AuthController.githubLogin)
+router.get('/changePassFirtLogin', AuthController.changePassFirstLogin)
+router.post('/changePassFirtLogin', AuthController.handleChangePassFirstLogin)
+
 module.exports = router;

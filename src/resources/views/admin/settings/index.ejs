@@ -1,0 +1,19 @@
+<h3>Settings</h3>
+<div class="mb-3">
+    <span>Liên kết đăng nhập với Google</span>
+    <label class="switch">
+        <a href="<%= socials.includes('google') ? '/deleteSocial': '/auth/google/redirect'%>">
+            <input type="checkbox" <%= socials.includes('google') ? 'checked': ''%>>
+        <span class="slider round"></span>
+        </a>
+      </label>
+</div>
+<div class="mb-3">
+    <span>Liên kết đăng nhập với Github</span>
+    <label class="switch">
+        <a href="<%= socials.includes('github') ? '/deleteSocialGithub': '/auth/github/redirect'%>">
+            <input type="checkbox" <%= socials.includes('github') ? 'checked': ''%>>
+        <span class="slider round"></span>
+        </a>
+      </label><br>
+    <a href="/" class='btn btn-danger'>Thoát</a>

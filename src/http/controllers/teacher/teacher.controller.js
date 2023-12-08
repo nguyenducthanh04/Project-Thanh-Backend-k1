@@ -1,7 +1,8 @@
 // const model = require("../../../models/index");
 class TeacherController {
   async index(req, res) {
-    res.render("teachers/home/index");
+    const user = req.user;
+    res.render("teachers/home/index", {user});
   }
 }
 module.exports = new TeacherController();

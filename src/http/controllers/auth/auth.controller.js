@@ -8,8 +8,10 @@ const { Op } = require("sequelize");
 const User = model.User;
 const user_otp = model.user_otp;
 const login_tokens = model.login_tokens;
+const user_socials = model.user_socials;
 module.exports = {
   login: async (req, res) => {
+    // const user = req.user;
     const msg = req.flash("error");
     const msgType = msg ? "danger" : "success";
     const success = req.flash("success");
@@ -22,6 +24,10 @@ module.exports = {
   },
   handleLogin: async (req, res) => {
     const { email } = req.body;
+    console.log(req.user);
+    if(req.user.firstLogin === 1) {
+      return res.redirect('/auth/changePassFirtLogin')
+    }
     // const otpIn = req.body.otp;
     // console.log("OTP khi ma login", otpIn);
     const transporter = nodemailer.createTransport({
@@ -37,14 +43,14 @@ module.exports = {
     transporter.sendMail({
       from: `Thanh Nguyen <dducthanh04@gmail.com>`, // sender address
       to: email, // list of receivers
-      subject: "Hello", // Subject line
+      subject: "Verify OTP", // Subject line
       html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
         <div style="margin:50px auto;width:70%;padding:20px 0">
           <div style="border-bottom:1px solid #eee">
-            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Brand</a>
+            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Hello</a>
           </div>
           <p style="font-size:1.1em">Hi,</p>
-          <p>Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+          <p>Thank you for choosing. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
           <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
           <p style="font-size:0.9em;">Regards,<br />Your Brand</p>
           <hr style="border:none;border-top:1px solid #eee" />
@@ -71,11 +77,6 @@ module.exports = {
         userId: req.user.id,
       },
     });
-    // console.log(req.user_otp.otp);
-    // console.log("Login OTP:", +otpLogin.otp);
-    // if (req.body.otp === otpLogin.otp) {
-    //   console.log(100000011111);
-    // }
     return res.redirect("/auth/verifyTwoFa");
   },
   logout: (req, res, next) => {
@@ -158,9 +159,9 @@ module.exports = {
     transporter.sendMail({
       from: `Thanh Nguyen <dducthanh04@gmail.com>`, // sender address
       to: email, // list of receivers
-      subject: "Hello", // Subject line
+      subject: "Reset password", // Subject line
       html: ` <p>Click vào link dưới đây để đặt lại mật khẩu</p>
-      <a href="http://127.0.0.1:3000/auth/resetPass/${token}">Ấn vào đây này</a>`, // html body
+      <a href="http://127.0.0.1:3000/auth/resetPass/${token}">Link đặt lại mật khẩu</a>`, // html body
     });
     req.flash("success", "Gửi yêu cầu đặt lại mật khẩu thành công!");
     res.redirect("/auth/login");
@@ -211,4 +212,131 @@ module.exports = {
     });
     return;
   },
+  googleLogin: async (req, res) => {
+    console.log("Gooogle login")
+    console.log(req.user)
+    const loginToken = await login_tokens.findOne({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    // console.log(req.user.id);
+    const cookie = md5(Math.random());
+    if (!loginToken) {
+      await login_tokens.create({
+        userId: req.user.id,
+        token: cookie,
+      });
+      res.cookie("loginToken", cookie, { httpOnly: true });
+    } else {
+      login_tokens.destroy({
+        where: {
+          userId: req.user.id,
+        },
+      });
+      await login_tokens.create({
+        userId: req.user.id,
+        token: cookie,
+      });
+      res.cookie("loginToken", cookie, { httpOnly: true });
+    }
+
+    if (req.user.typeId === 1) {
+      console.log(`TypeId: `, req.user.typeId);
+      console.log("Login");
+      return res.redirect("/");
+    } else if (req.user.typeId === 2) {
+      return res.redirect("/teacher");
+    }
+    return res.redirect("/student");
+  },
+  githubLogin: async (req, res) => {
+    console.log("Github login")
+    console.log(req.user)
+    const loginToken = await login_tokens.findOne({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    // console.log(req.user.id);
+    const cookie = md5(Math.random());
+    if (!loginToken) {
+      await login_tokens.create({
+        userId: req.user.id,
+        token: cookie,
+      });
+      res.cookie("loginToken", cookie, { httpOnly: true });
+    } else {
+      login_tokens.destroy({
+        where: {
+          userId: req.user.id,
+        },
+      });
+      await login_tokens.create({
+        userId: req.user.id,
+        token: cookie,
+      });
+      res.cookie("loginToken", cookie, { httpOnly: true });
+    }
+    res.redirect('/')
+  },
+  changePassFirstLogin: async (req, res) => {
+    const user = req.user;
+    res.render('auth/changePassFirstLogin', { layout: "layouts/auth.layout.ejs" })
+  },
+  handleChangePassFirstLogin: async (req, res) => {
+    const users = req.user;
+    const salt = 10;
+    const { password } = req.body;
+    bcrypt.hash(password, salt, async function (err, hash) {
+      const value = await User.update(
+        { password: hash },
+        {
+          where: {
+            email: users.email,
+          },
+        }
+      );
+    });
+   const userUpdate = await User.update(
+    { firstLogin: 2 },
+        {
+          where: {
+            email: users.email,
+          },
+        }
+   )
+   const loginToken = await login_tokens.findOne({
+    where: {
+      userId: req.user.id,
+    },
+  });
+  // console.log(req.user.id);
+  const cookie = md5(Math.random());
+  if (!loginToken) {
+    await login_tokens.create({
+      userId: req.user.id,
+      token: cookie,
+    });
+    res.cookie("loginToken", cookie, { httpOnly: true });
+  } else {
+    login_tokens.destroy({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    await login_tokens.create({
+      userId: req.user.id,
+      token: cookie,
+    });
+    res.cookie("loginToken", cookie, { httpOnly: true });
+  }
+   console.log(`Đổi pass thành công `);
+    if (req.user.typeId === 1) {
+      return res.redirect("/");
+    } else if (req.user.typeId === 2) {
+      return res.redirect("/teacher");
+    }
+    return res.redirect("/student");
+  }
 };

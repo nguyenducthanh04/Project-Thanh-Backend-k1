@@ -1,3 +1,7 @@
+
+
+
+
 "use strict";
 const hash = require("../../utils/hash");
 /** @type {import('sequelize-cli').Migration} */
@@ -8,7 +12,7 @@ module.exports = {
     data.push({
       name: "Nguyễn Đức Thanh",
       email: "dducthanh04@gmail.com",
-      phone: "0585762666",
+      phone: "0928566686",
       address: "Hưng Yên",
       typeId: 1,
       firstLogin: 1,
@@ -16,7 +20,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    return queryInterface.bulkInsert("users", data, {});
+    return queryInterface.bulkInsert("Users", data, {});
   },
 
   async down(queryInterface, Sequelize) {

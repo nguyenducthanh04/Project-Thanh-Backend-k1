@@ -10,6 +10,7 @@ var flash = require("connect-flash");
 const model = require("./models/index");
 const localPassport = require("./http/passports/local.passport");
 const googlePassport = require("./http/passports/google.passport");
+const githubPassport = require('./http/passports/github.passport')
 var passport = require("passport");
 const studentRouter = require("./routes/students/index");
 const teacherRouter = require("./routes/teacher/index");
@@ -35,11 +36,12 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async function (id, done) {
   const user = await model.User.findByPk(id);
-  done(null, user.dataValues);
+  done(null, user);
 });
 
 passport.use("local", localPassport);
 passport.use("google", googlePassport);
+passport.use("github", githubPassport);
 // view engine setup
 app.set("views", path.join(__dirname, "resources/views"));
 app.set("view engine", "ejs");

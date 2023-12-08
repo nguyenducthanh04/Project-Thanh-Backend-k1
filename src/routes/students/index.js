@@ -6,5 +6,5 @@ const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 
 /* GET home page. */
 router.get("/", AuthMiddleware, StudentController.index);
-
+router.get('/changePass', StudentController.changePass)
 module.exports = router;

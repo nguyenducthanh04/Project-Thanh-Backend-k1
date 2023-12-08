@@ -13,12 +13,13 @@
   <ul class="navbar-nav ml-auto">
     <li class="nav-item dropdown">
       <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">
-        <strong>Thanh Nguyễn</strong>
+        <strong><%= user.name %></strong>
       </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-        <a href="" class="dropdown-item">Tài khoản</a>
-        <a href="" class="dropdown-item">Đổi mật khẩu</a>
-        <a href="" class="dropdown-item text-danger">Đăng xuất</a>
+        <a href="/account" class="dropdown-item">Tài khoản</a>
+        <a href="/changePass" class="dropdown-item">Đổi mật khẩu</a>
+        <a href="/settings" class="dropdown-item">Settings</a>
+        <a href="/auth/logout" class="dropdown-item text-danger">Đăng xuất</a>
       </div>
     </li>
     <!-- Messages Dropdown Menu -->
