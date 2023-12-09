@@ -15,4 +15,6 @@ router.get('/settings', AuthMiddleware, AdminController.settingAdmin)
 router.get('/changePass', AuthMiddleware, AdminController.changePassword)
 router.post('/changePass', AdminController.handleChangePass)
 router.get('/userList', AdminController.userList);
+router.get('/createUser', AdminController.createUser);
+router.post('/createUser', AdminController.handleCreateUser);
 module.exports = router;

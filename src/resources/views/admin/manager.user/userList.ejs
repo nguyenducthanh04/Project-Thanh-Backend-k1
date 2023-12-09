@@ -1,16 +1,17 @@
 <h4>Danh sách giảng viên và học viên</h4>
+<a href="/createUser" class="btn btn-success mb-2">Thêm mới</a>
 <form action="" class="mb-2">
     <div class="row">
         <div class="col-3">
             <select name="typeId" class="form-select">
                 <option value="all">Tất cả</option>
-                <option value="admin">Admin</option>
-                <option value="teacher">Giảng viên</option>
-                <option value="student">Học viên</option>
+                <option value="admin" <%= req.query.typeId === 'admin' ? 'selected': ''; %>>Admin</option>
+                <option value="teacher" <%= req.query.typeId === 'teacher' ? 'selected': ''; %>>Giảng viên</option>
+                <option value="student" <%= req.query.typeId === 'student' ? 'selected': ''; %>>Học viên</option>
             </select>
         </div>
         <div class="col-7">
-            <input type="search" name='keyword' class="form-control" placeholder="Từ khóa tìm kiếm">
+            <input type="search" name='keyword' class="form-control" value='<%= req.query.keyword %>' placeholder="Từ khóa tìm kiếm">
         </div>
         <div class="col-2">
             <button type="submit" class="btn btn-success">Tìm kiếm</button>
@@ -47,3 +48,18 @@
       <% }) %>
     </tbody>
 </table>
+<% if(totalPage > 2)  { %>
+<nav class="d-flex justify-content-end mt-4">
+    <ul class="pagination">
+        <% if(page > 1) { %>
+        <li class="page-item"><a href="?page=<%= +page-1 %>" class="page-link">Trước</a></li>
+        <% } %>
+        <% for(let i = 1; i <= totalPage; i++) { %>
+        <li class="page-item <%= +page === +i ? 'active': ''%>"><a href="?<%= getUrl(req, i) %>" class="page-link"><%= i %></a></li>
+        <% } %>
+        <% if(page < totalPage) { %>
+        <li class="page-item"><a href="?page=<%= +page+1 %>" class="page-link">Sau</a></li>
+        <% } %>
+    </ul>
+</nav>
+<% } %>

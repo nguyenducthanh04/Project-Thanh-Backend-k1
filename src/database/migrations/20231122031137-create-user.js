@@ -30,6 +30,7 @@ module.exports = {
       },
       firstLogin: {
         type: Sequelize.TINYINT(1),
+        defaultValue: 1,
       },
       createdAt: {
         allowNull: false,

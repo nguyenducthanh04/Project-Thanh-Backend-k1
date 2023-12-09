@@ -1,13 +1,16 @@
-// const model = require("../../../models/index");
 const model = require('../../../models/index');
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
+const { PER_PAGE } = process.env;
+const { getUrl } = require('../../../utils/getUrl')
 const user_socials = model.user_socials;
 const User = model.User
+const type = model.types;
+const {make} = require('../../../utils/hash')
 class DashboardController {
   async index(req, res) {
     const user = req.user;
-    res.render("admin/dashboard/index", {user});
+    res.render("admin/dashboard/index", {user, req});
   }
   async deleteSocial (req, res) {
     const provider = 'google'
@@ -29,7 +32,7 @@ class DashboardController {
   }
   async changeProfile (req, res) {
     const user = req.user;
-    res.render('admin/settings/changeProfile', { user })
+    res.render('admin/settings/changeProfile', { user, req })
   }
   async handleChangeProfile (req, res) {
     const user = req.user;
@@ -58,7 +61,7 @@ class DashboardController {
   }
   async account (req, res) {
     const user = req.user;
-    res.render('admin/account/account', {user})
+    res.render('admin/account/account', {user, req})
   }
   async settingAdmin (req, res) {
     const user = req.user;
@@ -70,11 +73,11 @@ class DashboardController {
     console.log(userSocials);
     const socials = userSocials.map((social) => social.dataValues.provider)
     console.log(socials);
-    res.render('admin/settings/index', {socials, user})
+    res.render('admin/settings/index', {socials, user, req})
   }
   async changePassword (req, res)  {
     const user = req.user
-   res.render("admin/settings/changePass", {user});
+   res.render("admin/settings/changePass", {user, req});
   }
   async handleChangePass (req, res) {
     const users = req.user;
@@ -144,16 +147,47 @@ class DashboardController {
       // }
     }
     console.log(filters);
+    const totalCountObj = await User.findAndCountAll({
+      where: filters
+    }); //Lấy tổng số bản ghi
+    const totalCount = totalCountObj.count;
+    //Tính tổng số trang 
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    console.log(totalPage);
+    //Lấy trang hiện tại
+    let {page} = req.query;
+    if(!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+    console.log(page);
+    //Tính offset
+    const offset = (page -1) * PER_PAGE;
+    console.log(offset);
     const userList = await User.findAll({
       // where: {
       //   typeId: {
       //     [Op.or]: [2, 3]
       //   }
       // }
-      where: filters
+      where: filters,
+      limit: +PER_PAGE,
+      offset: offset,
     });
-    // console.log(userList);
-    res.render('admin/manager.user/userList', {userList, user})
+    console.log(await User.count()); //lay tong so ban ghi
+    res.render('admin/manager.user/userList', {userList, user, req, totalPage, getUrl, page})
   } 
+  async createUser (req, res) {
+    const user = req.user;
+    const typeUser = await type.findAll()
+    console.log(typeUser);
+    res.render('admin/manager.user/createUser', {typeUser})
+  }
+  async handleCreateUser (req, res) {
+    req.body.password = make(req.body.password);
+    const createUsers = await User.create(req.body);
+    console.log(createUsers);
+    console.log(`Them thanh cong!`);
+    res.redirect('/userList')
+  }
 }
 module.exports = new DashboardController();

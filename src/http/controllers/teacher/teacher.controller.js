@@ -2,7 +2,7 @@
 class TeacherController {
   async index(req, res) {
     const user = req.user;
-    res.render("teachers/home/index", {user});
+    res.render("teachers/home/index", {user, req});
   }
 }
 module.exports = new TeacherController();
