@@ -220,6 +220,17 @@ module.exports = {
         userId: req.user.id,
       },
     });
+    // if(loginToken.token !== req.cookies.loginToken) {
+    //   const token = await createTokenUtil(req.user.id);
+    //   res.cookie("loginToken", cookie, { httpOnly: true });
+    //   if (req.user.typeId === 1) {
+    //       return res.redirect("/");
+    //     } else if (req.user.typeId === 2) {
+    //       return res.redirect("/teacher");
+    //     } else if(req.user.typeId === 3) {
+    //     return res.redirect("/student");
+    //     }
+    // }
     // console.log(req.user.id);
     const cookie = md5(Math.random());
     if (!loginToken) {
@@ -249,6 +260,9 @@ module.exports = {
       return res.redirect("/teacher");
     }
     return res.redirect("/student");
+    // if(req.user.typeId === 1) {
+    //   return res.redirect('/settings')
+    // }
   },
   githubLogin: async (req, res) => {
     console.log("Github login")

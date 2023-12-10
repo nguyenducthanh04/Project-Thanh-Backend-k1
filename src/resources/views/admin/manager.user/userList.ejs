@@ -27,6 +27,8 @@
         <th>Phone</th>
         <th>Address</th>
         <th width='10%'>Chức vụ</th>
+        <th>Sửa</th>
+        <th>Xóa</th>
         </tr>
     </thead>
     <tbody>
@@ -44,6 +46,12 @@
       <% }  else { %>
             <td>Học viên</td>
      <% } %>
+        <td><a href="/editUser/<%= user.id %>" class='btn btn-warning btn-sm'>Sửa</a></td>
+        <td>
+            <form action="/deleteUser/<%= user.id %>" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng ?')"  method="post">
+                <button class="btn btn-danger btn-sm">Xóa</button>
+            </form>
+        </td>
         </tr>
       <% }) %>
     </tbody>

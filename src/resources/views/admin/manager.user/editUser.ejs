@@ -1,0 +1,32 @@
+<h4>Sửa người dùng</h4>
+<form action="" method="post">
+    <div class="mb-3">
+        <label for="">Name</label>
+        <input type="name" name="name" class="form-control" value='<%= userDetail.name %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Email</label>
+        <input type="email" name="email" class="form-control" value='<%= userDetail.email %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Phone</label>
+        <input type="number" name="phone" class="form-control" value='<%= userDetail.phone %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Address</label>
+        <input type="address" name="address" class="form-control" value='<%= userDetail.address %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Chức vụ</label>
+        <select name="typeId" class="form-select">
+            <option value="0">Chọn chức vụ</option>
+            <% typeList.forEach(({id, name}) => { %>
+                <option value="<%= id %>"<%= +userDetail.typeId === +id ? 'selected': '' %>><%= name %></option>
+           <% }) %>
+        </select>
+    </div>
+    <div class="d-grid">
+        <button class="btn btn-success">Lưu</button>
+        <a href="/userList" class="btn btn-danger">Hủy</a>
+    </div>
+</form>

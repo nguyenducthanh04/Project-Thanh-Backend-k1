@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 const { PER_PAGE } = process.env;
 const { getUrl } = require('../../../utils/getUrl')
+const { validationResult } = require('express-validator');
 const user_socials = model.user_socials;
 const User = model.User
 const type = model.types;
@@ -180,13 +181,43 @@ class DashboardController {
     const user = req.user;
     const typeUser = await type.findAll()
     console.log(typeUser);
-    res.render('admin/manager.user/createUser', {typeUser})
+    res.render('admin/manager.user/createUser', {typeUser, user})
   }
   async handleCreateUser (req, res) {
     req.body.password = make(req.body.password);
     const createUsers = await User.create(req.body);
     console.log(createUsers);
     console.log(`Them thanh cong!`);
+    const result = validationResult(req);
+    console.log(result);
+    res.redirect('/userList')
+  }
+  async editUser (req, res) {
+    const user = req.user;
+    const { id } = req.params;
+    const userDetail = await User.findByPk(id);
+    const typeList = await type.findAll();
+    // console.log(userDetail);
+    res.render('admin/manager.user/editUser', {userDetail, typeList, user})
+  } 
+  async handleEditUser (req, res) {
+    const { id } = req.params;
+    const userData = req.body;
+    const updateUser = await User.update(userData, {
+      where: {
+        id: id,
+      }
+    })
+    console.log('Cập nhật thành công');
+    res.redirect('/userList')
+  }
+  async deleteUser (req, res) {
+    const { id } = req.params;
+    const deleteUser = await User.destroy({
+      where: {
+        id: id,
+      }
+    })
     res.redirect('/userList')
   }
 }
