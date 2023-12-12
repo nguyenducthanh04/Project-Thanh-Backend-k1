@@ -2,6 +2,7 @@ const model = require('../../../models/index');
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 const { PER_PAGE } = process.env;
+const flash = require('connect-flash');
 const { getUrl } = require('../../../utils/getUrl')
 const { validationResult } = require('express-validator');
 const user_socials = model.user_socials;
@@ -38,6 +39,9 @@ class DashboardController {
   async handleChangeProfile (req, res) {
     const user = req.user;
     const { name, email, address, phone } = req.body;
+    if(!name || !email || !address || !phone) {
+      req.flash('message', 'Vui lòng nhập đầy đủ thông tin')
+    }
     // console.log(name, email, address, phone)
     const value = await User.update({
           name: name,
@@ -120,6 +124,7 @@ class DashboardController {
     const {keyword, typeId} = req.query;
     // console.log(keyword, typeId);
     const filters = {};
+    filters.typeId = 1;
     if(typeId === 'teacher' || typeId === 'student' || typeId === 'admin') {
       // filters.typeId = typeId === 'teacher' ? 2 : 3;
       if(typeId === 'admin') {
@@ -170,7 +175,9 @@ class DashboardController {
       //     [Op.or]: [2, 3]
       //   }
       // }
-      where: filters,
+      where: 
+      filters,
+      
       limit: +PER_PAGE,
       offset: offset,
     });
@@ -190,7 +197,7 @@ class DashboardController {
     console.log(`Them thanh cong!`);
     const result = validationResult(req);
     console.log(result);
-    res.redirect('/userList')
+    res.redirect('/createUser')
   }
   async editUser (req, res) {
     const user = req.user;
@@ -198,6 +205,7 @@ class DashboardController {
     const userDetail = await User.findByPk(id);
     const typeList = await type.findAll();
     // console.log(userDetail);
+    // console.log('name user', userDetail.name);
     res.render('admin/manager.user/editUser', {userDetail, typeList, user})
   } 
   async handleEditUser (req, res) {
@@ -209,7 +217,7 @@ class DashboardController {
       }
     })
     console.log('Cập nhật thành công');
-    res.redirect('/userList')
+    res.redirect(`/editUser/${id}`)
   }
   async deleteUser (req, res) {
     const { id } = req.params;
@@ -219,6 +227,138 @@ class DashboardController {
       }
     })
     res.redirect('/userList')
+  }
+  async teacherList (req, res) {
+    const user = req.user;
+    const {keyword, typeId} = req.query;
+    console.log('login keyword',keyword, typeId);
+    const filters = {};
+    filters.typeId = 2;
+    if(typeId === 'teacher' || typeId === 'student' || typeId === 'admin') {
+      // filters.typeId = typeId === 'teacher' ? 2 : 3;
+      if(typeId === 'admin') {
+        filters.typeId = 1;
+      } else if(typeId === 'teacher') {
+        filters.typeId = 2;
+      } else {
+        filters.typeId = 3;
+      }
+    }
+    if(keyword?.length) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like] : `%${keyword}%`
+          }
+        },
+        {
+          email: {
+            [Op.like] : `%${keyword}%`
+          }
+        }
+      ]
+      // filters.name = {
+      //   [Op.like] : `%${keyword}%`
+      // }
+    }
+    console.log(filters.name);
+    console.log(filters.email);
+    const totalCountObj = await User.findAndCountAll({
+      where: filters
+    }); //Lấy tổng số bản ghi
+    const totalCount = totalCountObj.count;
+    //Tính tổng số trang 
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    console.log(totalPage);
+    //Lấy trang hiện tại
+    let {page} = req.query;
+    if(!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+    console.log(page);
+    //Tính offset
+    const offset = (page -1) * PER_PAGE;
+    console.log(offset);
+    const userList = await User.findAll({
+      // where: {
+      //   typeId: {
+      //     [Op.or]: [2, 3]
+      //   }
+      // }
+      where:  filters,
+      
+      limit: +PER_PAGE,
+      offset: offset,
+    });
+    console.log('userlist', userList);
+    console.log(await User.count()); //lay tong so ban ghi
+    res.render('teachers/home/teacherList', {userList, user, req, totalPage, getUrl, page})
+  }
+  async studentList (req, res) {
+    const user = req.user;
+    const {keyword, typeId} = req.query;
+    console.log('login keyword',keyword, typeId);
+    const filters = {};
+    filters.typeId = 3;
+    if(typeId === 'teacher' || typeId === 'student' || typeId === 'admin') {
+      // filters.typeId = typeId === 'teacher' ? 2 : 3;
+      if(typeId === 'admin') {
+        filters.typeId = 1;
+      } else if(typeId === 'teacher') {
+        filters.typeId = 2;
+      } else {
+        filters.typeId = 3;
+      }
+    }
+    if(keyword?.length) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like] : `%${keyword}%`
+          }
+        },
+        {
+          email: {
+            [Op.like] : `%${keyword}%`
+          }
+        }
+      ]
+      // filters.name = {
+      //   [Op.like] : `%${keyword}%`
+      // }
+    }
+    console.log(filters.name);
+    console.log(filters.email);
+    const totalCountObj = await User.findAndCountAll({
+      where: filters
+    }); //Lấy tổng số bản ghi
+    const totalCount = totalCountObj.count;
+    //Tính tổng số trang 
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    console.log(totalPage);
+    //Lấy trang hiện tại
+    let {page} = req.query;
+    if(!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+    console.log(page);
+    //Tính offset
+    const offset = (page -1) * PER_PAGE;
+    console.log(offset);
+    const userList = await User.findAll({
+      // where: {
+      //   typeId: {
+      //     [Op.or]: [2, 3]
+      //   }
+      // }
+      where:  filters,
+      
+      limit: +PER_PAGE,
+      offset: offset,
+    });
+    console.log('userlist', userList);
+    console.log(await User.count()); //lay tong so ban ghi
+    res.render('students/home/studentList', {userList, user, req, totalPage, getUrl, page})
   }
 }
 module.exports = new DashboardController();

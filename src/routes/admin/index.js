@@ -16,6 +16,8 @@ router.get('/settings', AuthMiddleware, AdminController.settingAdmin)
 router.get('/changePass', AuthMiddleware, AdminController.changePassword)
 router.post('/changePass', AdminController.handleChangePass)
 router.get('/userList', AdminController.userList);
+router.get('/teacherList', AdminController.teacherList);
+router.get('/studentList', AdminController.studentList);
 router.get('/createUser', AdminController.createUser);
 router.post('/createUser', AdminController.handleCreateUser);
 router.get('/editUser/:id', AdminController.editUser)

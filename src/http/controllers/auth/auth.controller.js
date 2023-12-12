@@ -7,6 +7,7 @@ const model = require("../../../models/index");
 const { Op } = require("sequelize");
 const User = model.User;
 const user_otp = model.user_otp;
+const createTokenUtil = require('../../../utils/loginToken')
 const login_tokens = model.login_tokens;
 const user_socials = model.user_socials;
 module.exports = {
@@ -220,42 +221,44 @@ module.exports = {
         userId: req.user.id,
       },
     });
-    // if(loginToken.token !== req.cookies.loginToken) {
-    //   const token = await createTokenUtil(req.user.id);
-    //   res.cookie("loginToken", cookie, { httpOnly: true });
-    //   if (req.user.typeId === 1) {
-    //       return res.redirect("/");
-    //     } else if (req.user.typeId === 2) {
-    //       return res.redirect("/teacher");
-    //     } else if(req.user.typeId === 3) {
-    //     return res.redirect("/student");
-    //     }
-    // }
+    console.log(4545454);
+    console.log(req.cookies.loginToken);
+    if(loginToken.token !== req.cookies.loginToken) {
+      const token = await createTokenUtil(req.user.id);
+      res.cookie("loginToken", token, { httpOnly: true });
+      if (req.user.typeId === 1) {
+          return res.redirect("/");
+        } else if (req.user.typeId === 2) {
+          return res.redirect("/teacher");
+        } else if(req.user.typeId === 3) {
+        return res.redirect("/student");
+        }
+    } 
     // console.log(req.user.id);
-    const cookie = md5(Math.random());
-    if (!loginToken) {
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
-    } else {
-      login_tokens.destroy({
-        where: {
-          userId: req.user.id,
-        },
-      });
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
-    }
+    // const cookie = md5(Math.random());
+    // if (!loginToken) {
+    //   await login_tokens.create({
+    //     userId: req.user.id,
+    //     token: cookie,
+    //   });
+    //   res.cookie("loginToken", cookie, { httpOnly: true });
+    // } else {
+    //   login_tokens.destroy({
+    //     where: {
+    //       userId: req.user.id,
+    //     },
+    //   });
+    //   await login_tokens.create({
+    //     userId: req.user.id,
+    //     token: cookie,
+    //   });
+    //   res.cookie("loginToken", cookie, { httpOnly: true });
+    // }
 
     if (req.user.typeId === 1) {
       console.log(`TypeId: `, req.user.typeId);
       console.log("Login");
-      return res.redirect("/");
+      return res.redirect("/settings");
     } else if (req.user.typeId === 2) {
       return res.redirect("/teacher");
     }
@@ -272,27 +275,48 @@ module.exports = {
         userId: req.user.id,
       },
     });
+    console.log(4545454);
+    console.log(req.cookies.loginToken);
+    if(loginToken.token !== req.cookies.loginToken) {
+      const token = await createTokenUtil(req.user.id);
+      res.cookie("loginToken", token, { httpOnly: true });
+      if (req.user.typeId === 1) {
+          return res.redirect("/");
+        } else if (req.user.typeId === 2) {
+          return res.redirect("/teacher");
+        } else if(req.user.typeId === 3) {
+        return res.redirect("/student");
+        }
+    } 
     // console.log(req.user.id);
-    const cookie = md5(Math.random());
-    if (!loginToken) {
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
-    } else {
-      login_tokens.destroy({
-        where: {
-          userId: req.user.id,
-        },
-      });
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
+    // const cookie = md5(Math.random());
+    // if (!loginToken) {
+    //   await login_tokens.create({
+    //     userId: req.user.id,
+    //     token: cookie,
+    //   });
+    //   res.cookie("loginToken", cookie, { httpOnly: true });
+    // } else {
+    //   login_tokens.destroy({
+    //     where: {
+    //       userId: req.user.id,
+    //     },
+    //   });
+    //   await login_tokens.create({
+    //     userId: req.user.id,
+    //     token: cookie,
+    //   });
+    //   res.cookie("loginToken", cookie, { httpOnly: true });
+    // }
+
+    if (req.user.typeId === 1) {
+      console.log(`TypeId: `, req.user.typeId);
+      console.log("Login");
+      return res.redirect("/settings");
+    } else if (req.user.typeId === 2) {
+      return res.redirect("/teacher");
     }
-    res.redirect('/')
+    return res.redirect("/student");
   },
   changePassFirstLogin: async (req, res) => {
     const user = req.user;
