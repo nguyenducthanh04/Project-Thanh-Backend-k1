@@ -1,16 +1,22 @@
 <h4>Thêm người dùng</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %>
 <form action="" method="post">
     <div class="mb-3">
         <label for="">Name</label>
         <input type="name" name="name" class="form-control" placeholder="Nhập tên người dùng...">
+        <span class="text-danger"><%= getError(errors, 'name') %></span>
     </div>
     <div class="mb-3">
         <label for="">Email</label>
         <input type="text" name="email" class="form-control" placeholder="Nhập email người dùng...">
+        <span class="text-danger"><%= getError(errors, 'email') %></span>
     </div>
     <div class="mb-3">
         <label for="">Password</label>
         <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu người dùng...">
+        <span class="text-danger"><%= getError(errors, 'password') %></span>
     </div>
     <div class="mb-3">
         <label for="">Phone</label>

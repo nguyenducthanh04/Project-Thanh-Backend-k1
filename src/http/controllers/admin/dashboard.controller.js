@@ -8,6 +8,7 @@ const { validationResult } = require('express-validator');
 const user_socials = model.user_socials;
 const User = model.User
 const type = model.types;
+const {getError} = require('../../../utils/validate')
 const {make} = require('../../../utils/hash')
 class DashboardController {
   async index(req, res) {
@@ -187,17 +188,28 @@ class DashboardController {
   async createUser (req, res) {
     const user = req.user;
     const typeUser = await type.findAll()
-    console.log(typeUser);
-    res.render('admin/manager.user/createUser', {typeUser, user})
+    // console.log(typeUser);
+    const message = req.flash('message');
+    const errors = req.flash('errors');
+    console.log(req.flash('message'));
+    console.log(getError(errors, "name"));
+    res.render('admin/manager.user/createUser', {typeUser, user, errors, message, getError})
   }
   async handleCreateUser (req, res) {
-    req.body.password = make(req.body.password);
+    // console.log(createUsers);
+    // console.log(`Them thanh cong!`);
+    const errors = validationResult(req);
+    if(errors.isEmpty()) {
+      req.body.password = make(req.body.password);
     const createUsers = await User.create(req.body);
-    console.log(createUsers);
-    console.log(`Them thanh cong!`);
-    const result = validationResult(req);
-    console.log(result);
-    res.redirect('/createUser')
+    // console.log(`No error`);
+    return res.redirect('/createUser')
+    } else {
+      req.flash('errors', errors.array());
+      req.flash('message', 'Vui lòng nhập đầy đủ thông tin !')
+      console.log(errors.array());
+     return res.redirect('/createUser')
+    }
   }
   async editUser (req, res) {
     const user = req.user;
@@ -280,11 +292,6 @@ class DashboardController {
     const offset = (page -1) * PER_PAGE;
     console.log(offset);
     const userList = await User.findAll({
-      // where: {
-      //   typeId: {
-      //     [Op.or]: [2, 3]
-      //   }
-      // }
       where:  filters,
       
       limit: +PER_PAGE,
@@ -292,6 +299,7 @@ class DashboardController {
     });
     console.log('userlist', userList);
     console.log(await User.count()); //lay tong so ban ghi
+    console.log(`Tổng số trang: ${totalPage}`);
     res.render('teachers/home/teacherList', {userList, user, req, totalPage, getUrl, page})
   }
   async studentList (req, res) {

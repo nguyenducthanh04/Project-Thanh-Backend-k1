@@ -19,7 +19,7 @@ router.get('/userList', AdminController.userList);
 router.get('/teacherList', AdminController.teacherList);
 router.get('/studentList', AdminController.studentList);
 router.get('/createUser', AdminController.createUser);
-router.post('/createUser', AdminController.handleCreateUser);
+router.post('/createUser', UserValidateMiddleware(), AdminController.handleCreateUser);
 router.get('/editUser/:id', AdminController.editUser)
 router.post('/editUser/:id', AdminController.handleEditUser)
 router.post('/deleteUser/:id', AdminController.deleteUser)
