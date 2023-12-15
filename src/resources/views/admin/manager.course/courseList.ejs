@@ -1,0 +1,60 @@
+<h4 style="text-align: center;">Danh sách khóa học tại F8</h4>
+<form action="" class="mb-2">
+    <div class="row">
+        <div class="col-10">
+            <input type="search" name='keyword' class="form-control" value='<%= req.query.keyword %>' placeholder="Từ khóa tìm kiếm">
+        </div>
+        <div class="col-2">
+            <button type="submit" class="btn btn-success">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+<table class='table table-bordered'>
+    <thead>
+        <tr>
+        <th width="5%">STT</th>
+        <th>Tên</th>
+        <th>Học phí</th>
+        <th>Giảng viên</th>
+        <th>Số lượng học viên</th>
+        <th width='10%'>Học thử</th>
+        <th>Thời gian</th>
+        <th>Sửa</th>
+        <th>Xóa</th>
+        </tr>
+    </thead>
+    <tbody>
+       <% courseList.forEach((course, index) => { %>
+        <tr>
+        <td><%= index + 1 %></td>
+        <td><%= course.name %></td>
+        <td><%= course.price %></td>
+        <td><%= course.User.name  %></td>
+        <td><%= course.quantity %></td>
+        <td><%= course.tryLearn === 0 ? "7 buổi" : "Không học thử" %></td>
+        <td><%= course.duration %> buổi</td>
+        <td><a href="" class='btn btn-warning btn-sm'>Sửa</a></td>
+        <td>
+            <form action="" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng ?')"  method="post">
+                <button class="btn btn-danger btn-sm">Xóa</button>
+            </form>
+        </td>
+        </tr>
+      <% }) %>
+    </tbody>
+</table>
+<% if(totalPage >= 2)  { %>
+    <nav class="d-flex justify-content-end mt-4">
+        <ul class="pagination">
+            <% if(page > 1) { %>
+            <li class="page-item"><a href="?page=<%= +page-1 %>" class="page-link">Trước</a></li>
+            <% } %>
+            <% for(let i = 1; i <= totalPage; i++) { %>
+            <li class="page-item <%= +page === +i ? 'active': ''%>"><a href="?<%= getUrl(req, i) %>" class="page-link"><%= i %></a></li>
+            <% } %>
+            <% if(page < totalPage) { %>
+            <li class="page-item"><a href="?page=<%= +page+1 %>" class="page-link">Sau</a></li>
+            <% } %>
+        </ul>
+    </nav>
+    <% } %>

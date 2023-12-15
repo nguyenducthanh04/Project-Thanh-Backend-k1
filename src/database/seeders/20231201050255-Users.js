@@ -1,18 +1,15 @@
 
-
-
-
 "use strict";
 const hash = require("../../utils/hash");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     const data = [];
-    // for (let index = 0; index < 20; index++) {
+    // for (let index = 0; index < 50; index++) {
       const password = hash.make("123456");
       data.push({
-        name: `Trần Ngọc Anh`,
-        email: `tna@gmail.com`,
+        name: `User 52`,
+        email: `user52@gmail.com`,
         password: password,
         phone: '0585762666',
         address: 'Hà Nội',

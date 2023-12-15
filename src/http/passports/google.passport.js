@@ -38,6 +38,7 @@ module.exports = new GoogleStrategy(
                     }
                 })
                 console.log("Liên kết thành công")
+            request.flash('success', 'Liên kết đăng nhập với Google thành công')
         return done(null, user, {message: 'Liên kết thành công'})
         } 
         console.log("Liên kết thất bại")
@@ -61,6 +62,7 @@ module.exports = new GoogleStrategy(
         if(providerIdCheck) {
             return done(null, user);
         } else {
+            request.flash('error', 'Đăng nhập thất bại! Tài khoản chưa được liên kết với Google')
             console.log(`Tài khoản chưa liên kết`);
            return done(null, false, {message: 'Tài khoản chưa liên kết'})
         }

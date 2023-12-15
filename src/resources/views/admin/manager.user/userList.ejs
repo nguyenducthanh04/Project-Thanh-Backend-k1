@@ -1,14 +1,6 @@
 <h4 style="text-align: center;">Danh sách quản trị viên</h4>
 <form action="" class="mb-2">
     <div class="row">
-        <!-- <div class="col-3">
-            <select name="typeId" class="form-select">
-                <option value="all">Tất cả</option>
-                <option value="admin" <%= req.query.typeId === 'admin' ? 'selected': ''; %>>Admin</option>
-                <option value="teacher" <%= req.query.typeId === 'teacher' ? 'selected': ''; %>>Giảng viên</option>
-                <option value="student" <%= req.query.typeId === 'student' ? 'selected': ''; %>>Học viên</option>
-            </select>
-        </div> -->
         <div class="col-10">
             <input type="search" name='keyword' class="form-control" value='<%= req.query.keyword %>' placeholder="Từ khóa tìm kiếm">
         </div>

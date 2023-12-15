@@ -19,6 +19,7 @@ module.exports = {
       teacherId: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
+        onDelete: 'CASCADE',
       },
       tryLearn: {
         type: Sequelize.TINYINT,

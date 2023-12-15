@@ -1,4 +1,9 @@
 <span style='color: tomato'>Thay đổi thông tin</span>
+<%- msg.length ? `
+<div class="alert alert-${msgType}">${msg}</div>
+`: '';%> <%- success.length ? `
+<div class="alert alert-success">${success}</div>
+` : "" %>
 <form action="" method="post">
     <div class="input-group mb-3">
         <input

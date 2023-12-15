@@ -1,4 +1,9 @@
 <span style='color: tomato'>Reset password</span>
+<%- msg.length ? `
+<div class="alert alert-${msgType}">${msg}</div>
+`: '';%> <%- success.length ? `
+<div class="alert alert-success">${success}</div>
+` : "" %>
 <form action="" method="post">
     <div class="mb-3">
         <label for="">Nhập mật khẩu cũ</label>

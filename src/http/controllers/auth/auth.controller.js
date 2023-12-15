@@ -16,6 +16,7 @@ module.exports = {
     const msg = req.flash("error");
     const msgType = msg ? "danger" : "success";
     const success = req.flash("success");
+    const user = req.user;
     res.render("auth/login", {
       msg,
       msgType,
@@ -215,7 +216,6 @@ module.exports = {
   },
   googleLogin: async (req, res) => {
     console.log("Gooogle login")
-    console.log(req.user)
     const loginToken = await login_tokens.findOne({
       where: {
         userId: req.user.id,

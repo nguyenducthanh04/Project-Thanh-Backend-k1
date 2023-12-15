@@ -4,6 +4,7 @@ const User = model.User;
 module.exports = () => {
    return [
     check('name', 'Tên bắt buộc phải nhập').notEmpty(),
+    check('name', 'Tên không quá 100 kí tự').isLength({ max: 50}),
     check('email', 'Email bắt buộc phải nhập').notEmpty(),
     check('email', 'Email không đúng định dạng').isEmail(),
     check('password', 'Mật khẩu bắt buộc phải nhập').notEmpty(),

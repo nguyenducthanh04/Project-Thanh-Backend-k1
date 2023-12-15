@@ -8,6 +8,7 @@ const { validationResult } = require('express-validator');
 const user_socials = model.user_socials;
 const User = model.User
 const type = model.types;
+const Courses = model.courses;
 const {getError} = require('../../../utils/validate')
 const {make} = require('../../../utils/hash')
 class DashboardController {
@@ -35,14 +36,14 @@ class DashboardController {
   }
   async changeProfile (req, res) {
     const user = req.user;
-    res.render('admin/settings/changeProfile', { user, req })
+    const msg = req.flash('error')
+    const msgType = msg ? 'danger' : 'success';
+    const success = req.flash('success')
+    res.render('admin/settings/changeProfile', { user, req, msg, msgType, success })
   }
   async handleChangeProfile (req, res) {
     const user = req.user;
     const { name, email, address, phone } = req.body;
-    if(!name || !email || !address || !phone) {
-      req.flash('message', 'Vui lòng nhập đầy đủ thông tin')
-    }
     // console.log(name, email, address, phone)
     const value = await User.update({
           name: name,
@@ -58,7 +59,7 @@ class DashboardController {
         );
         if (value) {
           console.log('Update thanh cong');
-          req.flash("msg", "Thay đổi tên thành công!");
+          req.flash("success", "Thay đổi thông tin thành công!");
           res.redirect("/changeProfile");
           return;
         }
@@ -71,6 +72,9 @@ class DashboardController {
   }
   async settingAdmin (req, res) {
     const user = req.user;
+    const msg = req.flash("error");
+    const msgType = msg ? "danger" : "success";
+    const success = req.flash("success");
     const userSocials = await user_socials.findAll({
       where: {
         userId: req.user.id,
@@ -79,11 +83,14 @@ class DashboardController {
     console.log(userSocials);
     const socials = userSocials.map((social) => social.dataValues.provider)
     console.log(socials);
-    res.render('admin/settings/index', {socials, user, req})
+    res.render('admin/settings/index', {socials, user, req, msg, msgType, success})
   }
   async changePassword (req, res)  {
     const user = req.user
-   res.render("admin/settings/changePass", {user, req});
+    const msg = req.flash("error");
+    const msgType = msg ? "danger" : "success";
+    const success = req.flash("success");
+   res.render("admin/settings/changePass", {user, req, msg, msgType, success});
   }
   async handleChangePass (req, res) {
     const users = req.user;
@@ -94,7 +101,7 @@ class DashboardController {
     // console.log(req.user.password);
     console.log(users);
     // console.log(email);
-    console.log(users.password);
+    // console.log(users.password);
     // console.log(req.user.email.dataValues);
     console.log(oldpassword, password, resetpassword);
     if (password !== resetpassword) {
@@ -113,8 +120,8 @@ class DashboardController {
       );
       if (value) {
         console.log('Update thanh cong');
-        req.flash("msg", "Cập nhập mật khẩu thành công!");
-        res.redirect("/");
+        req.flash("success", "Cập nhập mật khẩu thành công!");
+        res.redirect("/changePass");
         return;
       }
     });
@@ -367,6 +374,56 @@ class DashboardController {
     console.log('userlist', userList);
     console.log(await User.count()); //lay tong so ban ghi
     res.render('students/home/studentList', {userList, user, req, totalPage, getUrl, page})
+  }
+  async courseList(req, res) {
+    // const courseList = await Courses.findAll();
+    const user = req.user
+    const { keyword } = req.query;
+    console.log(keyword);
+    const filters = {};
+    if(keyword?.length) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like] : `%${keyword}%`
+          }
+        },
+        {
+          "$User.name$": {
+            [Op.like] : `%${keyword}%`
+          }
+        }
+      ]
+      // filters.name = {
+      //   [Op.like] : `%${keyword}%`
+      // }
+    }
+    const totalCountObj = await Courses.findAndCountAll({
+      where: filters
+    }); //Lấy tổng số bản ghi
+    const totalCount = totalCountObj.count;
+    console.log(`totalCount ${totalCount}`);
+    //Tính tổng số trang 
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    console.log(`totalPage ${totalPage}`);
+
+    //Lấy trang hiện tại
+    let {page} = req.query;
+    if(!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+    console.log(page);
+    //Tính offset
+    const offset = (page -1) * PER_PAGE;
+    console.log(offset);
+    const courseList = await Courses.findAll({ include: {
+      model: User
+    }, 
+    where: filters,
+    limit: +PER_PAGE,
+    offset: offset,
+  })
+    res.render("admin/manager.course/courseList", {courseList, user, req, totalPage, getUrl, page})
   }
 }
 module.exports = new DashboardController();

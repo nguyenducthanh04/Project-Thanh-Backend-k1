@@ -36,6 +36,7 @@ module.exports = new GitHubStrategy(
                     id: providerDetail.userId,
                 }
             })
+            request.flash('success', 'Liên kết đăng nhập với Gihub thành công')
             console.log("Liên kết tài khoản thành công");
             return done(null, user, {message: 'Liên kết thành công'})
         } else {
@@ -49,6 +50,7 @@ module.exports = new GitHubStrategy(
             if(providerIdCheck) {
                 return done(null, user);
             } else {
+                request.flash('error', 'Đăng nhập thất bại! Tài khoản chưa được liên kết với Github')
                 console.log(`Tài khoản chưa liên kết`);
                return done(null, false, {message: 'Tài khoản chưa liên kết'})
             }

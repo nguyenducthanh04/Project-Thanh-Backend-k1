@@ -23,5 +23,5 @@ router.post('/createUser', UserValidateMiddleware(), AdminController.handleCreat
 router.get('/editUser/:id', AdminController.editUser)
 router.post('/editUser/:id', AdminController.handleEditUser)
 router.post('/deleteUser/:id', AdminController.deleteUser)
-
+router.get('/courseList', AdminController.courseList)
 module.exports = router;

@@ -27,6 +27,7 @@ module.exports = {
       typeId: {
         type: Sequelize.INTEGER,
         references: { model: "types", key: "id" },
+        onDelete: 'CASCADE',
       },
       firstLogin: {
         type: Sequelize.TINYINT(1),
