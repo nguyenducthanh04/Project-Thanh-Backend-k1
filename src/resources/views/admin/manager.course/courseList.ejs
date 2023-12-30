@@ -1,60 +1,218 @@
-<h4 style="text-align: center;">Danh sách khóa học tại F8</h4>
-<form action="" class="mb-2">
-    <div class="row">
-        <div class="col-10">
-            <input type="search" name='keyword' class="form-control" value='<%= req.query.keyword %>' placeholder="Từ khóa tìm kiếm">
-        </div>
-        <div class="col-2">
-            <button type="submit" class="btn btn-success">Tìm kiếm</button>
-        </div>
-    </div>
+<h4 style="text-align: center">Danh sách khóa học tại F8</h4>
+<%- msg.length ? `
+<div class="alert alert-${msgType}">${msg}</div>
+`: '';%> <%- success.length ? `
+<div class="alert alert-success">${success}</div>
+` : "" %>
+<form action="/deleteAll" method="POST" style="margin-bottom: 14px">
+  <input type="hidden" id="listDelete" name="listUserDelete" value="" />
+  <button type="submit" class="btn btn-danger" id="deleteAll">
+    Xóa tất cả
+  </button>
 </form>
-<table class='table table-bordered'>
-    <thead>
-        <tr>
-        <th width="5%">STT</th>
-        <th>Tên</th>
-        <th>Học phí</th>
-        <th>Giảng viên</th>
-        <th>Số lượng học viên</th>
-        <th width='10%'>Học thử</th>
-        <th>Thời gian</th>
-        <th>Sửa</th>
-        <th>Xóa</th>
-        </tr>
-    </thead>
-    <tbody>
-       <% courseList.forEach((course, index) => { %>
-        <tr>
-        <td><%= index + 1 %></td>
-        <td><%= course.name %></td>
-        <td><%= course.price %></td>
-        <td><%= course.User.name  %></td>
-        <td><%= course.quantity %></td>
-        <td><%= course.tryLearn === 0 ? "7 buổi" : "Không học thử" %></td>
-        <td><%= course.duration %> buổi</td>
-        <td><a href="" class='btn btn-warning btn-sm'>Sửa</a></td>
-        <td>
-            <form action="" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng ?')"  method="post">
-                <button class="btn btn-danger btn-sm">Xóa</button>
-            </form>
-        </td>
-        </tr>
-      <% }) %>
-    </tbody>
+<form action="" class="mb-2">
+  <div class="row">
+    <div class="col-10">
+      <input
+        type="search"
+        name="keyword"
+        class="form-control"
+        value="<%= req.query.keyword %>"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </div>
+    <div class="col-2">
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-search"></i>
+      </button>
+      <a href="/exportCourse" class="btn btn-success"
+        >Export file excel <i class="fas fa-file-excel"></i
+      ></a>
+    </div>
+  </div>
+</form>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th><input id="checkboxAll" type="checkbox" /></th>
+      <th width="5%">STT</th>
+      <th>Tên</th>
+      <th>Học phí</th>
+      <th>Giảng viên</th>
+      <th>Số lượng học viên</th>
+      <th width="10%">Học thử</th>
+      <th>Thời gian</th>
+      <th>Sửa</th>
+      <th>Xóa</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% courseList.forEach((course, index) => { %>
+    <tr>
+      <td>
+        <input class="checkboxItem" type="checkbox" value="<%= course.id %>" />
+      </td>
+      <td><%= index + 1 %></td>
+      <td><%= course.name %></td>
+      <td><%= course.price %></td>
+      <td><%= course.User.name %></td>
+      <td><%= course.quantity %></td>
+      <td><%= course.tryLearn === 0 ? "7 buổi" : "Không có học thử" %></td>
+      <td><%= course.duration %> buổi</td>
+      <td>
+        <a href="/editCourse/<%= course.id %>"
+          ><i class="far fa-edit" style="font-size: 1.2rem"></i
+        ></a>
+      </td>
+      <td>
+        <form
+          action="/deleteCourse/<%= course.id %>"
+          onsubmit="return confirm('Bạn có chắc chắn muốn xóa khóa học ?')"
+          method="post"
+        >
+          <button class="btn btn-sm">
+            <i class="fas fa-trash-alt" style="font-size: 1.2rem"></i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
 </table>
-<% if(totalPage >= 2)  { %>
-    <nav class="d-flex justify-content-end mt-4">
-        <ul class="pagination">
-            <% if(page > 1) { %>
-            <li class="page-item"><a href="?page=<%= +page-1 %>" class="page-link">Trước</a></li>
-            <% } %>
-            <% for(let i = 1; i <= totalPage; i++) { %>
-            <li class="page-item <%= +page === +i ? 'active': ''%>"><a href="?<%= getUrl(req, i) %>" class="page-link"><%= i %></a></li>
-            <% } %>
-            <% if(page < totalPage) { %>
-            <li class="page-item"><a href="?page=<%= +page+1 %>" class="page-link">Sau</a></li>
-            <% } %>
-        </ul>
-    </nav>
+<% if(totalPage >= 2) { %>
+<nav class="d-flex justify-content-end mt-4">
+  <ul class="pagination">
+    <% if(page > 1) { %>
+    <li class="page-item">
+      <a href="?<%= getUrl(req, page - 1) %>" class="page-link">Trước</a>
+    </li>
+    <% } %> <% if (page <= 4) { %>
+    <!-- Hiển thị 4 trang đầu -->
+    <% for (let i = 1; i <= 4 && i <= totalPage; i++) { %>
+    <li class="page-item <%= +page === +i ? 'active': ''%>">
+      <a href="?<%= getUrl(req, i) %>" class="page-link"><%= i %></a>
+    </li>
+    <% } %> <% if(page = 4) { %>
+    <!-- Hiển thị 1 trang sau trang hiện tại -->
+    <% if (page < totalPage) { %>
+    <li class="page-item">
+      <a href="?<%= getUrl(req, +page + 1) %>" class="page-link"
+        ><%= +page + 1 %></a
+      >
+    </li>
+    <% } %> <% } %>
+
+    <!-- Hiển thị dấu ba chấm -->
+    <li class="page-item">
+      <span class="page-link">...</span>
+    </li>
+    <!-- Hiển thị trang cuối -->
+    <li class="page-item">
+      <a href="/courseList?page=<%= totalPage %>" class="page-link"
+        ><%= totalPage %></a
+      >
+    </li>
+    <!-- Hiển thị dấu ba chấm nếu trang hiện tại không thuộc 4 trang đầu -->
+    <% } else { %>
+    <!-- Hiển thị trang đầu -->
+    <li class="page-item">
+      <a href="/courseList?page=1" class="page-link">1</a>
+    </li>
+    <!-- Hiển thị dấu ba chấm -->
+    <li class="page-item">
+      <span class="page-link">...</span>
+    </li>
+    <!-- Hiển thị 1 trang trước trang hiện tại -->
+    <% if (page > 1) { %>
+    <li class="page-item">
+      <a href="?<%= getUrl(req, page - 1) %>" class="page-link"
+        ><%= page - 1 %></a
+      >
+    </li>
     <% } %>
+
+    <!-- Hiển thị trang hiện tại -->
+    <li class="page-item active">
+      <a href="?<%= getUrl(req, page) %>" class="page-link"><%= page %></a>
+    </li>
+
+    <!-- Hiển thị 1 trang sau trang hiện tại -->
+    <% if (page < totalPage) { %>
+    <li class="page-item">
+      <a href="?<%= getUrl(req, +page + 1) %>" class="page-link"
+        ><%= +page + 1 %></a
+      >
+    </li>
+    <% } %>
+
+    <!-- Ẩn dấu ba chấm khi đến trang thứ totalPage - 1 -->
+    <% if (page < totalPage - 2) { %>
+    <li class="page-item">
+      <span class="page-link">...</span>
+    </li>
+    <% } %> <% } %> <% if(page < totalPage) { %>
+    <li class="page-item">
+      <a href="?<%= getUrl(req, +page + 1) %>" class="page-link">Sau</a>
+    </li>
+    <% } %>
+  </ul>
+</nav>
+<% } %>
+
+<script>
+  const checkboxAll = document.querySelector("#checkboxAll");
+  const inputDelete = document.querySelector("#listDelete");
+  const checkboxCourses = document.querySelectorAll(".checkboxItem");
+  const deleteAllBtn = document.querySelector("#deleteAll");
+  let arr = [];
+
+  checkboxAll.addEventListener("change", function (e) {
+    const haveChecked = Array.from(checkboxCourses).some(
+      (checkboxCourse) => checkboxCourse.checked
+    );
+
+    if (haveChecked) {
+      e.target.checked = false;
+      checkboxCourses.forEach((checkboxCourse) => {
+        checkboxCourse.checked = false;
+      });
+      arr = [];
+      inputDelete.value = "";
+    }
+
+    if (e.target.checked) {
+      checkboxCourses.forEach((checkboxCourse) => {
+        checkboxCourse.checked = true;
+        arr.push(checkboxCourse.value);
+      });
+      inputDelete.value = arr.toString();
+      return;
+    }
+    checkboxCourses.forEach((checkboxCourse) => {
+      checkboxCourse.checked = false;
+      arr = [];
+    });
+    inputDelete.value = "";
+  });
+
+  checkboxCourses.forEach((checkboxCourse) => {
+    checkboxCourse.addEventListener("change", function (e) {
+      if (!e.target.checked) {
+        checkboxAll.checked = false;
+        arr = arr.filter((val) => val !== e.target.value);
+        inputDelete.value = arr.toString();
+        return;
+      }
+      arr.push(e.target.value);
+      inputDelete.value = arr.toString();
+      checkboxAll.checked = Array.from(checkboxCourses).every(
+        (checkboxCourse) => checkboxCourse.checked
+      );
+    });
+  });
+
+  deleteAllBtn.onclick = () => {
+    arr = [...new Set(arr)];
+    console.log(arr.toString());
+  };
+</script>

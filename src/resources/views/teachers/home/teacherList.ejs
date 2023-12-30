@@ -1,72 +1,99 @@
-<h3 style="text-align: center;">Danh sách giảng viên</h3>
+<h3 style="text-align: center">Danh sách giảng viên</h3>
 <form action="" class="mb-2">
-    <div class="row">
-        <!-- <div class="col-3">
-            <select name="typeId" class="form-select">
-                <option value="all">Tất cả</option>
-                <option value="admin" <%= req.query.typeId === 'admin' ? 'selected': ''; %>>Admin</option>
-                <option value="teacher" <%= req.query.typeId === 'teacher' ? 'selected': ''; %>>Giảng viên</option>
-                <option value="student" <%= req.query.typeId === 'student' ? 'selected': ''; %>>Học viên</option>
-            </select>
-        </div> -->
-        <div class="col-10">
-            <input type="search" name='keyword' class="form-control" value='<%= req.query.keyword %>' placeholder="Từ khóa tìm kiếm">
-        </div>
-        <div class="col-2">
-            <button type="submit" class="btn btn-success">Tìm kiếm</button>
-        </div>
+  <div class="row">
+    <div class="col-3 mb-2">
+      <select name="typeId" class="form-select">
+        <option value="all">Tất cả</option>
+        <option value="admin">Admin</option>
+        <option value="teacher">Giảng viên</option>
+        <option value="student">Học viên</option>
+      </select>
     </div>
+    <div class="col-10">
+      <input
+        type="search"
+        name="keyword"
+        class="form-control"
+        value="<%= req.query.keyword %>"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </div>
+    <div class="col-2">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-search"></i>
+      </button>
+      <a href="/exportTeacher" class="btn btn-success"
+        >Export file excel <i class="fas fa-file-excel"></i
+      ></a>
+    </div>
+  </div>
 </form>
-<table class='table table-bordered'>
-    <thead>
-        <tr>
-        <th width="5%">STT</th>
-        <th>Tên</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th width='10%'>Chức vụ</th>
-        <th>Sửa</th>
-        <th>Xóa</th>
-        </tr>
-    </thead>
-    <tbody>
-       <% userList.forEach((user, index) => { %>
-        <tr>
-        <td><%= index + 1 %></td>
-        <td><%= user.name %></td>
-        <td><%= user.email %></td>
-        <td><%= user.phone %></td>
-        <td><%= user.address %></td>
-        <% if(user.typeId === 1) { %>
-             <td>Admin</td>
-       <% }  else if(user.typeId === 2) { %>
-                <td>Giảng viên</td>
-      <% }  else { %>
-            <td>Học viên</td>
-     <% } %>
-        <td><a href="/editUser/<%= user.id %>" class='btn btn-warning btn-sm'>Sửa</a></td>
-        <td>
-            <form action="/deleteUser/<%= user.id %>" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng ?')"  method="post">
-                <button class="btn btn-danger btn-sm">Xóa</button>
-            </form>
-        </td>
-        </tr>
-      <% }) %>
-    </tbody>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th width="5%">STT</th>
+      <th>Tên</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Address</th>
+      <th width="10%">Chức vụ</th>
+      <th>Sửa</th>
+      <th>Xóa</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% userList.forEach((user, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= user.name %></td>
+      <td><%= user.email %></td>
+      <td><%= user.phone %></td>
+      <td><%= user.address %></td>
+      <% if(user.typeId === 1) { %>
+      <td>Admin</td>
+      <% } else if(user.typeId === 2) { %>
+      <td>Giảng viên</td>
+      <% } else { %>
+      <td>Học viên</td>
+      <% } %>
+      <td>
+        <a href="/editUser/<%= user.id %>"
+          ><i class="far fa-edit" style="font-size: 1.2rem"></i
+        ></a>
+      </td>
+      <td>
+        <form
+          action="/deleteUser/<%= user.id %>"
+          onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng ?')"
+          method="post"
+        >
+          <button class="btn btn-sm">
+            <i class="fas fa-trash-alt" style="font-size: 1.2rem"></i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
 </table>
-<% if(totalPage >= 2)  { %>
+<% if(totalPage >= 2) { %>
 <nav class="d-flex justify-content-end mt-4">
-    <ul class="pagination">
-        <% if(page > 1) { %>
-        <li class="page-item"><a href="?page=<%= +page-1 %>" class="page-link">Trước</a></li>
-        <% } %>
-        <% for(let i = 1; i <= totalPage; i++) { %>
-        <li class="page-item <%= +page === +i ? 'active': ''%>"><a href="?<%= getUrl(req, i) %>" class="page-link"><%= i %></a></li>
-        <% } %>
-        <% if(page < totalPage) { %>
-        <li class="page-item"><a href="?page=<%= +page+1 %>" class="page-link">Sau</a></li>
-        <% } %>
-    </ul>
+  <ul class="pagination">
+    <% if(page > 1) { %>
+    <li class="page-item">
+      <a href="?page=<%= +page-1 %>" class="page-link">Trước</a>
+    </li>
+    <% } %> <% pagination.forEach(pageItem => { %>
+    <li class="page-item <%= +page === +pageItem ? 'active': ''%>">
+      <a href="?<%= getUrl(req, pageItem) %>" class="page-link"
+        ><%= pageItem %></a
+      >
+    </li>
+    <% }); %> <% if(page < totalPage) { %>
+    <li class="page-item">
+      <a href="?page=<%= +page+1 %>" class="page-link">Sau</a>
+    </li>
+    <% } %>
+  </ul>
 </nav>
 <% } %>

@@ -91,7 +91,8 @@ module.exports = {
     });
   },
   verifyTwoFa: (req, res) => {
-    return res.render("auth/2fa", { layout: "layouts/auth.layout.ejs" });
+    const user = req.user;
+    return res.render("auth/2fa", { layout: "layouts/auth.layout.ejs", user });
   },
   handleVerify: async (req, res) => {
     const { otp } = req.body;
