@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       exercises.belongsTo(models.classes, {
         foreignKey: "studentId",
       });
+      exercises.hasMany(models.exercises_submit);
     }
   }
   exercises.init(

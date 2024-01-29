@@ -1,42 +1,69 @@
 <h4>Thêm người dùng</h4>
 <% if(message?.length) { %>
 <div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
 <% } %>
 <form action="" method="post">
-    <div class="mb-3">
-        <label for="">Name</label>
-        <input type="name" name="name" class="form-control" placeholder="Nhập tên người dùng...">
-        <span class="text-danger"><%= getError(errors, 'name') %></span>
-    </div>
-    <div class="mb-3">
-        <label for="">Email</label>
-        <input type="text" name="email" class="form-control" placeholder="Nhập email người dùng...">
-        <span class="text-danger"><%= getError(errors, 'email') %></span>
-    </div>
-    <div class="mb-3">
-        <label for="">Password</label>
-        <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu người dùng...">
-        <span class="text-danger"><%= getError(errors, 'password') %></span>
-    </div>
-    <div class="mb-3">
-        <label for="">Phone</label>
-        <input type="number" name="phone" class="form-control" placeholder="Nhập số điện thoại người dùng...">
-    </div>
-    <div class="mb-3">
-        <label for="">Address</label>
-        <input type="address" name="address" class="form-control" placeholder="Nhập địa chỉ người dùng...">
-    </div>
-    <div class="mb-3">
-        <label for="">Chức vụ</label>
-        <select name="typeId" class="form-select">
-            <option value="0">Chọn chức vụ</option>
-            <% typeUser.forEach(({id, name}) => { %>
-                <option value="<%= id %>"><%= name %></option>
-           <% }) %>
-        </select>
-    </div>
-    <div class="d-grid">
-        <button class="btn btn-success">Thêm</button>
-        <a href="/userList" class="btn btn-danger">Hủy</a>
-    </div>
+  <div class="mb-3">
+    <label for="">Name</label>
+    <input
+      type="name"
+      name="name"
+      class="form-control"
+      placeholder="Nhập tên người dùng..."
+    />
+    <span class="text-danger"><%= getError(errors, 'name') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Email</label>
+    <input
+      type="text"
+      name="email"
+      class="form-control"
+      placeholder="Nhập email người dùng..."
+    />
+    <span class="text-danger"><%= getError(errors, 'email') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Password</label>
+    <input
+      type="password"
+      name="password"
+      class="form-control"
+      placeholder="Nhập mật khẩu người dùng..."
+    />
+    <span class="text-danger"><%= getError(errors, 'password') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Phone</label>
+    <input
+      type="number"
+      name="phone"
+      class="form-control"
+      placeholder="Nhập số điện thoại người dùng..."
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Address</label>
+    <input
+      type="address"
+      name="address"
+      class="form-control"
+      placeholder="Nhập địa chỉ người dùng..."
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Chức vụ</label>
+    <select name="typeId" class="form-select">
+      <option value="0">Chọn chức vụ</option>
+      <% typeUser.forEach(({id, name}) => { %>
+      <option value="<%= id %>"><%= name %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="d-grid">
+    <button class="btn btn-success">Thêm</button>
+    <a href="/userList" class="btn btn-danger">Hủy</a>
+  </div>
 </form>

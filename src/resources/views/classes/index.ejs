@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h3>Tên lớp học: <%= classList.name %></h3>
+    <ul>
+      <li>Sĩ số: <%= classList.quantity %></li>
+      <li>Ngày khai giảng: <%= classList.startDate %></li>
+      <li>Ngày bế giảng: <%= classList.endDate %></li>
+      <li>Khóa học: <%= classList.course.name %></li>
+      <li>Giảng viên: <%= courseList.User.name %></li>
+      <% scheduleList.forEach((scheduleItem) => { %>
+      <ul>
+        <li>Lịch học: <%= scheduleItem.schedule %></li>
+        <li>Thời gian học: <%= scheduleItem.timeLearn %></li>
+      </ul>
+      <% }) %>
+    </ul>
+  </body>
+</html>

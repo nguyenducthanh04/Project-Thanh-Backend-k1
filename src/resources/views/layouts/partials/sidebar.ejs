@@ -2,12 +2,12 @@
   <!-- Brand Logo -->
   <a href="/" class="brand-link">
     <img
-      src="/assets/img/f8-icon.png"
+      src="/assets/img/lbx-logo.jpg"
       alt="AdminLTE Logo"
       class="brand-image img-circle elevation-3"
       style="opacity: 0.8; width: 35px; height: 35px"
     />
-    <span class="font-weight-bolt">F8-Fullstack</span>
+    <span class="font-weight-bolt">LBX-Class</span>
   </a>
 
   <!-- Sidebar -->
@@ -23,7 +23,7 @@
         />
       </div>
       <div class="info">
-        <a href="#" class="d-block">Nguyễn Đức Thanh</a>
+        <a href="/admin/changeProfile" class="d-block">Nguyễn Đức Thanh</a>
       </div>
     </div>
     <!-- Sidebar Menu -->
@@ -36,8 +36,8 @@
       >
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
-        <li class="nav-item menu-open">
-          <a href="#" class="nav-link active">
+        <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+          <a href="/admin" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               Tổng quan
@@ -46,8 +46,8 @@
           </a>
         </li>
 
-        <li class="nav-item">
-          <a href="#" class="nav-link">
+        <li class="nav-item <%= moduleName === "Người dùng" ? "menu-is-opening menu-open" : "" %>">
+          <a href="#" class="nav-link <%= moduleName === "Người dùng" ? "active" : "" %>">
             <i class="nav-icon fas fa-users"></i>
             <p>
               Người dùng
@@ -57,20 +57,17 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/userList" class="nav-link">
-                <i class="fas fa-users-cog"></i>
+              <a href="/admin/userList" class="nav-link <%= title === "Danh sách người quản trị" ? "active" : "" %>">
                 <p>Danh sách người quản trị</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="/teacherList" class="nav-link">
-                <i class="fas fa-chalkboard-teacher"></i>
+              <a href="/admin/teacherList" class="nav-link <%= title === "Danh sách giảng viên" ? "active" : "" %>">
                 <p>Danh sách giảng viên</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="/studentList" class="nav-link">
-                <i class="fas fa-user-graduate"></i>
+              <a href="/admin/studentList" class="nav-link <%= title === "Danh sách học viên" ? "active" : "" %>">
                 <p>Danh sách học viên</p>
               </a>
             </li>
@@ -81,15 +78,14 @@
               </a>
             </li> -->
             <li class="nav-item">
-              <a href="/createUser" class="nav-link">
-                <i class="fas fa-user-plus"></i>
+              <a href="/admin/createUser" class="nav-link <%= title === "Thêm mới người dùng" ? "active" : "" %>">
                 <p>Thêm mới người dùng</p>
               </a>
             </li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
+        <li class="nav-item <%= moduleName === "Khóa học" ? "menu-is-opening menu-open" : "" %>">
+          <a href="#" class="nav-link <%= moduleName === "Khóa học" ? "active" : "" %>">
             <i class="nav-icon fas fa-book"></i>
             <p>
               Khóa học
@@ -99,8 +95,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/courseList" class="nav-link">
-                <i class="fas fa-book-reader"></i>
+              <a href="/admin/courseList" class="nav-link <%= title === "Danh sách" ? "active" : "" %>">
                 <p>Danh sách</p>
               </a>
             </li>
@@ -111,9 +106,36 @@
                 </a>
               </li> -->
             <li class="nav-item">
-              <a href="/createCourse" class="nav-link">
-                <i class="fas fa-plus-square"></i>
+              <a href="/admin/createCourse" class="nav-link <%= title === "Thêm mới khóa học" ? "active" : "" %>">
                 <p>Thêm mới khóa học</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item <%= moduleName === "Lớp học" ? "menu-is-opening menu-open" : "" %>">
+          <a href="#" class="nav-link <%= moduleName === "Lớp học" ? "active" : "" %>">
+            <i class="nav-icon fas fa-book"></i>
+            <p>
+              Lớp học
+              <i class="fas fa-angle-left right"></i>
+              <!-- <span class="badge badge-info right">6</span> -->
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/classList" class="nav-link <%= title === "Danh sách lớp học" ? "active" : "" %>">
+                <p>Danh sách</p>
+              </a>
+            </li>
+            <!-- <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Khóa học</p>
+                </a>
+              </li> -->
+            <li class="nav-item">
+              <a href="/admin/createClass" class="nav-link <%= title === "Thêm mới lớp học" ? "active" : "" %>">
+                <p>Thêm mới lớp học</p>
               </a>
             </li>
           </ul>

@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 const model = require("../../models/index");
 const Courses = model.courses;
+const User = model.User;
+const Classes = model.classes;
 const multer = require("multer");
 const ExcelJS = require("exceljs");
 const path = require("path");
@@ -11,78 +13,175 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-
 const upload = multer({ storage });
+
 const DashboardController = require("../../http/controllers/admin/dashboard.controller");
+const UserController = require("../../http/controllers/admin/user.controller");
+const CourseController = require("../../http/controllers/admin/course.controller");
+const ClassController = require("../../http/controllers/admin/class.controller");
+//setup lại
+
+/*Controller*/
 const LoginMiddleware = require("../../http/middlewares/login/loginLocalMiddleware");
 const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 const UserValidateMiddleware = require("../../http/middlewares/user.validate.middleware");
 const CourseValidateMiddleware = require("../../http/middlewares/course.validate.middleware");
+const ClassesValidateMiddleware = require("../../http/middlewares/classes.validate.middleware");
+const EditClassesValidateMiddleware = require("../../http/middlewares/editclass.validate.middleware");
 const AdminController = require("../../http/controllers/admin/dashboard.controller");
 /* GET home page. */
 router.get("/", AuthMiddleware, DashboardController.index);
-router.get("/deleteSocial", AdminController.deleteSocial);
-router.get("/deleteSocialGithub", AdminController.deleteSocialGithub);
-router.get("/changeProfile", AuthMiddleware, AdminController.changeProfile);
+router.get("/deleteSocialGoogle", DashboardController.deleteSocialGoogle);
+router.get("/deleteSocialGithub", DashboardController.deleteSocialGithub);
+router.get("/changeProfile", AuthMiddleware, DashboardController.changeProfile);
 router.post(
   "/changeProfile",
   AuthMiddleware,
-  AdminController.handleChangeProfile
+  DashboardController.handleChangeProfile
 );
-router.get("/account", AuthMiddleware, AdminController.account);
-router.get("/settings", AuthMiddleware, AdminController.settingAdmin);
-router.get("/changePass", AuthMiddleware, AdminController.changePassword);
-router.post("/changePass", AdminController.handleChangePass);
-router.get("/userList", AuthMiddleware, AdminController.userList);
-router.get("/teacherList", AuthMiddleware, AdminController.teacherList);
-router.get("/studentList", AuthMiddleware, AdminController.studentList);
-router.get("/createUser", AuthMiddleware, AdminController.createUser);
+router.get("/settings", AuthMiddleware, DashboardController.settingAdmin);
+router.get("/changePass", AuthMiddleware, DashboardController.changePassword);
+router.post("/changePass", DashboardController.handleChangePass);
+router.get("/userList", AuthMiddleware, UserController.userList);
+router.get("/teacherList", AuthMiddleware, UserController.teacherList);
+router.get("/studentList", AuthMiddleware, UserController.studentList);
+router.get("/createUser", AuthMiddleware, UserController.createUser);
 router.post(
   "/createUser",
   UserValidateMiddleware(),
-  AdminController.handleCreateUser
+  UserController.handleCreateUser
 );
-router.get("/editUser/:id", AuthMiddleware, AdminController.editUser);
-router.post("/editUser/:id", AdminController.handleEditUser);
-router.post("/deleteUser/:id", AdminController.deleteUser);
-router.get("/courseList", AuthMiddleware, AdminController.courseList);
-router.get("/editCourse/:id", AuthMiddleware, AdminController.editCourse);
-router.post("/editCourse/:id", AdminController.handleEditCourse);
-router.post("/deleteCourse/:id", AdminController.deleteCourse);
-router.get("/createCourse", AuthMiddleware, AdminController.createCourse);
+router.get("/editUser/:id", AuthMiddleware, UserController.editUser);
+router.post("/editUser/:id", UserController.handleEditUser);
+router.post("/deleteUser/:id", UserController.deleteUser);
+router.get("/courseList", AuthMiddleware, CourseController.courseList);
+router.get("/editCourse/:id", AuthMiddleware, CourseController.editCourse);
+router.post("/editCourse/:id", CourseController.handleEditCourse);
+router.post("/deleteCourse/:id", CourseController.deleteCourse);
+router.get("/createCourse", AuthMiddleware, CourseController.createCourse);
 router.post(
   "/createCourse",
   CourseValidateMiddleware(),
-  AdminController.handleCreateCourse
+  CourseController.handleCreateCourse
 );
-router.get("/exportStudent", AdminController.exportStudent);
-router.get("/exportAdmin", AdminController.exportAdmin);
-router.get("/exportTeacher", AdminController.exportTeacher);
-router.get("/exportCourse", AdminController.exportCourse);
-router.post("/deleteAll", AdminController.deleteAll);
-router.post("/deleteAllStudents", AdminController.deleteAllStudents);
-router.get("/importExcel", AdminController.importExcelUser);
-router.post("/importExcel", upload.single("excelFile"), async (req, res) => {
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(req.file.path);
-  const worksheet = workbook.getWorksheet(1);
-  worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
-    const data = row.values;
-    console.log("DataExcel:", data);
-    console.log("du lieu data excel", parseInt(data[3]));
-    if (rowNumber !== 1) {
-      await Courses.create({
-        name: data[2],
-        price: parseInt(data[3]),
-        teacherId: parseInt(data[4]),
-        // tryLearn: data[5],
-        quantity: parseInt(data[5]),
-        duration: parseInt(data[6]),
-      });
-    }
-  });
+router.get("/exportStudent", UserController.exportStudent);
+router.get("/exportAdmin", UserController.exportAdmin);
+router.get("/exportTeacher", UserController.exportTeacher);
+router.get("/exportCourse", CourseController.exportCourse);
+router.post("/deleteAllCourse", CourseController.deleteAllCourses);
+router.post("/deleteAllStudents", UserController.deleteAllStudents);
 
-  res.send("Import thành công!");
-});
+//Import Excel Course
+router.get(
+  "/importExcelCourse",
+  AuthMiddleware,
+  CourseController.importExcelCourse
+);
 
+router.post(
+  "/importExcelCourse",
+  upload.single("excelFile"),
+  async (req, res) => {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(req.file.path);
+    const worksheet = workbook.getWorksheet(1);
+    worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
+      const data = row.values;
+      console.log("DataExcel:", data);
+      console.log("du lieu data excel", parseInt(data[3]));
+      if (rowNumber !== 1) {
+        await Courses.create({
+          name: data[2],
+          price: parseInt(data[3]),
+          teacherId: parseInt(data[4]),
+          // tryLearn: data[5],
+          quantity: parseInt(data[5]),
+          duration: parseInt(data[6]),
+        });
+      }
+    });
+    req.flash("success", "Import thành công!");
+    res.redirect("/admin/importExcelCourse");
+  }
+);
+//Import Excel User
+router.get("/importExcelUser", AuthMiddleware, UserController.importExcelUser);
+router.post(
+  "/importExcelUser",
+  upload.single("excelFile"),
+  async (req, res) => {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(req.file.path);
+    const worksheet = workbook.getWorksheet(1);
+    worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
+      const data = row.values;
+      console.log("DataExcel:", data);
+      console.log("du lieu data excel", parseInt(data[3]));
+      if (rowNumber !== 1) {
+        await User.create({
+          name: data[2],
+          email: data[3],
+          phone: parseInt(data[4]),
+          address: data[5],
+          // typeId: parseInt(data[6]),
+        });
+      }
+    });
+    req.flash("success", "Import thành công!");
+    res.redirect("/admin/importExcelUser");
+  }
+);
+//Import Excel Class
+router.get(
+  "/importExcelClass",
+  AuthMiddleware,
+  ClassController.importExcelClass
+);
+router.post(
+  "/importExcelClass",
+  upload.single("excelFile"),
+  async (req, res) => {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(req.file.path);
+    const worksheet = workbook.getWorksheet(1);
+    worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
+      const data = row.values;
+      console.log("DataExcel:", data);
+      console.log("du lieu data excel", parseInt(data[3]));
+      if (rowNumber !== 1) {
+        await Classes.create({
+          name: data[2],
+          quantity: parseInt(data[3]),
+          startDate: data[4],
+          endDate: data[5],
+          courseId: parseInt(data[7]),
+          // typeId: parseInt(data[6]),
+        });
+      }
+    });
+    req.flash("success", "Import thành công!");
+    res.redirect("/admin/importExcelClass");
+  }
+);
+
+router.get("/classList", ClassController.classList);
+router.get("/createClass", ClassController.createClass);
+router.post(
+  "/createClass",
+  ClassesValidateMiddleware(),
+  ClassController.handleCreateClass
+);
+router.get("/editClass/:id", ClassController.editClass);
+router.post(
+  "/editClass/:id",
+  EditClassesValidateMiddleware,
+  ClassController.handleEditClass
+);
+router.post("/deleteClass/:id", ClassController.deleteClass);
+router.post("/deleteAllClass", ClassController.deleteAllClass);
+router.get("/exportClass", AdminController.exportClasses);
+router.get("/courseDetail/:id", CourseController.courseDetails);
+router.get("/classDetail/:id", ClassController.classDetails);
+router.get("/exportClass", ClassController.exportClass);
+router.get("/classes/calendar/", ClassController.calendarClass);
 module.exports = router;

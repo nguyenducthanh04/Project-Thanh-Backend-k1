@@ -1,0 +1,107 @@
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
+<h4>Thêm lớp học</h4>
+<form action="" method="post">
+  <div class="mb-3">
+    <label for="">Tên lớp học</label>
+    <input
+      type="name"
+      name="name"
+      class="form-control"
+      placeholder="Nhập tên lớp học..."
+    />
+    <span class="text-danger"><%= getError(errors, 'name') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Sĩ số</label>
+    <input
+      type="number"
+      name="quantity"
+      class="form-control"
+      placeholder="Nhập sĩ số lớp học..."
+    />
+    <span class="text-danger"><%= getError(errors, 'quantity') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Ngày khai giảng</label>
+    <input type="date" name="startDate" class="form-control" placeholder="" />
+  </div>
+  <div class="mb-3">
+    <label for="">Ngày bế giảng</label>
+    <input type="date" name="endDate" class="form-control" placeholder="" />
+  </div>
+  <div class="mb-3">
+    <label for="">Lịch học:</label><br />
+    <button type="button" class="btn btn-primary js-btn-add-time">Thêm</button>
+    <!-- Start -->
+    <div class="time-select" name="timeSelect">
+      <label for="daySelect">Chọn ngày:</label>
+      <select
+        id="daySelect"
+        name="schedule"
+        onchange="showTimeInput()"
+        class="mb-2"
+      >
+        <option value="clickDay" class="opt-hidden">Chọn ngày thứ nhất</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="0">8</option></select
+      ><br />
+      <div class="time-group">
+        <label for="startTime"></label>
+        <input type="time" id="startTime" name="startTime" required />
+
+        <label for="endTime">-</label>
+        <input type="time" id="endTime" name="endTime" required />
+      </div>
+      <br />
+    </div>
+    <script>
+      const btn = document.querySelector(".js-btn-add-time");
+      function insertAfter(referenceNode, newNode) {
+        referenceNode.parentNode.insertBefore(
+          newNode,
+          referenceNode.nextSibling
+        );
+      }
+
+      btn.addEventListener("click", (e) => {
+        const timeSelect = document.querySelectorAll(".time-select");
+        const nextTimeSelect = timeSelect[0].cloneNode(true);
+        nextTimeSelect.querySelector(".opt-hidden").textContent =
+          "Chọn ngày thứ " + (timeSelect.length + 1);
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "btn btn-danger";
+        deleteBtn.innerText = "Xóa";
+        deleteBtn.type = "button";
+        deleteBtn.addEventListener("click", (e) => {
+          e.target.parentElement.remove();
+        });
+        nextTimeSelect.append(deleteBtn);
+        insertAfter(timeSelect[timeSelect.length - 1], nextTimeSelect);
+      });
+    </script>
+    <!-- end -->
+  </div>
+  <div class="mb-3">
+    <label for="">Khóa học</label>
+    <select name="courseId" class="form-select">
+      <option value="<%= %>">Chọn khóa học</option>
+      <% courseList.forEach(({id, name}) => { %>
+      <option value="<%= id %>"><%= name %></option>
+      <% }) %>
+    </select>
+    <span class="text-danger"><%= getError(errors, 'courseId') %></span>
+  </div>
+  <div class="d-grid">
+    <button class="btn btn-success">Thêm</button>
+    <a href="/admin/classList" class="btn btn-danger">Hủy</a>
+  </div>
+</form>

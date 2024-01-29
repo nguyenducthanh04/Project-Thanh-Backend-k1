@@ -1,33 +1,45 @@
-<h4 style="text-align: center">Danh sách khóa học tại F8</h4>
 <%- msg.length ? `
 <div class="alert alert-${msgType}">${msg}</div>
 `: '';%> <%- success.length ? `
 <div class="alert alert-success">${success}</div>
 ` : "" %>
-<form action="/deleteAll" method="POST" style="margin-bottom: 14px">
+<h4 style="text-align: center">Danh sách khóa học tại F8</h4>
+<form action="/admin/deleteAllCourse" method="POST" style="margin-bottom: 8px">
   <input type="hidden" id="listDelete" name="listUserDelete" value="" />
   <button type="submit" class="btn btn-danger" id="deleteAll">
     Xóa tất cả
   </button>
 </form>
+
 <form action="" class="mb-2">
   <div class="row">
+    <div class="col-sm-8 mb-2">
+      <a href="/admin/importExcelCourse" class="btn btn-info"
+        >Import Excel <i class="fas fa-file-excel"></i
+      ></a>
+      <a href="/admin/exportCourse" class="btn btn-success"
+        >Export excel <i class="fas fa-file-excel"></i
+      ></a>
+    </div>
     <div class="col-10">
       <input
         type="search"
         name="keyword"
         class="form-control"
         value="<%= req.query.keyword %>"
-        placeholder="Từ khóa tìm kiếm"
+        placeholder="Tìm kỉếm theo tên khóa học hoặc tên giảng viên"
       />
     </div>
     <div class="col-2">
       <button type="submit" class="btn btn-success">
         <i class="fas fa-search"></i>
       </button>
-      <a href="/exportCourse" class="btn btn-success"
-        >Export file excel <i class="fas fa-file-excel"></i
-      ></a>
+      <select name="typeId" class="form-select" style="margin-left: 4px">
+        <option value="all">Tất cả</option>
+        <option value="admin">Admin</option>
+        <option value="teacher">Giảng viên</option>
+        <option value="student">Học viên</option>
+      </select>
     </div>
   </div>
 </form>
@@ -53,20 +65,22 @@
         <input class="checkboxItem" type="checkbox" value="<%= course.id %>" />
       </td>
       <td><%= index + 1 %></td>
-      <td><%= course.name %></td>
+      <td>
+        <a href="/admin/courseDetail/<%= course.id %>"><%= course.name %></a>
+      </td>
       <td><%= course.price %></td>
       <td><%= course.User.name %></td>
       <td><%= course.quantity %></td>
-      <td><%= course.tryLearn === 0 ? "7 buổi" : "Không có học thử" %></td>
+      <td><%= course.tryLearn %> buổi</td>
       <td><%= course.duration %> buổi</td>
       <td>
-        <a href="/editCourse/<%= course.id %>"
+        <a href="/admin/editCourse/<%= course.id %>"
           ><i class="far fa-edit" style="font-size: 1.2rem"></i
         ></a>
       </td>
       <td>
         <form
-          action="/deleteCourse/<%= course.id %>"
+          action="/admin/deleteCourse/<%= course.id %>"
           onsubmit="return confirm('Bạn có chắc chắn muốn xóa khóa học ?')"
           method="post"
         >
@@ -79,6 +93,7 @@
     <% }) %>
   </tbody>
 </table>
+<!--Paginate--->
 <% if(totalPage >= 2) { %>
 <nav class="d-flex justify-content-end mt-4">
   <ul class="pagination">
@@ -100,23 +115,26 @@
         ><%= +page + 1 %></a
       >
     </li>
-    <% } %> <% } %>
-
+    <% } %> <% } %> <% if(totalPage !== 2 && totalPage !== 3 && totalPage !== 4
+    && totalPage !== 5) { %> <% if(totalPage !== 5 + 1) { %>
     <!-- Hiển thị dấu ba chấm -->
     <li class="page-item">
       <span class="page-link">...</span>
     </li>
+    <% } %>
     <!-- Hiển thị trang cuối -->
     <li class="page-item">
-      <a href="/courseList?page=<%= totalPage %>" class="page-link"
+      <a href="/admin/courseList?page=<%= totalPage %>" class="page-link"
         ><%= totalPage %></a
       >
     </li>
+    <% } %>
+
     <!-- Hiển thị dấu ba chấm nếu trang hiện tại không thuộc 4 trang đầu -->
     <% } else { %>
     <!-- Hiển thị trang đầu -->
     <li class="page-item">
-      <a href="/courseList?page=1" class="page-link">1</a>
+      <a href="/admin/courseList?page=1" class="page-link">1</a>
     </li>
     <!-- Hiển thị dấu ba chấm -->
     <li class="page-item">
