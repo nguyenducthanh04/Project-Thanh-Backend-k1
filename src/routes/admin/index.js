@@ -182,6 +182,18 @@ router.post("/deleteAllClass", ClassController.deleteAllClass);
 router.get("/exportClass", AdminController.exportClasses);
 router.get("/courseDetail/:id", CourseController.courseDetails);
 router.get("/classDetail/:id", ClassController.classDetails);
+router.get("/teacherDetail/:id", UserController.teacherDetail);
+router.get("/studentDetail/:id", UserController.studentDetail);
+router.get("/createStudentClass/:id", ClassController.createStudentClass);
+router.post(
+  "/createStudentClass/:id",
+  ClassController.handleCreateStudentClass
+);
+router.get("/addDocument/:id", CourseController.addDocuments);
+router.post("/addDocument/:id", CourseController.handleAddDocuments);
+router.get("/addMoreDocument/:id", CourseController.addMoreDocument);
+router.post("/addMoreDocument/:id", CourseController.handleAddMoreDocument);
+
 router.get("/exportClass", ClassController.exportClass);
 router.get("/classes/calendar/", ClassController.calendarClass);
 module.exports = router;

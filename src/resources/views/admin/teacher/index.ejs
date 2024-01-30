@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h3>Tên giảng viên: <%= teacherLists.name %></h3>
+    <ul>
+      <li>Email: <%= teacherLists.email %></li>
+      <li>Số điện thoại: <%= teacherLists.phone %></li>
+      <li>Địa chỉ: <%= teacherLists.address %></li>
+    </ul>
+    <h4>Danh sách lớp học đang giảng dạy</h4>
+    <% classTeacherList.forEach((item) => { %>
+    <li><%= item.name %></li>
+    <% }) %>
+    <ul></ul>
+  </body>
+</html>

@@ -21,6 +21,7 @@ const userService = require("../../../http/services/userService");
 const typeService = require("../../services/typeService");
 const courseService = require("../../services/courseService");
 const classService = require("../../services/classService");
+const { Console } = require("console");
 const moduleName = "Lớp học";
 
 class ClassController {
@@ -80,9 +81,9 @@ class ClassController {
     let uniqueSchedules = [...new Set(schedules.map(JSON.stringify))].map(
       JSON.parse
     );
-    console.log("classList:", classList);
-    console.log("schedule list: ", schedules);
-    console.log("schedule list new set: ", uniqueSchedules);
+    // console.log("classList:", classList);
+    // console.log("schedule list: ", schedules);
+    // console.log("schedule list new set: ", uniqueSchedules);
     res.render("admin/manager.class/classList", {
       classList,
       req,
@@ -115,22 +116,9 @@ class ClassController {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       const { name, quantity, startDate, endDate, courseId } = req.body;
-      const { schedule, startTime, endTime, timeSelect } = req.body;
-      console.log("Test schedule: ", schedule, startTime, endTime);
-      console.log(
-        "Test create class: ",
-        name,
-        quantity,
-        startDate,
-        endDate,
-        courseId
-      );
-      console.log(
-        "length: ",
-        schedule.length,
-        startTime.length,
-        endTime.length
-      );
+      const { schedule, startTime, endTime } = req.body;
+      const course = await Courses.findByPk(courseId);
+      const teacher = await User.findByPk(course.teacherId);
       const Class = await Classes.create({
         name: name,
         quantity: quantity,
@@ -138,10 +126,15 @@ class ClassController {
         endDate: endDate,
         courseId: courseId,
       });
+      await Class.addUser(teacher);
+
+      // const a = await Class.getUser();
+      // console.log("aa", a);
+      // console.log("hu", await Class.getUser());
       // const courseUser = await courseService.getCourseById(courseId);
 
       if (schedule.length === 1) {
-        console.log("Lich hoc: ", `${startTime}-${endTime}`);
+        // console.log("Lich hoc: ", `${startTime}-${endTime}`);
         const createSchedule = await Schedule.create({
           schedule: schedule,
           timeLearn: `${startTime}-${endTime}`,
@@ -163,7 +156,7 @@ class ClassController {
     } else {
       req.flash("errors", errors.array());
       req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
-      console.log(errors.array());
+      // console.log(errors.array());
       return res.redirect("/admin/createClass");
     }
   }
@@ -343,7 +336,7 @@ class ClassController {
         classId: id,
       },
     });
-    // console.log("ok:", classList);
+    console.log("ok:", classList);
     // console.log("hihi: ", scheduleList);
     res.render("classes/index", {
       classList,
@@ -356,6 +349,16 @@ class ClassController {
   calendarClass(req, res) {
     const title = "";
     res.render("admin/calendar", { title, moduleName });
+  }
+  async createStudentClass(req, res) {
+    const title = "";
+    const studentList = await userService.getAllStudent();
+    console.log("123:", studentList);
+    res.render("classes/createStudent", { title, moduleName, studentList });
+  }
+  handleCreateStudentClass(req, res) {
+    const { id } = req.params;
+    res.send("ok");
   }
 }
 module.exports = new ClassController();

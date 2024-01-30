@@ -13,6 +13,8 @@ const User = model.User;
 const type = model.types;
 const Courses = model.courses;
 const Classes = model.classes;
+const CourseModule = model.course_modules;
+const ModuleDocument = model.module_document;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -226,9 +228,53 @@ class CourseController {
   async courseDetails(req, res) {
     const title = "";
     const { id } = req.params;
-    console.log("id:", id);
     const CourseList = await courseService.getCourseById(id);
-    res.render("courses/index", { CourseList, moduleName, title });
+    const Modules = await CourseModule.findAll({
+      where: {
+        courseId: CourseList.id,
+      },
+      include: {
+        model: ModuleDocument,
+      },
+    });
+    res.render("courses/index", { CourseList, moduleName, title, Modules });
+  }
+  async addDocuments(req, res) {
+    const title = "";
+    res.render("courses/addDocument", { title, moduleName });
+  }
+  async handleAddDocuments(req, res) {
+    const { name, pathName } = req.body;
+    const { id } = req.params;
+    const module = await CourseModule.create({
+      name: name,
+      courseId: id,
+    });
+    await ModuleDocument.create({
+      pathName: pathName,
+      moduleId: module.id,
+    });
+    res.send("/admin/addDocument");
+  }
+  async addMoreDocument(req, res) {
+    const title = "";
+    res.render("courses/addMoreDocument", { title, moduleName });
+  }
+  async handleAddMoreDocument(req, res) {
+    const { id } = req.params;
+    const { pathName } = req.body;
+    console.log("id test:", id);
+    const courseModule = await CourseModule.findOne({
+      where: {
+        id,
+      },
+    });
+    console.log("tessttt:", courseModule);
+    await ModuleDocument.create({
+      pathName: pathName,
+      moduleId: id,
+    });
+    res.send("Ok");
   }
 }
 module.exports = new CourseController();

@@ -440,5 +440,43 @@ class UserController {
     const title = "";
     return res.render("admin/importExcelUser", { moduleName, title });
   }
+  async teacherDetail(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const teacherLists = await User.findOne({
+      where: {
+        typeId: 2,
+        id: id,
+      },
+    });
+    const classTeacher = await User.findByPk(id, {
+      include: {
+        model: Classes,
+      },
+    });
+    const classTeacherList = classTeacher.classes;
+    console.log("0810:", classTeacherList);
+    const b = classTeacherList.forEach((item) => {
+      console.log("b", item);
+    });
+    // console.log("haha:", teacherLists.name);
+    res.render("admin/teacher/index", {
+      title,
+      moduleName,
+      teacherLists,
+      classTeacherList,
+    });
+  }
+  async studentDetail(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const studentLists = await User.findOne({
+      where: {
+        typeId: 3,
+        id: id,
+      },
+    });
+    res.render("admin/student/index", { studentLists, title, moduleName });
+  }
 }
 module.exports = new UserController();
