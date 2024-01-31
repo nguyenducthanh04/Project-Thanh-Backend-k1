@@ -276,7 +276,7 @@ class CourseController {
     });
     res.send("Ok");
   }
-  async editDocument(req, res) {
+  async editModuleDocument(req, res) {
     const title = "";
     const { id } = req.params;
     const Modules = await CourseModule.findByPk(id, {
@@ -285,10 +285,11 @@ class CourseController {
       },
     });
     console.log("log id:", Modules);
-    res.render("courses/editDocument", { title, moduleName, Modules });
+    res.render("courses/editModuleDocument", { title, moduleName, Modules });
   }
-  async handleEditDocument(req, res) {
+  async handleEditModuleDocument(req, res) {
     const { name, pathName } = req.body;
+    console.log("pathname:", pathName);
     const { id } = req.params;
     await CourseModule.update(
       { name: name },
@@ -298,14 +299,24 @@ class CourseController {
         },
       }
     );
-    await ModuleDocument.update(
-      { pathName: pathName },
-      {
-        where: {
-          id: id,
-        },
+    await ModuleDocument.destroy({
+      where: {
+        moduleId: id,
+      },
+    });
+    if (pathName.length === 1) {
+      await ModuleDocument.create({
+        pathName: pathName,
+        moduleId: id,
+      });
+    } else {
+      for (let i = 0; i < pathName.length; i++) {
+        await ModuleDocument.create({
+          pathName: pathName[i],
+          moduleId: id,
+        });
       }
-    );
+    }
     res.send("edit");
   }
   async deleleAllDocument(req, res) {

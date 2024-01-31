@@ -14,6 +14,7 @@ const type = model.types;
 const Courses = model.courses;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
+const StudentClass = model.students_classes;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -352,12 +353,119 @@ class ClassController {
   }
   async createStudentClass(req, res) {
     const title = "";
-    const studentList = await userService.getAllStudent();
-    console.log("123:", studentList);
-    res.render("classes/createStudent", { title, moduleName, studentList });
-  }
-  handleCreateStudentClass(req, res) {
     const { id } = req.params;
+    const user = req.user;
+    const { keyword, typeId } = req.query;
+    const classItem = await Classes.findByPk(id, {
+      include: {
+        model: StudentClass,
+      },
+    });
+    const studentIds = [];
+    // console.log("081024", classItem);
+    classItem.students_classes.forEach((studentClass) => {
+      console.log("081024", studentClass);
+      studentIds.push(studentClass.studentId);
+    });
+    console.log("studentId:", studentIds);
+    const filters = {};
+    filters.typeId = 3;
+    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
+      // filters.typeId = typeId === 'teacher' ? 2 : 3;
+      if (typeId === "admin") {
+        filters.typeId = 1;
+      } else if (typeId === "teacher") {
+        filters.typeId = 2;
+      } else {
+        filters.typeId = 3;
+      }
+    }
+    if (keyword?.length) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like]: `%${keyword}%`,
+          },
+        },
+        {
+          email: {
+            [Op.like]: `%${keyword}%`,
+          },
+        },
+      ];
+    }
+    const totalCountObj = await User.findAndCountAll({
+      where: filters,
+    }); //Lấy tổng số bản ghi
+    const totalCount = totalCountObj.count;
+    //Tính tổng số trang
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    //Lấy trang hiện tại
+    let { page } = req.query;
+    if (!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+    //Tính offset
+    const offset = (page - 1) * PER_PAGE;
+    const userList = await User.findAll({
+      where: filters,
+      limit: +PER_PAGE,
+      offset: offset,
+    });
+    res.render("classes/createStudent", {
+      userList,
+      user,
+      req,
+      totalPage,
+      getUrl,
+      page,
+      moduleName,
+      title,
+      studentIds,
+    });
+  }
+  async handleCreateStudentClass(req, res) {
+    const classId = req.params.id;
+    const { studentId } = req.body;
+    const statusId = 1;
+    await StudentClass.destroy({
+      where: {
+        id: classId,
+      },
+    });
+    console.log("studentId", studentId);
+    console.log("studentId2", studentId);
+    console.log("length", studentId.length);
+    if (studentId.length === 1) {
+      await StudentClass.create({
+        studentId: studentId,
+        classId: classId,
+        statusId: statusId,
+        completedDate: null,
+        dropDate: null,
+        recover: null,
+      });
+    } else {
+      for (let i = 0; i < studentId.length; i++) {
+        console.log("studentId3", Number(studentId[i]));
+        await StudentClass.create({
+          studentId: studentId[i],
+          classId: classId,
+          statusId: statusId,
+          completedDate: null,
+          dropDate: null,
+          recover: null,
+        });
+      }
+    }
+    await Classes.update(
+      { quantity: studentId.length },
+      {
+        where: {
+          id: classId,
+        },
+      }
+    );
     res.send("ok");
   }
 }
