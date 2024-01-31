@@ -5,6 +5,7 @@
   <li>Học thử: <%= CourseList.tryLearn %> buổi</li>
   <li>Số lượng học viên: <%= CourseList.quantity %></li>
 </ul>
+<h4>Tài liệu khóa học</h4>
 <% Modules.forEach((item) => { %>
 <div class="container">
   <div class="accordion" id="accordionExample">
@@ -35,13 +36,23 @@
           <a href=""><%= itemList.pathName %></a>
         </div>
       </div>
+      <% }) %>
+      <div style="display: flex; margin-left: 991px">
+        <a
+          href="/admin/editDocument/<%= item.id %>"
+          class="btn btn-success"
+          style="margin-right: 6px"
+          >Edit</a
+        >
+        <a href="/admin/deleteAllDocument/<%= item.id %>" class="btn btn-danger"
+          >Delete</a
+        >
+      </div>
       <a
-        href="/admin/addMoreDocument/<%= itemList.id %>"
-        class="btn btn-success"
-        style="margin-left: 991px"
+        href="/admin/addMoreDocument/<%= item.id %>"
+        style="margin-left: 991px; text-decoration: underline"
         >Thêm link tài liệu</a
       >
-      <% }) %>
     </div>
   </div>
 </div>

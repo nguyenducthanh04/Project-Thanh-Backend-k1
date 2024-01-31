@@ -254,7 +254,7 @@ class CourseController {
       pathName: pathName,
       moduleId: module.id,
     });
-    res.send("/admin/addDocument");
+    res.redirect(`/admin/addDocument/${id}`);
   }
   async addMoreDocument(req, res) {
     const title = "";
@@ -275,6 +275,47 @@ class CourseController {
       moduleId: id,
     });
     res.send("Ok");
+  }
+  async editDocument(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const Modules = await CourseModule.findByPk(id, {
+      include: {
+        model: ModuleDocument,
+      },
+    });
+    console.log("log id:", Modules);
+    res.render("courses/editDocument", { title, moduleName, Modules });
+  }
+  async handleEditDocument(req, res) {
+    const { name, pathName } = req.body;
+    const { id } = req.params;
+    await CourseModule.update(
+      { name: name },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    await ModuleDocument.update(
+      { pathName: pathName },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    res.send("edit");
+  }
+  async deleleAllDocument(req, res) {
+    const { id } = req.params;
+    const deleteCourseModule = await CourseModule.destroy({
+      where: {
+        id,
+      },
+    });
+    res.send("ok");
   }
 }
 module.exports = new CourseController();

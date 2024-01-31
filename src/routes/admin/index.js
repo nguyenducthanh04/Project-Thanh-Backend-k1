@@ -193,7 +193,9 @@ router.get("/addDocument/:id", CourseController.addDocuments);
 router.post("/addDocument/:id", CourseController.handleAddDocuments);
 router.get("/addMoreDocument/:id", CourseController.addMoreDocument);
 router.post("/addMoreDocument/:id", CourseController.handleAddMoreDocument);
-
+router.get("/editDocument/:id", CourseController.editDocument);
+router.post("/editDocument/:id", CourseController.handleEditDocument);
+router.get("/deleteAllDocument/:id", CourseController.deleleAllDocument);
 router.get("/exportClass", ClassController.exportClass);
 router.get("/classes/calendar/", ClassController.calendarClass);
 module.exports = router;
