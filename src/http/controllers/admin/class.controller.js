@@ -15,6 +15,7 @@ const Courses = model.courses;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
 const StudentClass = model.students_classes;
+const TeacherCalendar = model.teacher_calendar;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -127,15 +128,14 @@ class ClassController {
         endDate: endDate,
         courseId: courseId,
       });
+      console.log("hehehe", teacher);
       await Class.addUser(teacher);
-
-      // const a = await Class.getUser();
-      // console.log("aa", a);
-      // console.log("hu", await Class.getUser());
-      // const courseUser = await courseService.getCourseById(courseId);
-
+      const teacherCalendar = await TeacherCalendar.create({
+        teacherId: teacher.id,
+        classId: Class.id,
+        scheduleDate: null,
+      });
       if (schedule.length === 1) {
-        // console.log("Lich hoc: ", `${startTime}-${endTime}`);
         const createSchedule = await Schedule.create({
           schedule: schedule,
           timeLearn: `${startTime}-${endTime}`,
@@ -157,7 +157,6 @@ class ClassController {
     } else {
       req.flash("errors", errors.array());
       req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
-      // console.log(errors.array());
       return res.redirect("/admin/createClass");
     }
   }
@@ -347,10 +346,7 @@ class ClassController {
       courseList,
     });
   }
-  calendarClass(req, res) {
-    const title = "";
-    res.render("admin/calendar", { title, moduleName });
-  }
+
   async createStudentClass(req, res) {
     const title = "";
     const { id } = req.params;
@@ -426,7 +422,7 @@ class ClassController {
   }
   async handleCreateStudentClass(req, res) {
     const classId = req.params.id;
-    const { studentId } = req.body;
+    let { studentId } = req.body;
     const statusId = 1;
     await StudentClass.destroy({
       where: {
@@ -434,8 +430,12 @@ class ClassController {
       },
     });
     console.log("studentId", studentId);
-    console.log("studentId2", studentId);
+    console.log("studentId2", typeof studentId);
+    if (typeof studentId === "string") {
+      studentId = [studentId];
+    }
     console.log("length", studentId.length);
+
     if (studentId.length === 1) {
       await StudentClass.create({
         studentId: studentId,

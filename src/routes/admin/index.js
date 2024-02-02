@@ -200,5 +200,7 @@ router.post(
 );
 router.get("/deleteAllDocument/:id", CourseController.deleleAllDocument);
 router.get("/exportClass", ClassController.exportClass);
-router.get("/classes/calendar/", ClassController.calendarClass);
+// router.get("/teacher/calendar/:id", UserController.teacherCalendarAll);
+router.get("/teacher/calendar/:id", UserController.teacherCalendar);
+
 module.exports = router;

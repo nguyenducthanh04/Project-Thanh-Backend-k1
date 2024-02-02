@@ -61,6 +61,7 @@
       <option value="<%= id %>"><%= name %></option>
       <% }) %>
     </select>
+    <span class="text-danger"><%= getError(errors, 'typeId') %></span>
   </div>
   <div class="d-grid">
     <button class="btn btn-success">Thêm</button>

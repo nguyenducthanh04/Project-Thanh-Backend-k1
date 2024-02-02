@@ -1,6 +1,6 @@
 const model = require("../../../models/index");
 const bcrypt = require("bcrypt");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { PER_PAGE } = process.env;
 // const flash = require("connect-flash");
 const moment = require("moment");
@@ -13,6 +13,7 @@ const User = model.User;
 const type = model.types;
 const Courses = model.courses;
 const Classes = model.classes;
+const TeacherCalendar = model.teacher_calendar;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -466,6 +467,54 @@ class UserController {
       teacherLists,
       classTeacherList,
     });
+  }
+  // async teacherCalendarAll(req, res) {
+  //   const title = "";
+  //   const teacherCalendars = await TeacherCalendar.findAll({
+  //     include: [
+  //       {
+  //         model: User,
+  //       },
+  //       {
+  //         model: Classes,
+  //       },
+  //     ],
+  //   });
+  //   console.log("calendar", teacherCalendars);
+  //   const calendarArray = [];
+  //   teacherCalendars.forEach((calendar) => {
+  //     console.log("cay", calendar);
+  //     calendarArray.push({
+  //       title: `${calendar.User.name}(${calendar.class.name})`,
+  //       start: calendar.scheduleDate,
+  //     });
+  //   });
+  //   res.render("admin/calendar", { title, moduleName, calendarArray });
+  // }
+  async teacherCalendar(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const teacherCalendars = await TeacherCalendar.findAll({
+      where: {
+        teacherId: id,
+      },
+      include: {
+        model: Classes,
+      },
+    });
+    console.log("hello", teacherCalendars);
+    const calendarArray = [];
+    teacherCalendars.forEach((calendar) => {
+      console.log(calendar.class.name);
+      console.log(calendar.scheduleDate);
+      calendarArray.push({
+        title: calendar.class.name,
+        start: calendar.scheduleDate,
+      });
+    });
+    console.log(4564654);
+    console.log("calendarArray", calendarArray);
+    res.render("admin/calendar", { moduleName, title, calendarArray });
   }
   async studentDetail(req, res) {
     const title = "";
