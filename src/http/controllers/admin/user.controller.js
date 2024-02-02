@@ -13,6 +13,7 @@ const User = model.User;
 const type = model.types;
 const Courses = model.courses;
 const Classes = model.classes;
+const Schedule = model.scheduleclasses;
 const TeacherCalendar = model.teacher_calendar;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
@@ -498,14 +499,19 @@ class UserController {
       where: {
         teacherId: id,
       },
-      include: {
-        model: Classes,
-      },
+      include: [
+        {
+          model: Classes,
+          include: {
+            model: Schedule,
+          },
+        },
+      ],
     });
     console.log("hello", teacherCalendars);
     const calendarArray = [];
     teacherCalendars.forEach((calendar) => {
-      console.log(calendar.class.name);
+      console.log("hic", calendar.class.scheduleclasses);
       console.log(calendar.scheduleDate);
       calendarArray.push({
         title: calendar.class.name,

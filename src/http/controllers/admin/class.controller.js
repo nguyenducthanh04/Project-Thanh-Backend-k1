@@ -1,6 +1,6 @@
 const model = require("../../../models/index");
 const bcrypt = require("bcrypt");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { PER_PAGE } = process.env;
 // const flash = require("connect-flash");
 const moment = require("moment");
@@ -103,6 +103,8 @@ class ClassController {
     const message = req.flash("message");
     const success = req.flash("success");
     const errors = req.flash("errors");
+    const Day = new Date();
+    console.log("Day", Day);
     res.render("admin/manager.class/createClass", {
       courseList,
       user,
@@ -213,6 +215,24 @@ class ClassController {
         {
           where: {
             id: id,
+          },
+        }
+      );
+      const course = await Courses.findByPk(courseId, {
+        include: {
+          model: User,
+        },
+      });
+      console.log("hi", course.User.id);
+      await TeacherCalendar.update(
+        {
+          teacherId: course.User.id,
+          classId: id,
+          scheduleDate: null,
+        },
+        {
+          where: {
+            classId: id,
           },
         }
       );
