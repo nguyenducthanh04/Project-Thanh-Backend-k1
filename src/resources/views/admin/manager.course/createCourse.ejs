@@ -25,7 +25,11 @@
   </div>
   <div class="mb-3">
     <label for="">Giảng viên</label>
-    <select name="teacherId" class="form-select">
+    <select
+      name="teacherId"
+      class="form-select"
+      style="width: 1597px; height: 40px"
+    >
       <option value="<%= %>">Chọn giảng viên</option>
       <% teacherList.forEach(({id, name}) => { %>
       <option value="<%= id %>"><%= name %></option>

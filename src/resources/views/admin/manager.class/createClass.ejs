@@ -35,7 +35,9 @@
   </div>
   <div class="mb-3">
     <label for="">Lịch học:</label><br />
-    <button type="button" class="btn btn-primary js-btn-add-time">Thêm</button>
+    <button type="button" class="btn btn-primary js-btn-add-time">
+      Thêm lịch
+    </button>
     <!-- Start -->
     <div class="time-select" name="timeSelect">
       <label for="daySelect">Chọn ngày:</label>
@@ -44,6 +46,7 @@
         name="schedule"
         onchange="showTimeInput()"
         class="mb-2"
+        style="width: 1588px; height: 40px"
       >
         <option value="clickDay" class="opt-hidden">Chọn ngày thứ nhất</option>
         <option value="2">2</option>
@@ -56,10 +59,22 @@
       ><br />
       <div class="time-group">
         <label for="startTime"></label>
-        <input type="time" id="startTime" name="startTime" required />
+        <input
+          type="time"
+          id="startTime"
+          name="startTime"
+          required
+          style="width: 300px; height: 40px"
+        />
 
         <label for="endTime">-</label>
-        <input type="time" id="endTime" name="endTime" required />
+        <input
+          type="time"
+          id="endTime"
+          name="endTime"
+          required
+          style="width: 300px; height: 40px"
+        />
       </div>
       <br />
     </div>
@@ -92,7 +107,11 @@
   </div>
   <div class="mb-3">
     <label for="">Khóa học</label>
-    <select name="courseId" class="form-select">
+    <select
+      name="courseId"
+      class="form-select"
+      style="width: 1588px; height: 40px"
+    >
       <option value="<%= %>">Chọn khóa học</option>
       <% courseList.forEach(({id, name}) => { %>
       <option value="<%= id %>"><%= name %></option>

@@ -55,7 +55,11 @@
   </div>
   <div class="mb-3">
     <label for="">Chức vụ</label>
-    <select name="typeId" class="form-select">
+    <select
+      name="typeId"
+      class="form-select"
+      style="width: 1597px; height: 40px"
+    >
       <option value="0">Chọn chức vụ</option>
       <% typeUser.forEach(({id, name}) => { %>
       <option value="<%= id %>"><%= name %></option>
