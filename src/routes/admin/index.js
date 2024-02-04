@@ -203,4 +203,16 @@ router.get("/exportClass", ClassController.exportClass);
 // router.get("/teacher/calendar/:id", UserController.teacherCalendarAll);
 router.get("/teacher/calendar/:id", UserController.teacherCalendar);
 router.get("/student/attendance/class/:id", UserController.studentAttendance);
+router.get("/class/excersise/:id", ClassController.excersiseClass);
+router.get("/class/excersiseDetail/:id", ClassController.excersiseClassDetail);
+router.post(
+  "/class/excersiseDetail/:id",
+  ClassController.handleCommentExcersise
+);
+router.get("/class/CreateExcersise/:id", ClassController.createExcersise);
+router.post(
+  "/class/CreateExcersise/:id",
+  ClassController.handleCreateExcersise
+);
+
 module.exports = router;

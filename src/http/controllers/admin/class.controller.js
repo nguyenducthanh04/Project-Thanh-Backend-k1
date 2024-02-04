@@ -15,7 +15,9 @@ const Courses = model.courses;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
 const StudentClass = model.students_classes;
+const Excersise = model.exercises;
 const TeacherCalendar = model.teacher_calendar;
+const Comments = model.comments;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -130,24 +132,23 @@ class ClassController {
         endDate: endDate,
         courseId: courseId,
       });
-      console.log("hehehe", teacher);
       await Class.addUser(teacher);
-      const teacherCalendar = await TeacherCalendar.create({
+      await TeacherCalendar.create({
         teacherId: teacher.id,
         classId: Class.id,
         scheduleDate: null,
       });
       if (schedule.length === 1) {
-        const createSchedule = await Schedule.create({
+        await Schedule.create({
           schedule: schedule,
           timeLearn: `${startTime}-${endTime}`,
           classId: Class.id,
         });
         req.flash("success", "Thêm lớp học thành công!");
-        return res.redirect("/admin/classList");
+        return res.redirect("/admin/createClass");
       } else {
         for (let i = 0; i < schedule.length; i++) {
-          const createSchedule = await Schedule.create({
+          await Schedule.create({
             schedule: schedule[i],
             timeLearn: `${startTime[i]}-${endTime[i]}`,
             classId: Class.id,
@@ -364,6 +365,7 @@ class ClassController {
       moduleName,
       title,
       courseList,
+      moment,
     });
   }
 
@@ -487,6 +489,49 @@ class ClassController {
       }
     );
     res.send("ok");
+  }
+  async excersiseClass(req, res) {
+    const title = "";
+    const { id } = req.params;
+    let excersiseList = await Excersise.findAll({
+      where: {
+        classId: id,
+      },
+    });
+    console.log("excersise: ", excersiseList);
+    res.render("classes/excersise", { title, moduleName, excersiseList, id });
+  }
+  async excersiseClassDetail(req, res) {
+    const title = "";
+    const { id } = req.params;
+    let excersiseList = await Excersise.findAll({
+      where: {
+        id: id,
+      },
+    });
+    console.log("excersise: ", excersiseList);
+    res.render("classes/excersiseDetail", { title, moduleName, excersiseList });
+  }
+  async handleCommentExcersise(req, res) {
+    const { id } = req.params;
+    const classExcersise = await Excersise.findByPk(id);
+    console.log("ok", classExcersise.classId);
+    res.send("Ok");
+  }
+  async createExcersise(req, res) {
+    const title = "";
+    res.render("classes/createExcersise", { title, moduleName });
+  }
+  async handleCreateExcersise(req, res) {
+    const classId = req.params.id;
+    const { title, content, attachment } = req.body;
+    await Excersise.create({
+      classId: classId,
+      title: title,
+      content: content,
+      attachment: attachment,
+    });
+    res.redirect(`/admin/class/CreateExcersise/${classId}`);
   }
 }
 module.exports = new ClassController();

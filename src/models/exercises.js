@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      exercises.belongsTo(models.classes, {
-        foreignKey: "studentId",
-      });
+      // exercises.belongsTo(models.classes, {
+      //   foreignKey: "studentId",
+      // });
       exercises.hasMany(models.exercises_submit);
     }
   }

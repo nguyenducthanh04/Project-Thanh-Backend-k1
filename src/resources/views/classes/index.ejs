@@ -9,8 +9,12 @@
     <h3>Tên lớp học: <%= classList.name %></h3>
     <ul>
       <li>Sĩ số: <%= classList.quantity %></li>
-      <li>Ngày khai giảng: <%= classList.startDate %></li>
-      <li>Ngày bế giảng: <%= classList.endDate %></li>
+      <li>
+        Ngày khai giảng: <%= moment(classList.startDate).format('MM/DD/YYYY') %>
+      </li>
+      <li>
+        Ngày bế giảng: <%= moment(classList.startDate).format('MM/DD/YYYY') %>
+      </li>
       <li>Khóa học: <%= classList.course.name %></li>
       <li>Giảng viên: <%= courseList.User.name %></li>
       <% scheduleList.forEach((scheduleItem) => { %>
@@ -20,5 +24,6 @@
       </ul>
       <% }) %>
     </ul>
+    <a href="/admin/class/excersise/<%= classList.id %>">Câu hỏi và bài tập</a>
   </body>
 </html>
