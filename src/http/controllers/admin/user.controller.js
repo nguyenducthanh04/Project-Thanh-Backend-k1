@@ -14,7 +14,9 @@ const type = model.types;
 const Courses = model.courses;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
+const { differenceInWeeks, parseISO } = require("date-fns");
 const TeacherCalendar = model.teacher_calendar;
+const StudentClass = model.students_classes;
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -531,7 +533,48 @@ class UserController {
         id: id,
       },
     });
-    res.render("admin/student/index", { studentLists, title, moduleName });
+    let studentId = id;
+    const studentClass = await StudentClass.findAll({
+      where: {
+        studentId: id,
+      },
+      include: [
+        {
+          model: Classes,
+          include: [
+            {
+              model: Courses,
+            },
+          ],
+        },
+      ],
+    });
+    console.log("studentClass:", studentClass);
+    // let studentClassList = studentClass.class;
+    // if (typeof studentClassList === "object") {
+    //   studentClassList = [studentClassList];
+    // }
+    // console.log("haha", studentClassList);
+    res.render("admin/student/index", {
+      studentLists,
+      title,
+      moduleName,
+      studentClass,
+    });
+  }
+  async studentAttendance(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const classDate = await Classes.findByPk(id);
+
+    const startDate = classDate.startDate;
+    const endDate = classDate.endDate;
+
+    const numberOfWeeks = differenceInWeeks(endDate, startDate);
+
+    console.log("Số tuần trong khoảng thời gian là:", numberOfWeeks);
+
+    res.render("admin/student/attendance", { title, moduleName });
   }
 }
 module.exports = new UserController();
