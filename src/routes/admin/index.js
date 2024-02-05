@@ -204,11 +204,16 @@ router.get("/exportClass", ClassController.exportClass);
 router.get("/teacher/calendar/:id", UserController.teacherCalendar);
 router.get("/student/attendance/class/:id", UserController.studentAttendance);
 router.get("/class/excersise/:id", ClassController.excersiseClass);
-router.get("/class/excersiseDetail/:id", ClassController.excersiseClassDetail);
+router.get(
+  "/class/excersiseDetail/:id",
+  AuthMiddleware,
+  ClassController.excersiseClassDetail
+);
 router.post(
   "/class/excersiseDetail/:id",
   ClassController.handleCommentExcersise
 );
+router.post("/class/destroy/comment/:id", ClassController.deleteComment);
 router.get("/class/CreateExcersise/:id", ClassController.createExcersise);
 router.post(
   "/class/CreateExcersise/:id",

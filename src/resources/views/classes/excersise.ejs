@@ -4,13 +4,19 @@
   }
   .excersise {
     font-size: 1.5rem;
-    color: blue;
+    color: #fff;
+  }
+  .link-excersise {
+    color: #5ebbff;
+    text-decoration: underline;
   }
 </style>
 <% excersiseList.forEach((item) => { %>
 <div>
   <h1 class="excersise">Bài tập về nhà</h1>
-  <a href="/admin/class/excersiseDetail/<%= item.id %>"><%= item.title %></a>
+  <a class="link-excersise" href="/admin/class/excersiseDetail/<%= item.id %>"
+    ><%= item.title %></a
+  >
 </div>
 <!-- <form action="" method="post">
     <textarea

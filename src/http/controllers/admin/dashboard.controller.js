@@ -34,6 +34,7 @@ class DashboardController {
   async index(req, res) {
     const title = "Tổng quan";
     const user = req.user;
+    console.log("userDash", user);
     const studentQuantity = await User.count({
       where: {
         typeId: 3,

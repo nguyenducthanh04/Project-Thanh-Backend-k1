@@ -503,20 +503,48 @@ class ClassController {
   }
   async excersiseClassDetail(req, res) {
     const title = "";
+    const user = req.user;
+    console.log("user", user);
     const { id } = req.params;
     let excersiseList = await Excersise.findAll({
       where: {
         id: id,
       },
     });
-    console.log("excersise: ", excersiseList);
-    res.render("classes/excersiseDetail", { title, moduleName, excersiseList });
+    const commentAll = await Comments.findAll({
+      where: {
+        parentId: id,
+      },
+      include: {
+        model: User,
+      },
+    });
+    console.log("Tet", commentAll);
+    // console.log("excersise: ", excersiseList);
+
+    res.render("classes/excersiseDetail", {
+      title,
+      moduleName,
+      excersiseList,
+      commentAll,
+      user,
+    });
   }
   async handleCommentExcersise(req, res) {
+    const user = req.user;
     const { id } = req.params;
     const classExcersise = await Excersise.findByPk(id);
     console.log("ok", classExcersise.classId);
-    res.send("Ok");
+    console.log("oki", id);
+    console.log("userId", user);
+    const { content } = req.body;
+    await Comments.create({
+      classId: classExcersise.classId,
+      content: content,
+      parentId: id,
+      studentId: user.id,
+    });
+    res.redirect(`/admin/class/excersiseDetail/${id}`);
   }
   async createExcersise(req, res) {
     const title = "";
@@ -532,6 +560,19 @@ class ClassController {
       attachment: attachment,
     });
     res.redirect(`/admin/class/CreateExcersise/${classId}`);
+  }
+  async deleteComment(req, res) {
+    const { id } = req.params;
+    console.log("id,", id);
+    await Comments.destroy({
+      where: {
+        id: id,
+      },
+    });
+    res.send(`/admin/class/excersiseDetail`);
+  }
+  async editComment(req, res) {
+    res.render("");
   }
 }
 module.exports = new ClassController();
