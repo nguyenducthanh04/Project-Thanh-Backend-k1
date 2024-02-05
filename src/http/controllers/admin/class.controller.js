@@ -506,6 +506,7 @@ class ClassController {
     const user = req.user;
     console.log("user", user);
     const { id } = req.params;
+    console.log("id", typeof id);
     let excersiseList = await Excersise.findAll({
       where: {
         id: id,
@@ -513,7 +514,21 @@ class ClassController {
     });
     const commentAll = await Comments.findAll({
       where: {
-        parentId: id,
+        title: id,
+        parentId: {
+          [Op.is]: null,
+        },
+      },
+      include: {
+        model: User,
+      },
+    });
+    const commentChild = await Comments.findAll({
+      where: {
+        title: id,
+        parentId: {
+          [Op.not]: null,
+        },
       },
       include: {
         model: User,
@@ -527,12 +542,14 @@ class ClassController {
       moduleName,
       excersiseList,
       commentAll,
+      commentChild,
       user,
     });
   }
   async handleCommentExcersise(req, res) {
     const user = req.user;
     const { id } = req.params;
+    const { parentId } = req.body;
     const classExcersise = await Excersise.findByPk(id);
     console.log("ok", classExcersise.classId);
     console.log("oki", id);
@@ -540,8 +557,9 @@ class ClassController {
     const { content } = req.body;
     await Comments.create({
       classId: classExcersise.classId,
+      title: id,
       content: content,
-      parentId: id,
+      parentId: parentId,
       studentId: user.id,
     });
     res.redirect(`/admin/class/excersiseDetail/${id}`);
