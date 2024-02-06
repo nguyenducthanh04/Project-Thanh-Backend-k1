@@ -6,67 +6,82 @@
   <li>Số lượng học viên: <%= CourseList.quantity %></li>
 </ul>
 <h4>Tài liệu khóa học</h4>
-<% Modules.forEach((item) => { %>
-<div class="container">
-  <div class="accordion" id="accordionExample">
-    <div class="item">
-      <div class="item-header" id="headingOne">
-        <h2 class="mb-0">
-          <button
-            class="btn btn-link"
-            type="button"
-            data-toggle="collapse"
-            data-target="#collapseOne"
-            aria-expanded="true"
-            aria-controls="collapseOne"
-          >
-            <%= item.name %>
-            <i class="fa fa-angle-down"></i>
-          </button>
-        </h2>
-      </div>
-      <% item.module_documents.forEach((itemList) => { %>
+<div class="container" style="margin-right: 500px">
+  <div class="row">
+    <div class="col-md-6">
       <div
-        id="collapseOne"
-        class="collapse show"
-        aria-labelledby="headingOne"
-        data-parent="#accordionExample"
+        class="panel-group"
+        id="accordion"
+        role="tablist"
+        aria-multiselectable="true"
       >
-        <div class="t-p">
-          <a href=""><%= itemList.pathName %></a>
+        <% Modules.forEach((item) => { %>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+              <a
+                role="button"
+                data-toggle="collapse"
+                data-parent="#accordion"
+                href="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                <%= item.name %>
+              </a>
+            </h4>
+          </div>
+          <div
+            id="collapseOne"
+            class="panel-collapse collapse in"
+            role="tabpanel"
+            aria-labelledby="headingOne"
+          >
+            <% item.module_documents.forEach((itemList) => { %>
+            <div class="panel-body">
+              <a href="<%= itemList.pathName %>"><%= itemList.pathName %></a>
+              <a
+                href="/admin/deleteDocument/<%= itemList.id %>"
+                class="btn btn-danger"
+                >Delete</a
+              >
+            </div>
+            <% }) %>
+          </div>
         </div>
-      </div>
-      <% }) %>
-      <div style="display: flex; margin-left: 991px; margin-top: 30px">
         <a
-          href="/admin/editModuleDocument/<%= item.id %>"
-          class="btn btn-success"
-          style="margin-right: 6px"
-          >Edit</a
+          href="/admin/addMoreDocument/<%= item.id %>"
+          style="margin-left: 430px; text-decoration: underline"
+          >Thêm link tài liệu</a
         >
-        <a href="/admin/deleteAllDocument/<%= item.id %>" class="btn btn-danger"
-          >Delete</a
-        >
+        <div style="display: flex; margin-bottom: 6px">
+          <a
+            href="/admin/deleteALlDocument/<%= item.id %>"
+            class="btn btn-danger"
+            >Delete</a
+          >
+          <a
+            href="/admin/editModuleDocument/<%= item.id %>"
+            class="btn btn-warning"
+            style="margin-left: 8px"
+            >Edit</a
+          >
+        </div>
+
+        <% }) %>
       </div>
-      <a
-        href="/admin/addMoreDocument/<%= item.id %>"
-        style="margin-left: 991px; text-decoration: underline"
-        >Thêm link tài liệu</a
-      >
     </div>
   </div>
 </div>
 
-<% }) %>
-
-<div class="mt-3">
+<div class="mt-3" style="margin-left: 7px">
   <a href="/admin/addDocument/<%= CourseList.id %>" class="btn btn-success"
     >Thêm tài liệu</a
   >
 </div>
 
 <style>
-  body {
+  /* body {
     background: #ccc;
   }
   .container {
@@ -131,5 +146,77 @@
   button.btn.btn-link i {
     transform: rotate(180deg);
     transition: 0.5s;
+  } */
+
+  a:hover,
+  a:focus {
+    text-decoration: none;
+    outline: none;
+  }
+  #accordion .panel {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: -5px;
+  }
+  #accordion .panel-heading {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+  #accordion .panel-title a {
+    display: block;
+    padding: 15px 70px 15px 20px;
+    background: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #e6720d;
+    border-bottom: 1px solid #1d2e3b;
+    position: relative;
+  }
+  #accordion .panel-title a.collapsed {
+    color: #1d2e3b;
+  }
+  #accordion .panel-title a.collapsed:hover {
+    color: #e6720d;
+  }
+  #accordion .panel-title a:before,
+  #accordion .panel-title a:after {
+    content: "";
+    width: 3px;
+    height: 10px;
+    background: #e6720d;
+    font-size: 15px;
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    transform: rotate(-45deg);
+    transition: all 0.3s ease-in-out 0s;
+  }
+  #accordion .panel-title a:after {
+    right: 29px;
+    transform: rotate(45deg);
+  }
+  #accordion .panel-title a.collapsed:before {
+    transform: rotate(45deg);
+    background: #1d2e3b;
+  }
+  #accordion .panel-title a.collapsed:after {
+    transform: rotate(-45deg);
+    background: #1d2e3b;
+  }
+  #accordion .panel-title a.collapsed:hover:before,
+  #accordion .panel-title a.collapsed:hover:after {
+    background: #e6720d;
+  }
+  #accordion .panel-body {
+    padding: 10px 20px;
+    background: #1d2e3b;
+    border-top: none;
+    font-size: 15px;
+    color: #fff;
+    line-height: 25px;
   }
 </style>
+<!--ok-->

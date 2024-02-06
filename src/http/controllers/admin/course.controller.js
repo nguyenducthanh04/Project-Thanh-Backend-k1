@@ -321,7 +321,16 @@ class CourseController {
   }
   async deleleAllDocument(req, res) {
     const { id } = req.params;
-    const deleteCourseModule = await CourseModule.destroy({
+    await CourseModule.destroy({
+      where: {
+        id,
+      },
+    });
+    res.send("ok");
+  }
+  async deleleDocument(req, res) {
+    const { id } = req.params;
+    await ModuleDocument.destroy({
       where: {
         id,
       },

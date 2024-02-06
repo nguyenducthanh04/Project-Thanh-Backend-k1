@@ -94,6 +94,9 @@ class ClassController {
       moment,
       schedules,
       moduleName,
+      totalPage,
+      getUrl,
+      page,
       title,
     });
   }

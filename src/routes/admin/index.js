@@ -199,6 +199,7 @@ router.post(
   CourseController.handleEditModuleDocument
 );
 router.get("/deleteAllDocument/:id", CourseController.deleleAllDocument);
+router.get("/deleteDocument/:id", CourseController.deleleDocument);
 router.get("/exportClass", ClassController.exportClass);
 // router.get("/teacher/calendar/:id", UserController.teacherCalendarAll);
 router.get("/teacher/calendar/:id", UserController.teacherCalendar);
