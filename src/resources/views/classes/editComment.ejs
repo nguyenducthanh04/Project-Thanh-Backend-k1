@@ -1,0 +1,75 @@
+<h2>Edit Comment</h2>
+<form action="" method="post" class="mt-4" style="display: flex; gap: 6px">
+  <textarea
+    name="content"
+    placeholder="Comment"
+    style="
+      width: 500px;
+      height: 40px;
+      border-radius: 10px;
+      outline: none;
+      padding: 6px;
+    "
+  >
+<%= comments.content %></textarea
+  ><br />
+  <button>
+    <span>Update</span>
+  </button>
+</form>
+<style>
+  h2 {
+    font-size: 1.4rem;
+  }
+  /* From uiverse.io by @Ali-Tahmazi99 */
+  button {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #03045e;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease-in;
+    z-index: 1;
+  }
+
+  button::before,
+  button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 100%;
+    transform: skew(15deg);
+    transition: all 0.5s;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  button::before {
+    left: -10px;
+    background: #240046;
+  }
+
+  button::after {
+    right: -10px;
+    background: #5a189a;
+  }
+
+  button:hover::before,
+  button:hover::after {
+    width: 60%;
+  }
+
+  button:hover span {
+    color: #e0aaff;
+    transition: 0.3s;
+  }
+
+  button span {
+    color: #03045e;
+    font-size: 18px;
+    transition: all 0.3s ease-in;
+  }
+</style>

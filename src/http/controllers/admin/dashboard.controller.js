@@ -198,39 +198,39 @@ class DashboardController {
     return res.redirect("/admin/settings");
   }
 
-  async exportClasses(req, res) {
-    const classList = await classService.getAllClass();
+  // async exportClasses(req, res) {
+  //   const classList = await classService.getAllClass();
 
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Users");
-    worksheet.columns = [
-      { header: "id", key: "id", width: 10 },
-      { header: "Tên", key: "name", width: 30 },
-      { header: "Số lượng", key: "quantity", width: 40 },
-      { header: "Ngày khai giảng", key: "startDate", width: 30 },
-      { header: "Ngày bế giảng", key: "endDate", width: 30 },
-      { header: "Lịch học", key: "schedule", width: 30 },
-      { header: "Khóa học", key: "courseId", width: 30 },
-      { header: "Thời gian học", key: "timeLearn", width: 30 },
-    ];
-    classList.forEach((user) => {
-      worksheet.addRow(user);
-    });
-    workbook.xlsx
-      .writeBuffer()
-      .then((data) => {
-        // Gửi file Excel cho người dùng để tải xuống
-        res.setHeader(
-          "Content-Type",
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
-        res.send(Buffer.from(data, "binary"));
-      })
-      .catch((err) => {
-        console.error("Lỗi khi tạo file Excel: ", err);
-        res.status(500).send("Đã xảy ra lỗi khi tạo file Excel");
-      });
-  }
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet("Users");
+  //   worksheet.columns = [
+  //     { header: "id", key: "id", width: 10 },
+  //     { header: "Tên", key: "name", width: 30 },
+  //     { header: "Số lượng", key: "quantity", width: 40 },
+  //     { header: "Ngày khai giảng", key: "startDate", width: 30 },
+  //     { header: "Ngày bế giảng", key: "endDate", width: 30 },
+  //     { header: "Lịch học", key: "schedule", width: 30 },
+  //     { header: "Khóa học", key: "courseId", width: 30 },
+  //     { header: "Thời gian học", key: "timeLearn", width: 30 },
+  //   ];
+  //   classList.forEach((user) => {
+  //     worksheet.addRow(user);
+  //   });
+  //   workbook.xlsx
+  //     .writeBuffer()
+  //     .then((data) => {
+  //       // Gửi file Excel cho người dùng để tải xuống
+  //       res.setHeader(
+  //         "Content-Type",
+  //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  //       );
+  //       res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+  //       res.send(Buffer.from(data, "binary"));
+  //     })
+  //     .catch((err) => {
+  //       console.error("Lỗi khi tạo file Excel: ", err);
+  //       res.status(500).send("Đã xảy ra lỗi khi tạo file Excel");
+  //     });
+  // }
 }
 module.exports = new DashboardController();

@@ -1,0 +1,24 @@
+<h2>Quản lý Role</h2>
+<a href="/admin/roles/add" class="btn btn-info">Thêm role</a>
+<table class="table table-bordered mt-4">
+  <thead>
+    <tr>
+      <th width="">Tên</th>
+      <th width="5%">Sửa</th>
+      <th width="5%">Xóa</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% roleList.forEach((item) => { %>
+    <tr>
+      <td><%= item.name %></td>
+      <td>
+        <a href="" class="btn btn-warning">Sửa</a>
+      </td>
+      <td>
+        <a href="" class="btn btn-danger">Xóa</a>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>

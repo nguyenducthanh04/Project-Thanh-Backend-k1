@@ -14,6 +14,7 @@ const type = model.types;
 const Courses = model.courses;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
+const Roles = model.roles;
 const { differenceInWeeks, parseISO } = require("date-fns");
 const TeacherCalendar = model.teacher_calendar;
 const StudentClass = model.students_classes;
@@ -575,6 +576,44 @@ class UserController {
     console.log("Số tuần trong khoảng thời gian là:", numberOfWeeks);
 
     res.render("admin/student/attendance", { title, moduleName });
+  }
+  async permission(req, res) {
+    const title = "";
+    res.render("admin/permissions/index", { title, moduleName });
+  }
+  async handlePermission(req, res) {
+    const { permission } = req.body;
+    console.log("permission: ", permission);
+    res.send("ok");
+  }
+  async roles(req, res) {
+    const title = "";
+    const roleList = await Roles.findAll();
+    res.render("admin/permissions/roles", { title, moduleName, roleList });
+  }
+  async addRole(req, res) {
+    const title = "";
+    res.render("admin/permissions/addRole", { title, moduleName });
+  }
+  async handleAddRole(req, res) {
+    const { name, permission } = req.body;
+    const role = await Roles.create({
+      name: name,
+    });
+    if (permission) {
+      let dataPermission = [];
+      if (typeof permission === "string") {
+        dataPermission.push({
+          value: permission,
+        });
+      } else {
+        dataPermission = permission.map((item) => ({ value: item }));
+      }
+      dataPermission.forEach(async (item) => {
+        await role.createPermission(item);
+      });
+    }
+    res.send("ok");
   }
 }
 module.exports = new UserController();

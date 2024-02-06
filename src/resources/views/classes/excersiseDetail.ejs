@@ -101,7 +101,6 @@
     <button>
       <span>Comment</span>
     </button>
-    <!-- <button class="btn btn-primary" style="margin-left: 210px">Comment</button> -->
   </form>
   <hr style="border-bottom: 1px solid #fff" />
   <% }) %>
@@ -158,9 +157,11 @@
                   Trả lời
                 </span>
                 <div style="display: flex; margin-top: 8px">
-                  <button class="btn btn-success" style="margin-right: 5px">
-                    Sửa
-                  </button>
+                  <a href="/admin/class/editComment/<%= item.id %>">
+                    <button class="btn btn-success" style="margin-right: 5px">
+                      Sửa
+                    </button>
+                  </a>
                   <form
                     action="/admin/class/destroy/comment/<%= item.id %>"
                     onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận ?')"
@@ -218,11 +219,13 @@
                     Trả lời
                   </span>
                   <div style="display: flex; margin-top: 8px">
-                    <button class="btn btn-success" style="margin-right: 5px">
-                      Sửa
-                    </button>
+                    <a href="/admin/class/editComment/<%= itemChild.id %>">
+                      <button class="btn btn-success" style="margin-right: 5px">
+                        Sửa
+                      </button>
+                    </a>
                     <form
-                      action="/admin/class/destroy/comment/<%= item.id %>"
+                      action="/admin/class/destroy/comment/<%= itemChild.id %>"
                       onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận ?')"
                       method="post"
                     >

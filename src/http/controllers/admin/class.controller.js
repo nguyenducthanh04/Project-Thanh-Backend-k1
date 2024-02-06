@@ -324,8 +324,8 @@ class ClassController {
         quantity: classItem.quantity,
         startDate: classItem.startDate,
         endDate: classItem.endDate,
-        "Schedule.schedule": classItem.Schedule.schedule,
-        "Schedule.timeLearn": classItem.Schedule.timeLearn,
+        // "Schedule.schedule": classItem.Schedule.schedule,
+        // "Schedule.timeLearn": classItem.Schedule.timeLearn,
       });
     });
     workbook.xlsx
@@ -594,6 +594,27 @@ class ClassController {
   }
   async editComment(req, res) {
     res.render("");
+  }
+  async editComment(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const comments = await Comments.findByPk(id);
+    res.render("classes/editComment", { title, moduleName, comments });
+  }
+  async handleEditComment(req, res) {
+    const { id } = req.params;
+    const { content } = req.body;
+    await Comments.update(
+      {
+        content: content,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    res.redirect(`/admin/class/editComment/${id}`);
   }
 }
 module.exports = new ClassController();

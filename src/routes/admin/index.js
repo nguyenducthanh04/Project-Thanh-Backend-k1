@@ -179,7 +179,7 @@ router.post(
 );
 router.post("/deleteClass/:id", ClassController.deleteClass);
 router.post("/deleteAllClass", ClassController.deleteAllClass);
-router.get("/exportClass", AdminController.exportClasses);
+router.get("/exportClass", ClassController.exportClass);
 router.get("/courseDetail/:id", CourseController.courseDetails);
 router.get("/classDetail/:id", ClassController.classDetails);
 router.get("/teacherDetail/:id", UserController.teacherDetail);
@@ -220,5 +220,12 @@ router.post(
   "/class/CreateExcersise/:id",
   ClassController.handleCreateExcersise
 );
+router.get("/class/editComment/:id", ClassController.editComment);
+router.post("/class/editComment/:id", ClassController.handleEditComment);
+router.get("/users/permission/:id", UserController.permission);
+router.post("/users/permission/:id", UserController.handlePermission);
+router.get("/users/roles", UserController.roles);
+router.get("/roles/add", UserController.addRole);
+router.post("/roles/add", UserController.handleAddRole);
 
 module.exports = router;
