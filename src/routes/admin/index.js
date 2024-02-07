@@ -227,5 +227,7 @@ router.post("/users/permission/:id", UserController.handlePermission);
 router.get("/users/roles", UserController.roles);
 router.get("/roles/add", UserController.addRole);
 router.post("/roles/add", UserController.handleAddRole);
-
+router.get("/roles/edit/:id", UserController.editRole);
+router.post("/roles/edit/:id", UserController.handleEditRole);
+router.post("/roles/delete/:id", UserController.deleteRole);
 module.exports = router;

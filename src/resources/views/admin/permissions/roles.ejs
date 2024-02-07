@@ -13,10 +13,18 @@
     <tr>
       <td><%= item.name %></td>
       <td>
-        <a href="" class="btn btn-warning">Sửa</a>
+        <a href="/admin/roles/edit/<%= item.id %>" class="btn btn-warning"
+          >Sửa</a
+        >
       </td>
       <td>
-        <a href="" class="btn btn-danger">Xóa</a>
+        <form
+          action="/admin/roles/delete/<%= item.id %>"
+          onsubmit="return confirm('Bạn có chắc chắn muốn xóa role ?')"
+          method="post"
+        >
+          <button class="btn btn-danger">Xóa</button>
+        </form>
       </td>
     </tr>
     <% }) %>

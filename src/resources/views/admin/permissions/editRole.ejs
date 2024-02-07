@@ -1,0 +1,63 @@
+<h2>Edit Role</h2>
+<form action="" method="post" class="mt-4">
+  <div class="mb-3">
+    <select name="" class="form-select" onchange="window.location.href='/admin/roles/edit/'+this.value">
+      <% roles.forEach((item) => { %>
+      <option value="<%= item.id %>" <%= +item.id === +role.id ? "select" : ""%>><%= item.name %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="">Tên</label>
+    <input
+      type="text"
+      name="name"
+      placeholder="Tên Role..."
+      class="form-control"
+      value="<%= role.name %>"
+      required
+    />
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th width="20%">Module</th>
+        <th>Quyền</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Quản lý Users</td>
+        <td>
+          <div class="row">
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="users.read" <%= permissionUtil.get(permissions, "users.read") ? "checked" : ""%>/>
+                Xem
+              </label>
+            </div>
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="users.add" <%= permissionUtil.get(permissions, "users.add") ? "checked" : ""%>/>
+                Thêm
+              </label>
+            </div>
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="users.update" <%= permissionUtil.get(permissions, "users.update") ? "checked" : ""%>/>
+                Sửa
+              </label>
+            </div>
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="users.delete" <%= permissionUtil.get(permissions, "users.delete") ? "checked" : ""%>/>
+                Xóa
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-success">Lưu</button>
+</form>

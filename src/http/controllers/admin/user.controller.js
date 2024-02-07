@@ -5,6 +5,7 @@ const { PER_PAGE } = process.env;
 // const flash = require("connect-flash");
 const moment = require("moment");
 const { getUrl } = require("../../../utils/getUrl");
+const permissionUtil = require("../../../utils/permission");
 const { validationResult } = require("express-validator");
 const multer = require("multer");
 const path = require("path");
@@ -15,6 +16,7 @@ const Courses = model.courses;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
 const Roles = model.roles;
+const Permission = model.permissions;
 const { differenceInWeeks, parseISO } = require("date-fns");
 const TeacherCalendar = model.teacher_calendar;
 const StudentClass = model.students_classes;
@@ -579,7 +581,18 @@ class UserController {
   }
   async permission(req, res) {
     const title = "";
-    res.render("admin/permissions/index", { title, moduleName });
+    const { id } = req.params;
+    const roles = await Roles.findAll();
+    const user = await User.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: Roles,
+      },
+    });
+
+    res.render("admin/permissions/index", { title, moduleName, roles, user });
   }
   async handlePermission(req, res) {
     const { permission } = req.body;
@@ -610,10 +623,97 @@ class UserController {
         dataPermission = permission.map((item) => ({ value: item }));
       }
       dataPermission.forEach(async (item) => {
-        await role.createPermission(item);
+        const permissionIntance = await Permission.findOne({
+          where: item,
+        });
+        if (!permissionIntance) {
+          await role.createPermission(item);
+        } else {
+          await role.addPermission(permissionIntance);
+        }
       });
     }
-    res.send("ok");
+    res.redirect("/admin/users/roles");
+  }
+  async editRole(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const role = await Roles.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: Permission,
+      },
+    });
+    const roles = await Roles.findAll();
+    const { permissions } = role;
+    res.render("admin/permissions/editRole", {
+      title,
+      moduleName,
+      role,
+      roles,
+      permissions,
+      permissionUtil,
+    });
+  }
+  async handleEditRole(req, res) {
+    const { id } = req.params;
+    const { name, permission } = req.body;
+    await Roles.update(
+      {
+        name,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+    const role = await Roles.findOne({
+      where: {
+        id,
+      },
+    });
+    if (permission) {
+      let dataPermission = [];
+      if (typeof permission === "string") {
+        dataPermission.push({
+          value: permission,
+        });
+      } else {
+        dataPermission = permission.map((item) => ({ value: item }));
+      }
+      dataPermission.forEach(async (item) => {
+        const permissionIntance = await Permission.findOne({
+          where: item,
+        });
+        if (!permissionIntance) {
+          await role.createPermission(item);
+        }
+      });
+      const permissonsUpdate = await Promise.all(
+        dataPermission.map((item) => Permission.findOne({ where: item }))
+      );
+
+      role.setPermissions(permissonsUpdate);
+    }
+    res.redirect(`/admin/roles/edit/${id}`);
+  }
+  async deleteRole(req, res) {
+    const { id } = req.params;
+    //Lấy instance của role cần xóa
+    const role = await Roles.findOne({ where: { id } });
+
+    //Xóa tất cả Permission liên quan đến Role cần xóa
+    await role.removePermissions(await Permission.findAll());
+
+    //Xóa Role
+    await Roles.destroy({
+      where: { id },
+    });
+
+    res.redirect("/admin/users/roles");
   }
 }
 module.exports = new UserController();
