@@ -5,7 +5,9 @@ const { PER_PAGE } = process.env;
 // const flash = require("connect-flash");
 const moment = require("moment");
 const { getUrl } = require("../../../utils/getUrl");
+const { isPermission } = require("../../../utils/permission");
 const permissionUtil = require("../../../utils/permission");
+const permissionUser = require("../../../utils/permissionUser");
 const { validationResult } = require("express-validator");
 const multer = require("multer");
 const path = require("path");
@@ -21,6 +23,7 @@ const { differenceInWeeks, parseISO } = require("date-fns");
 const TeacherCalendar = model.teacher_calendar;
 const StudentClass = model.students_classes;
 const { getError } = require("../../../utils/validate");
+const { isRole } = require("../../../utils/permission");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
 const userService = require("../../../http/services/userService");
@@ -241,6 +244,7 @@ class UserController {
       limit: +PER_PAGE,
       offset: offset,
     });
+    const permissions = await permissionUser(req);
     console.log("userlist", userList);
     console.log(await User.count()); //lay tong so ban ghi
     console.log(`Tổng số trang: ${totalPage}`);
@@ -253,6 +257,8 @@ class UserController {
       page,
       moduleName,
       title,
+      isPermission,
+      permissions,
     });
   }
   //Create User
@@ -582,7 +588,7 @@ class UserController {
   async permission(req, res) {
     const title = "";
     const { id } = req.params;
-    const roles = await Roles.findAll();
+    const roleList = await Roles.findAll();
     const user = await User.findOne({
       where: {
         id,
@@ -591,13 +597,41 @@ class UserController {
         model: Roles,
       },
     });
-
-    res.render("admin/permissions/index", { title, moduleName, roles, user });
+    console.log("haha", user);
+    res.render("admin/permissions/index", {
+      title,
+      moduleName,
+      roleList,
+      user,
+      isRole,
+    });
   }
   async handlePermission(req, res) {
     const { permission } = req.body;
-    console.log("permission: ", permission);
-    res.send("ok");
+    let { roles } = req.body;
+    const { id } = req.params;
+    const user = await User.findOne({ where: { id } });
+    if (!user) {
+      res.redirect("/users");
+      return;
+    }
+
+    if (roles) {
+      roles = typeof roles === "string" ? [roles] : roles;
+
+      const roleUpdate = await Promise.all(
+        roles.map((roleId) =>
+          Roles.findOne({
+            where: {
+              id: roleId,
+            },
+          })
+        )
+      );
+
+      await user.setRoles(roleUpdate);
+    }
+    res.redirect(`/admin/users/permission/${id}`);
   }
   async roles(req, res) {
     const title = "";

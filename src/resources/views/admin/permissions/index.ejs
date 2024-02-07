@@ -1,21 +1,26 @@
-<h2>Permission</h2>
+<h2>Phân quyền</h2>
 <a href="/admin/users/roles" class="btn btn-warning">Quản lý Roles</a>
 <form action="" method="post" class="mt-4">
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th width="10%">Role</th>
-        <th>Chọn</th>
+        <th width="10%">
+          <input type="checkbox" />
+        </th>
+        <th>Role</th>
       </tr>
     </thead>
     <tbody>
+      <% roleList.forEach(({id, name}) => { %>
       <tr>
         <td>
-          <input type="checkbox" value="" />
+          <input type="checkbox" name="roles" value="<%= id %>" <%=
+          isRole(user.roles, id) ? 'checked': '' %> />
         </td>
-        <td>Admin</td>
+        <td><%= name %></td>
       </tr>
+      <% }) %>
     </tbody>
   </table>
-  <button type="submit" class="btn btn-success">Lưu</button>
+  <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
 </form>

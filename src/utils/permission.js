@@ -11,4 +11,10 @@ module.exports = {
       return +role.id === +roleId;
     });
   },
+  isPermission: (permissions, permission) => {
+    if (permissions.includes(permission)) {
+      return true;
+    }
+    return false;
+  },
 };
