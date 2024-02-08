@@ -749,5 +749,30 @@ class UserController {
 
     res.redirect("/admin/users/roles");
   }
+  async classesTeacherDetail(req, res) {
+    const title = "Danh sách lớp học phụ trách";
+    const { id } = req.params;
+    const user = req.user;
+    const userId = user.id;
+    // const teacherLists = await User.findOne({
+    //   where: {
+    //     typeId: 2,
+    //     id: id,
+    //   },
+    // });
+    const classTeacher = await User.findByPk(userId, {
+      include: {
+        model: Classes,
+      },
+    });
+    console.log("okTeacher:", classTeacher);
+    // const classTeacherList = classTeacher.classes;
+    // console.log("0810:", classTeacherList);
+    // console.log("haha:", teacherLists.name);
+    res.render("admin/teacher/index", {
+      title,
+      moduleName,
+    });
+  }
 }
 module.exports = new UserController();

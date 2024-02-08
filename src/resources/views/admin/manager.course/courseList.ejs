@@ -55,7 +55,9 @@
       <th width="10%">Học thử</th>
       <th>Thời gian</th>
       <th>Sửa</th>
+      <% if(isPermission(permissions, "courses.delete")) { %>
       <th>Xóa</th>
+      <% } %>
     </tr>
   </thead>
   <tbody>
@@ -78,6 +80,7 @@
           ><i class="far fa-edit" style="font-size: 1.2rem"></i
         ></a>
       </td>
+      <% if(isPermission(permissions, "courses.delete")) { %>
       <td>
         <form
           action="/admin/deleteCourse/<%= course.id %>"
@@ -92,6 +95,7 @@
           </button>
         </form>
       </td>
+      <% } %>
     </tr>
     <% }) %>
   </tbody>

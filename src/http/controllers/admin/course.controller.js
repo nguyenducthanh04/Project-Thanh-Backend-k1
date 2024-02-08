@@ -6,6 +6,9 @@ const { PER_PAGE } = process.env;
 const moment = require("moment");
 const { getUrl } = require("../../../utils/getUrl");
 const { validationResult } = require("express-validator");
+const { isPermission } = require("../../../utils/permission");
+const permissionUtil = require("../../../utils/permission");
+const permissionUser = require("../../../utils/permissionUser");
 const multer = require("multer");
 const path = require("path");
 const user_socials = model.user_socials;
@@ -79,7 +82,7 @@ class CourseController {
       offset: offset,
     });
     console.log("1111111:", courseList);
-
+    const permissions = await permissionUser(req);
     res.render("admin/manager.course/courseList", {
       courseList,
       user,
@@ -92,6 +95,8 @@ class CourseController {
       success,
       moduleName,
       title,
+      isPermission,
+      permissions,
     });
   }
   //Create Course
