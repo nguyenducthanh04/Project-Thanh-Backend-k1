@@ -6,6 +6,8 @@ const { PER_PAGE } = process.env;
 const moment = require("moment");
 const { getUrl } = require("../../../utils/getUrl");
 const { validationResult } = require("express-validator");
+const permissionUser = require("../../../utils/permissionUser");
+const { isPermission } = require("../../../utils/permission");
 const multer = require("multer");
 const path = require("path");
 const user_socials = model.user_socials;
@@ -85,6 +87,8 @@ class ClassController {
     let uniqueSchedules = [...new Set(schedules.map(JSON.stringify))].map(
       JSON.parse
     );
+    const permissions = await permissionUser(req);
+
     // console.log("classList:", classList);
     // console.log("schedule list: ", schedules);
     // console.log("schedule list new set: ", uniqueSchedules);
@@ -98,6 +102,8 @@ class ClassController {
       getUrl,
       page,
       title,
+      permissions,
+      isPermission,
     });
   }
   //Create Class
@@ -110,6 +116,7 @@ class ClassController {
     const errors = req.flash("errors");
     const Day = new Date();
     console.log("Day", Day);
+    const permissions = await permissionUser(req);
     res.render("admin/manager.class/createClass", {
       courseList,
       user,
@@ -119,6 +126,8 @@ class ClassController {
       success,
       title,
       moduleName,
+      permissions,
+      isPermission,
     });
   }
   async handleCreateClass(req, res) {
@@ -184,7 +193,7 @@ class ClassController {
     const scheduleInfo = await Schedule.findAll({
       where: { classId: id },
     });
-
+    const permissions = await permissionUser(req);
     res.render("admin/manager.class/editClass", {
       classDetail,
       courseList,
@@ -199,6 +208,8 @@ class ClassController {
       getError,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   async handleEditClass(req, res) {
@@ -344,9 +355,15 @@ class ClassController {
         res.status(500).send("Đã xảy ra lỗi khi tạo file Excel");
       });
   }
-  importExcelClass(req, res) {
+  async importExcelClass(req, res) {
     const title = "";
-    return res.render("admin/importExcelClass", { moduleName, title });
+    const permissions = await permissionUser(req);
+    return res.render("admin/importExcelClass", {
+      moduleName,
+      title,
+      permissions,
+      isPermission,
+    });
   }
   async classDetails(req, res) {
     const title = "";
@@ -361,6 +378,7 @@ class ClassController {
       },
     });
     console.log("ok:", classList);
+    const permissions = await permissionUser(req);
     // console.log("hihi: ", scheduleList);
     res.render("classes/index", {
       classList,
@@ -369,6 +387,8 @@ class ClassController {
       title,
       courseList,
       moment,
+      permissions,
+      isPermission,
     });
   }
 
@@ -433,6 +453,7 @@ class ClassController {
       limit: +PER_PAGE,
       offset: offset,
     });
+    const permissions = await permissionUser(req);
     res.render("classes/createStudent", {
       userList,
       user,
@@ -443,6 +464,8 @@ class ClassController {
       moduleName,
       title,
       studentIds,
+      permissions,
+      isPermission,
     });
   }
   async handleCreateStudentClass(req, res) {
@@ -502,7 +525,15 @@ class ClassController {
       },
     });
     console.log("excersise: ", excersiseList);
-    res.render("classes/excersise", { title, moduleName, excersiseList, id });
+    const permissions = await permissionUser(req);
+    res.render("classes/excersise", {
+      title,
+      moduleName,
+      excersiseList,
+      id,
+      permissions,
+      isPermission,
+    });
   }
   async excersiseClassDetail(req, res) {
     const title = "";
@@ -539,7 +570,7 @@ class ClassController {
     });
     console.log("Tet", commentAll);
     // console.log("excersise: ", excersiseList);
-
+    const permissions = await permissionUser(req);
     res.render("classes/excersiseDetail", {
       title,
       moduleName,
@@ -547,6 +578,8 @@ class ClassController {
       commentAll,
       commentChild,
       user,
+      permissions,
+      isPermission,
     });
   }
   async handleCommentExcersise(req, res) {
@@ -569,7 +602,13 @@ class ClassController {
   }
   async createExcersise(req, res) {
     const title = "";
-    res.render("classes/createExcersise", { title, moduleName });
+    const permissions = await permissionUser(req);
+    res.render("classes/createExcersise", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+    });
   }
   async handleCreateExcersise(req, res) {
     const classId = req.params.id;
@@ -593,13 +632,17 @@ class ClassController {
     res.send(`/admin/class/excersiseDetail`);
   }
   async editComment(req, res) {
-    res.render("");
-  }
-  async editComment(req, res) {
     const title = "";
     const { id } = req.params;
     const comments = await Comments.findByPk(id);
-    res.render("classes/editComment", { title, moduleName, comments });
+    const permissions = await permissionUser(req);
+    res.render("classes/editComment", {
+      title,
+      moduleName,
+      comments,
+      permissions,
+      isPermission,
+    });
   }
   async handleEditComment(req, res) {
     const { id } = req.params;

@@ -6,6 +6,8 @@ const { PER_PAGE } = process.env;
 const moment = require("moment");
 const { getUrl } = require("../../../utils/getUrl");
 const { validationResult } = require("express-validator");
+const { isPermission } = require("../../../utils/permission");
+const permissionUser = require("../../../utils/permissionUser");
 const multer = require("multer");
 const path = require("path");
 const user_socials = model.user_socials;
@@ -34,7 +36,6 @@ class DashboardController {
   async index(req, res) {
     const title = "Tổng quan";
     const user = req.user;
-    console.log("userDash", user);
     const studentQuantity = await User.count({
       where: {
         typeId: 3,
@@ -47,6 +48,7 @@ class DashboardController {
     });
     const courseQuantity = await Courses.count();
     const classQuantity = await Classes.count();
+    const permissions = await permissionUser(req);
     res.render("admin/dashboard/index", {
       user,
       req,
@@ -56,6 +58,8 @@ class DashboardController {
       classQuantity,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   //Change Profile
@@ -65,6 +69,7 @@ class DashboardController {
     const msg = req.flash("error");
     const msgType = msg ? "danger" : "success";
     const success = req.flash("success");
+    const permissions = await permissionUser(req);
     res.render("admin/settings/changeProfile", {
       user,
       req,
@@ -73,6 +78,8 @@ class DashboardController {
       success,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   async handleChangeProfile(req, res) {
@@ -107,6 +114,7 @@ class DashboardController {
     const msg = req.flash("error");
     const msgType = msg ? "danger" : "success";
     const success = req.flash("success");
+    const permissions = await permissionUser(req);
     res.render("admin/settings/changePass", {
       user,
       req,
@@ -115,6 +123,8 @@ class DashboardController {
       success,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   async handleChangePass(req, res) {
@@ -167,6 +177,7 @@ class DashboardController {
     console.log(userSocials);
     const socials = userSocials.map((social) => social.dataValues.provider);
     console.log(socials);
+    const permissions = await permissionUser(req);
     res.render("admin/settings/index", {
       socials,
       user,
@@ -176,6 +187,8 @@ class DashboardController {
       success,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   //Delete Social

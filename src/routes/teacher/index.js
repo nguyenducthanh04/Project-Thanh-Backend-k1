@@ -5,5 +5,6 @@ const LoginMiddleware = require("../../http/middlewares/login/loginLocalMiddlewa
 const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 /* GET home page. */
 router.get("/", AuthMiddleware, TeacherController.index);
+router.get("/class", AuthMiddleware, TeacherController.ClassTeacher);
 
 module.exports = router;

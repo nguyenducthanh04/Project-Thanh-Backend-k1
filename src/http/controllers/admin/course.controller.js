@@ -109,6 +109,7 @@ class CourseController {
     const errors = req.flash("errors");
     console.log(req.flash("message"));
     console.log(getError(errors, "name"));
+    const permissions = await permissionUser(req);
     res.render("admin/manager.course/createCourse", {
       teacherList,
       message,
@@ -118,6 +119,8 @@ class CourseController {
       user,
       title,
       moduleName,
+      permissions,
+      isPermission,
     });
   }
   async handleCreateCourse(req, res) {
@@ -144,6 +147,7 @@ class CourseController {
     console.log("Ten giao vien", teacher);
     const teacherList = await userService.getAllTeacher();
     console.log(`Danh sách teacher: ${teacherList}`);
+    const permissions = await permissionUser(req);
     res.render("admin/manager.course/editCourse", {
       courseDetail,
       teacher,
@@ -153,6 +157,8 @@ class CourseController {
       success,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   async handleEditCourse(req, res) {
@@ -226,9 +232,15 @@ class CourseController {
       });
   }
   //Import Course
-  importExcelCourse(req, res) {
+  async importExcelCourse(req, res) {
     const title = "";
-    return res.render("admin/importExcelCourse", { moduleName, title });
+    const permissions = await permissionUser(req);
+    return res.render("admin/importExcelCourse", {
+      moduleName,
+      title,
+      permissions,
+      isPermission,
+    });
   }
   async courseDetails(req, res) {
     const title = "";
@@ -242,11 +254,25 @@ class CourseController {
         model: ModuleDocument,
       },
     });
-    res.render("courses/index", { CourseList, moduleName, title, Modules });
+    const permissions = await permissionUser(req);
+    res.render("courses/index", {
+      CourseList,
+      moduleName,
+      title,
+      Modules,
+      isPermission,
+      permissions,
+    });
   }
   async addDocuments(req, res) {
     const title = "";
-    res.render("courses/addDocument", { title, moduleName });
+    const permissions = await permissionUser(req);
+    res.render("courses/addDocument", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+    });
   }
   async handleAddDocuments(req, res) {
     const { name, pathName } = req.body;
@@ -263,7 +289,13 @@ class CourseController {
   }
   async addMoreDocument(req, res) {
     const title = "";
-    res.render("courses/addMoreDocument", { title, moduleName });
+    const permissions = await permissionUser(req);
+    res.render("courses/addMoreDocument", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+    });
   }
   async handleAddMoreDocument(req, res) {
     const { id } = req.params;
@@ -290,7 +322,14 @@ class CourseController {
       },
     });
     console.log("log id:", Modules);
-    res.render("courses/editModuleDocument", { title, moduleName, Modules });
+    const permissions = await permissionUser(req);
+    res.render("courses/editModuleDocument", {
+      title,
+      moduleName,
+      Modules,
+      permissions,
+      isPermission,
+    });
   }
   async handleEditModuleDocument(req, res) {
     const { name, pathName } = req.body;

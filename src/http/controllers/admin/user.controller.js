@@ -99,6 +99,7 @@ class UserController {
       limit: +PER_PAGE,
       offset: offset,
     });
+    const permissions = await permissionUser(req);
     console.log(await User.count()); //lay tong so ban ghi
     res.render("admin/manager.user/userList", {
       userList,
@@ -112,6 +113,8 @@ class UserController {
       success,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   //Quản lý học viên
@@ -172,6 +175,7 @@ class UserController {
       limit: +PER_PAGE,
       offset: offset,
     });
+    const permissions = await permissionUser(req);
     console.log("userlist", userList);
     console.log(await User.count()); //lay tong so ban ghi
     res.render("students/home/studentList", {
@@ -183,6 +187,8 @@ class UserController {
       page,
       moduleName,
       title,
+      permissions,
+      isPermission,
     });
   }
   //Quản lý giáo viên
@@ -270,6 +276,7 @@ class UserController {
     const message = req.flash("message");
     const success = req.flash("success");
     const errors = req.flash("errors");
+    const permissions = await permissionUser(req);
     res.render("admin/manager.user/createUser", {
       typeUser,
       user,
@@ -279,6 +286,8 @@ class UserController {
       success,
       title,
       moduleName,
+      permissions,
+      isPermission,
     });
   }
   async handleCreateUser(req, res) {
@@ -305,6 +314,7 @@ class UserController {
     const { id } = req.params;
     const userDetail = await userService.getUserByPk(id);
     const typeList = await typeService.getAllType();
+    const permissions = await permissionUser(req);
     res.render("admin/manager.user/editUser", {
       userDetail,
       typeList,
@@ -314,6 +324,8 @@ class UserController {
       success,
       title,
       moduleName,
+      permissions,
+      isPermission,
     });
   }
   async handleEditUser(req, res) {
@@ -449,9 +461,15 @@ class UserController {
         res.status(500).send("Đã xảy ra lỗi khi tạo file Excel");
       });
   }
-  importExcelUser(req, res) {
+  async importExcelUser(req, res) {
     const title = "";
-    return res.render("admin/importExcelUser", { moduleName, title });
+    const permissions = await permissionUser(req);
+    return res.render("admin/importExcelUser", {
+      moduleName,
+      title,
+      permissions,
+      isPermission,
+    });
   }
   async teacherDetail(req, res) {
     const title = "";
@@ -472,12 +490,15 @@ class UserController {
     const b = classTeacherList.forEach((item) => {
       console.log("b", item);
     });
+    const permissions = await permissionUser(req);
     // console.log("haha:", teacherLists.name);
     res.render("admin/teacher/index", {
       title,
       moduleName,
       teacherLists,
       classTeacherList,
+      permissions,
+      isPermission,
     });
   }
   // async teacherCalendarAll(req, res) {
@@ -531,7 +552,14 @@ class UserController {
     });
     console.log(4564654);
     console.log("calendarArray", calendarArray);
-    res.render("admin/calendar", { moduleName, title, calendarArray });
+    const permissions = await permissionUser(req);
+    res.render("admin/calendar", {
+      moduleName,
+      title,
+      calendarArray,
+      permissions,
+      isPermission,
+    });
   }
   async studentDetail(req, res) {
     const title = "";
@@ -559,6 +587,7 @@ class UserController {
       ],
     });
     console.log("studentClass:", studentClass);
+    const permissions = await permissionUser(req);
     // let studentClassList = studentClass.class;
     // if (typeof studentClassList === "object") {
     //   studentClassList = [studentClassList];
@@ -569,6 +598,8 @@ class UserController {
       title,
       moduleName,
       studentClass,
+      permissions,
+      isPermission,
     });
   }
   async studentAttendance(req, res) {
@@ -582,8 +613,13 @@ class UserController {
     const numberOfWeeks = differenceInWeeks(endDate, startDate);
 
     console.log("Số tuần trong khoảng thời gian là:", numberOfWeeks);
-
-    res.render("admin/student/attendance", { title, moduleName });
+    const permissions = await permissionUser(req);
+    res.render("admin/student/attendance", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+    });
   }
   async permission(req, res) {
     const title = "";
@@ -598,12 +634,15 @@ class UserController {
       },
     });
     console.log("haha", user);
+    const permissions = await permissionUser(req);
     res.render("admin/permissions/index", {
       title,
       moduleName,
       roleList,
       user,
       isRole,
+      isPermission,
+      permissions,
     });
   }
   async handlePermission(req, res) {
@@ -636,11 +675,24 @@ class UserController {
   async roles(req, res) {
     const title = "";
     const roleList = await Roles.findAll();
-    res.render("admin/permissions/roles", { title, moduleName, roleList });
+    const permissions = await permissionUser(req);
+    res.render("admin/permissions/roles", {
+      title,
+      moduleName,
+      roleList,
+      permissions,
+      isPermission,
+    });
   }
   async addRole(req, res) {
     const title = "";
-    res.render("admin/permissions/addRole", { title, moduleName });
+    const permissions = await permissionUser(req);
+    res.render("admin/permissions/addRole", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+    });
   }
   async handleAddRole(req, res) {
     const { name, permission } = req.body;
@@ -681,14 +733,17 @@ class UserController {
       },
     });
     const roles = await Roles.findAll();
-    const { permissions } = role;
+    const { permissions: permissionList } = role;
+    const permissions = await permissionUser(req);
     res.render("admin/permissions/editRole", {
       title,
       moduleName,
       role,
       roles,
-      permissions,
+      permissionList,
       permissionUtil,
+      permissions,
+      isPermission,
     });
   }
   async handleEditRole(req, res) {
@@ -748,31 +803,6 @@ class UserController {
     });
 
     res.redirect("/admin/users/roles");
-  }
-  async classesTeacherDetail(req, res) {
-    const title = "Danh sách lớp học phụ trách";
-    const { id } = req.params;
-    const user = req.user;
-    const userId = user.id;
-    // const teacherLists = await User.findOne({
-    //   where: {
-    //     typeId: 2,
-    //     id: id,
-    //   },
-    // });
-    const classTeacher = await User.findByPk(userId, {
-      include: {
-        model: Classes,
-      },
-    });
-    console.log("okTeacher:", classTeacher);
-    // const classTeacherList = classTeacher.classes;
-    // console.log("0810:", classTeacherList);
-    // console.log("haha:", teacherLists.name);
-    res.render("admin/teacher/index", {
-      title,
-      moduleName,
-    });
   }
 }
 module.exports = new UserController();

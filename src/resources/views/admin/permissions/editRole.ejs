@@ -32,25 +32,25 @@
           <div class="row">
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="users.read" <%= permissionUtil.get(permissions, "users.read") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="users.read" <%= permissionUtil.get(permissionList, "users.read") ? "checked" : ""%>/>
                 Xem
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="users.add" <%= permissionUtil.get(permissions, "users.add") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="users.add" <%= permissionUtil.get(permissionList, "users.add") ? "checked" : ""%>/>
                 Thêm
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="users.update" <%= permissionUtil.get(permissions, "users.update") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="users.update" <%= permissionUtil.get(permissionList, "users.update") ? "checked" : ""%>/>
                 Sửa
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="users.delete" <%= permissionUtil.get(permissions, "users.delete") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="users.delete" <%= permissionUtil.get(permissionList, "users.delete") ? "checked" : ""%>/>
                 Xóa
               </label>
             </div>
@@ -63,25 +63,25 @@
           <div class="row">
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="courses.read" <%= permissionUtil.get(permissions, "courses.read") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="courses.read" <%= permissionUtil.get(permissionList, "courses.read") ? "checked" : ""%>/>
                 Xem
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="courses.add" <%= permissionUtil.get(permissions, "courses.add") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="courses.add" <%= permissionUtil.get(permissionList, "courses.add") ? "checked" : ""%>/>
                 Thêm
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="courses.update" <%= permissionUtil.get(permissions, "courses.update") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="courses.update" <%= permissionUtil.get(permissionList, "courses.update") ? "checked" : ""%>/>
                 Sửa
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="courses.delete" <%= permissionUtil.get(permissions, "courses.delete") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="courses.delete" <%= permissionUtil.get(permissionList, "courses.delete") ? "checked" : ""%>/>
                 Xóa
               </label>
             </div>
@@ -94,25 +94,25 @@
           <div class="row">
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classes.read" <%= permissionUtil.get(permissions, "classes.read") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classes.read" <%= permissionUtil.get(permissionList, "classes.read") ? "checked" : ""%>/>
                 Xem
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classes.add" <%= permissionUtil.get(permissions, "classes.add") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classes.add" <%= permissionUtil.get(permissionList, "classes.add") ? "checked" : ""%>/>
                 Thêm
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classes.update" <%= permissionUtil.get(permissions, "classes.update") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classes.update" <%= permissionUtil.get(permissionList, "classes.update") ? "checked" : ""%>/>
                 Sửa
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classes.delete" <%= permissionUtil.get(permissions, "classes.delete") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classes.delete" <%= permissionUtil.get(permissionList, "classes.delete") ? "checked" : ""%>/>
                 Xóa
               </label>
             </div>
@@ -125,26 +125,39 @@
           <div class="row">
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.read" <%= permissionUtil.get(permissions, "classesTeacher.read") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classesTeacher.read" <%= permissionUtil.get(permissionList, "classesTeacher.read") ? "checked" : ""%>/>
                 Xem
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.add" <%= permissionUtil.get(permissions, "classesTeacher.add") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classesTeacher.add" <%= permissionUtil.get(permissionList, "classesTeacher.add") ? "checked" : ""%>/>
                 Thêm
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.update" <%= permissionUtil.get(permissions, "classesTeacher.update") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classesTeacher.update" <%= permissionUtil.get(permissionList, "classesTeacher.update") ? "checked" : ""%>/>
                 Sửa
               </label>
             </div>
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.delete" <%= permissionUtil.get(permissions, "classesTeacher.delete") ? "checked" : ""%>/>
+                <input type="checkbox" name="permission" value="classesTeacher.delete" <%= permissionUtil.get(permissionList, "classesTeacher.delete") ? "checked" : ""%>/>
                 Xóa
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Admin</td>
+        <td>
+          <div class="row">
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="admin.read" <%= permissionUtil.get(permissionList, "admin.read") ? "checked" : ""%>/>
+                Admin
               </label>
             </div>
           </div>
