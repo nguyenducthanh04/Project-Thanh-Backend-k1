@@ -368,10 +368,8 @@ class ClassController {
   async classDetails(req, res) {
     const title = "";
     const { id } = req.params;
-    console.log("id:", id);
     const classList = await classService.getClassByPk(id);
     const courseList = await courseService.getCourseById(classList.course.id);
-    console.log("ten gv: ", courseList.User.name);
     const scheduleList = await Schedule.findAll({
       where: {
         classId: id,

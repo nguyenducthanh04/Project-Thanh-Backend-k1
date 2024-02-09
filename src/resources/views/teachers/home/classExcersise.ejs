@@ -1,0 +1,33 @@
+<style>
+  h2 {
+    font-size: 1.4rem;
+  }
+  .excersise {
+    font-size: 1.5rem;
+    color: #fff;
+  }
+  .link-excersise {
+    color: #5ebbff;
+    text-decoration: underline;
+  }
+</style>
+<% excersiseList.forEach((item) => { %>
+<div>
+  <h1 class="excersise">Bài tập về nhà</h1>
+  <a class="link-excersise" href="/teacher/class/excersiseDetail/<%= item.id %>"
+    ><%= item.title %></a
+  >
+</div>
+<!-- <form action="" method="post">
+      <textarea
+        name="comments"
+        placeholder="Comment"
+        style="width: 300px; height: 40px"
+      ></textarea>
+      <button class="btn btn-primary">Comment</button>
+    </form> -->
+<hr />
+<% }) %>
+<a href="/teacher/class/CreateExcersise/<%= id %>" class="btn btn-success"
+  >Thêm bài tập về nhà</a
+>
