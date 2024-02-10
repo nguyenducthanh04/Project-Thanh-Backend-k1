@@ -31,5 +31,5 @@ router.get("/addDocument/:id", TeacherController.addDocuments);
 router.post("/addDocument/:id", TeacherController.handleAddDocuments);
 router.get("/addMoreDocument/:id", TeacherController.addMoreDocument);
 router.post("/addMoreDocument/:id", TeacherController.handleAddMoreDocument);
-
+router.get("/listStudentClass/:id", TeacherController.listStudentClass);
 module.exports = router;

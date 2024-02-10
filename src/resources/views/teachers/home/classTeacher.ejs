@@ -7,6 +7,7 @@
       <th>Sĩ số</th>
       <th>Ngày khai giảng</th>
       <th>Ngày kết thúc</th>
+      <th>Danh sách học viên</th>
     </tr>
   </thead>
   <tbody>
@@ -19,6 +20,13 @@
       <td><%= item.quantity %></td>
       <td><%= moment(item.startDate).format('MM/DD/YYYY') %></td>
       <td><%= moment(item.endDate).format('MM/DD/YYYY') %></td>
+      <td>
+        <a
+          href="/teacher/listStudentClass/<%= item.id %>"
+          class="btn btn-success"
+          >Danh sách học viên</a
+        >
+      </td>
     </tr>
     <% }) %>
   </tbody>

@@ -5,6 +5,7 @@ const Courses = model.courses;
 const CourseModule = model.course_modules;
 const ModuleDocument = model.module_document;
 const { Op, where } = require("sequelize");
+const StudentClass = model.students_classes;
 const Schedule = model.scheduleclasses;
 const Excersise = model.exercises;
 const moment = require("moment");
@@ -286,6 +287,27 @@ class TeacherController {
       moduleId: id,
     });
     res.redirect(`/teacher/addMoreDocument/${id}`);
+  }
+  async listStudentClass(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const listStudent = await StudentClass.findAll({
+      where: {
+        classId: id,
+      },
+      include: {
+        model: User,
+      },
+    });
+    console.log("2024:", listStudent);
+    const permissions = await permissionUser(req);
+    res.render("teachers/home/listStudentClass", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+      listStudent,
+    });
   }
 }
 module.exports = new TeacherController();

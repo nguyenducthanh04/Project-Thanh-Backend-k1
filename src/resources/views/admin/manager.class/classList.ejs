@@ -50,6 +50,7 @@
       <th>Thời gian học</th>
       <th>Khóa học</th>
       <th>Thêm học viên</th>
+      <th>Danh sách học viên</th>
       <th>Sửa</th>
       <th>Xóa</th>
     </tr>
@@ -100,6 +101,13 @@
           href="/admin/createStudentClass/<%= classItem.id %>"
           class="btn btn-success"
           >Thêm học viên</a
+        >
+      </td>
+      <td>
+        <a
+          href="/admin/class/listStudent/<%= classItem.id %>"
+          class="btn btn-success"
+          >Danh sách học viên</a
         >
       </td>
       <td>

@@ -230,4 +230,6 @@ router.post("/roles/add", UserController.handleAddRole);
 router.get("/roles/edit/:id", UserController.editRole);
 router.post("/roles/edit/:id", UserController.handleEditRole);
 router.post("/roles/delete/:id", UserController.deleteRole);
+router.get("/class/listStudent/:id", ClassController.listStudentClass);
+router.post("/class/deleteStudent/:id", ClassController.deleteStudentClass);
 module.exports = router;

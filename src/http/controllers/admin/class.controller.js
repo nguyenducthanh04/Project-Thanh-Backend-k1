@@ -470,49 +470,57 @@ class ClassController {
     const classId = req.params.id;
     let { studentId } = req.body;
     const statusId = 1;
-    await StudentClass.destroy({
-      where: {
-        id: classId,
-      },
-    });
-    console.log("studentId", studentId);
-    console.log("studentId2", typeof studentId);
-    if (typeof studentId === "string") {
-      studentId = [studentId];
-    }
-    console.log("length", studentId.length);
-
-    if (studentId.length === 1) {
-      await StudentClass.create({
-        studentId: studentId,
-        classId: classId,
-        statusId: statusId,
-        completedDate: null,
-        dropDate: null,
-        recover: null,
+    try {
+      await StudentClass.destroy({
+        where: {
+          id: classId,
+        },
       });
-    } else {
-      for (let i = 0; i < studentId.length; i++) {
-        console.log("studentId3", Number(studentId[i]));
+      if (studentId.length === 0) {
+        res.redirect("/admin/classList");
+      }
+      if (typeof studentId === "string") {
+        studentId = [studentId];
+      }
+      if (studentId.length === 1) {
         await StudentClass.create({
-          studentId: studentId[i],
+          studentId: studentId,
           classId: classId,
           statusId: statusId,
           completedDate: null,
           dropDate: null,
           recover: null,
         });
+      } else {
+        for (let i = 0; i < studentId.length; i++) {
+          await StudentClass.create({
+            studentId: studentId[i],
+            classId: classId,
+            statusId: statusId,
+            completedDate: null,
+            dropDate: null,
+            recover: null,
+          });
+        }
       }
+      await Classes.update(
+        { quantity: studentId.length },
+        {
+          where: {
+            id: classId,
+          },
+        }
+      );
+      res.redirect(`/admin/createStudentClass/${classId}`);
+    } catch (err) {
+      console.log("Có lỗi xảy ra !");
+      // throw err;
+      res.redirect(
+        `/admin/createStudentClass/${classId}?error=${encodeURIComponent(
+          "Có lỗi xảy ra!"
+        )}`
+      ); // Truyền thông báo lỗi qua query parameter
     }
-    await Classes.update(
-      { quantity: studentId.length },
-      {
-        where: {
-          id: classId,
-        },
-      }
-    );
-    res.send("ok");
   }
   async excersiseClass(req, res) {
     const title = "";
@@ -656,6 +664,44 @@ class ClassController {
       }
     );
     res.redirect(`/admin/class/editComment/${id}`);
+  }
+  async listStudentClass(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const listStudent = await StudentClass.findAll({
+      where: {
+        classId: id,
+      },
+      include: {
+        model: User,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("classes/listStudent", {
+      title,
+      moduleName,
+      isPermission,
+      permissions,
+      listStudent,
+    });
+  }
+  async deleteStudentClass(req, res) {
+    const { id } = req.params;
+    const studentClassId = await StudentClass.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: Classes,
+      },
+    });
+    await StudentClass.destroy({
+      where: {
+        id: id,
+        classId: studentClassId.class.id,
+      },
+    });
+    res.redirect(`/admin/classList`);
   }
 }
 module.exports = new ClassController();
