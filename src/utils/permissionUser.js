@@ -37,7 +37,9 @@ module.exports = async (req, res) => {
     permissions = [...new Set(permissions.flat(Infinity))];
     return permissions;
   } catch (error) {
-    console.log("Có lỗi xảy ra:");
-    // res.redirect(`/admin`);
+    // console.log("Có lỗi xảy ra:");
+    // return res.send("error", { message: "Internal Server Error" });
+    console.log("Có lỗi xảy ra !");
+    // throw err;
   }
 };

@@ -12,7 +12,6 @@ const login_tokens = model.login_tokens;
 const user_socials = model.user_socials;
 module.exports = {
   login: async (req, res) => {
-    // const user = req.user;
     const msg = req.flash("error");
     const msgType = msg ? "danger" : "success";
     const success = req.flash("success");
@@ -26,12 +25,9 @@ module.exports = {
   },
   handleLogin: async (req, res) => {
     const { email } = req.body;
-    console.log(req.user);
     if (req.user.firstLogin === 1) {
       return res.redirect("/auth/changePassFirtLogin");
     }
-    // const otpIn = req.body.otp;
-    // console.log("OTP khi ma login", otpIn);
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -101,8 +97,6 @@ module.exports = {
         [Op.and]: [{ userId: req.user.id }, { otp: otp }],
       },
     });
-    console.log(check);
-    console.log(otp);
 
     if (check) {
       const loginToken = await login_tokens.findOne({
@@ -110,9 +104,7 @@ module.exports = {
           userId: req.user.id,
         },
       });
-      // console.log(req.user.id);
       const cookie = md5(Math.random());
-      // console.log(cookie);
       if (!loginToken) {
         await login_tokens.create({
           userId: req.user.id,
@@ -132,14 +124,12 @@ module.exports = {
         res.cookie("loginToken", cookie, { httpOnly: true });
       }
       if (req.user.typeId === 1) {
-        console.log("Login");
         return res.redirect("/admin");
       } else if (req.user.typeId === 2) {
         return res.redirect("/teacher");
       }
       return res.redirect("/student");
     } else {
-      console.log("Verify Otp");
       res.redirect("/auth/verifyTwoFa");
       return;
     }
@@ -192,7 +182,6 @@ module.exports = {
     const salt = 10;
     const user = req.flash("user");
     const { password, resetpassword } = req.body;
-    console.log(password);
     if (password !== resetpassword) {
       req.flash("error", "Mật khẩu không khớp");
       res.redirect(`/auth/resetPass/${token}`);
@@ -216,14 +205,11 @@ module.exports = {
     return;
   },
   googleLogin: async (req, res) => {
-    console.log("Gooogle login");
     const loginToken = await login_tokens.findOne({
       where: {
         userId: req.user.id,
       },
     });
-    console.log(4545454);
-    console.log(req.cookies.loginToken);
     if (loginToken.token !== req.cookies.loginToken) {
       const token = await createTokenUtil(req.user.id);
       res.cookie("loginToken", token, { httpOnly: true });
@@ -235,49 +221,20 @@ module.exports = {
         return res.redirect("/student");
       }
     }
-    // console.log(req.user.id);
-    // const cookie = md5(Math.random());
-    // if (!loginToken) {
-    //   await login_tokens.create({
-    //     userId: req.user.id,
-    //     token: cookie,
-    //   });
-    //   res.cookie("loginToken", cookie, { httpOnly: true });
-    // } else {
-    //   login_tokens.destroy({
-    //     where: {
-    //       userId: req.user.id,
-    //     },
-    //   });
-    //   await login_tokens.create({
-    //     userId: req.user.id,
-    //     token: cookie,
-    //   });
-    //   res.cookie("loginToken", cookie, { httpOnly: true });
-    // }
 
     if (req.user.typeId === 1) {
-      console.log(`TypeId: `, req.user.typeId);
-      console.log("Login");
       return res.redirect("/admin/settings");
     } else if (req.user.typeId === 2) {
       return res.redirect("/teacher");
     }
     return res.redirect("/student");
-    // if(req.user.typeId === 1) {
-    //   return res.redirect('/settings')
-    // }
   },
   githubLogin: async (req, res) => {
-    console.log("Github login");
-    console.log(req.user);
     const loginToken = await login_tokens.findOne({
       where: {
         userId: req.user.id,
       },
     });
-    console.log(4545454);
-    console.log(req.cookies.loginToken);
     if (loginToken.token !== req.cookies.loginToken) {
       const token = await createTokenUtil(req.user.id);
       res.cookie("loginToken", token, { httpOnly: true });
@@ -289,30 +246,8 @@ module.exports = {
         return res.redirect("/student");
       }
     }
-    // console.log(req.user.id);
-    // const cookie = md5(Math.random());
-    // if (!loginToken) {
-    //   await login_tokens.create({
-    //     userId: req.user.id,
-    //     token: cookie,
-    //   });
-    //   res.cookie("loginToken", cookie, { httpOnly: true });
-    // } else {
-    //   login_tokens.destroy({
-    //     where: {
-    //       userId: req.user.id,
-    //     },
-    //   });
-    //   await login_tokens.create({
-    //     userId: req.user.id,
-    //     token: cookie,
-    //   });
-    //   res.cookie("loginToken", cookie, { httpOnly: true });
-    // }
 
     if (req.user.typeId === 1) {
-      console.log(`TypeId: `, req.user.typeId);
-      console.log("Login");
       return res.redirect("/admin/settings");
     } else if (req.user.typeId === 2) {
       return res.redirect("/teacher");
@@ -352,7 +287,6 @@ module.exports = {
         userId: req.user.id,
       },
     });
-    // console.log(req.user.id);
     const cookie = md5(Math.random());
     if (!loginToken) {
       await login_tokens.create({
@@ -372,7 +306,6 @@ module.exports = {
       });
       res.cookie("loginToken", cookie, { httpOnly: true });
     }
-    console.log(`Đổi pass thành công `);
     if (req.user.typeId === 1) {
       return res.redirect("/admin");
     } else if (req.user.typeId === 2) {

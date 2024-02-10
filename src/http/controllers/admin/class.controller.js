@@ -582,7 +582,6 @@ class ClassController {
       },
     });
     console.log("Tet", commentAll);
-    // console.log("excersise: ", excersiseList);
     const permissions = await permissionUser(req);
     res.render("classes/excersiseDetail", {
       title,

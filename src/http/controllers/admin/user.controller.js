@@ -67,40 +67,27 @@ class UserController {
           },
         },
       ];
-      // filters.name = {
-      //   [Op.like] : `%${keyword}%`
-      // }
     }
-    console.log(filters);
     const totalCountObj = await User.findAndCountAll({
       where: filters,
     }); //Lấy tổng số bản ghi
     const totalCount = totalCountObj.count;
     //Tính tổng số trang
     const totalPage = Math.ceil(totalCount / PER_PAGE);
-    console.log(totalPage);
     //Lấy trang hiện tại
     let { page } = req.query;
     if (!page || page < 1 || page > totalPage) {
       page = 1;
     }
-    console.log(page);
     //Tính offset
     const offset = (page - 1) * PER_PAGE;
-    console.log(offset);
     const userList = await User.findAll({
-      // where: {
-      //   typeId: {
-      //     [Op.or]: [2, 3]
-      //   }
-      // }
       where: filters,
 
       limit: +PER_PAGE,
       offset: offset,
     });
     const permissions = await permissionUser(req);
-    console.log(await User.count()); //lay tong so ban ghi
     res.render("admin/manager.user/userList", {
       userList,
       user,
@@ -122,7 +109,6 @@ class UserController {
     const title = "Danh sách học viên";
     const user = req.user;
     const { keyword, typeId } = req.query;
-    console.log("login keyword", keyword, typeId);
     const filters = {};
     filters.typeId = 3;
     if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
@@ -148,36 +134,26 @@ class UserController {
           },
         },
       ];
-      // filters.name = {
-      //   [Op.like] : `%${keyword}%`
-      // }
     }
-    console.log(filters.name);
-    console.log(filters.email);
     const totalCountObj = await User.findAndCountAll({
       where: filters,
     }); //Lấy tổng số bản ghi
     const totalCount = totalCountObj.count;
     //Tính tổng số trang
     const totalPage = Math.ceil(totalCount / PER_PAGE);
-    console.log(totalPage);
     //Lấy trang hiện tại
     let { page } = req.query;
     if (!page || page < 1 || page > totalPage) {
       page = 1;
     }
-    console.log(page);
     //Tính offset
     const offset = (page - 1) * PER_PAGE;
-    console.log(offset);
     const userList = await User.findAll({
       where: filters,
       limit: +PER_PAGE,
       offset: offset,
     });
     const permissions = await permissionUser(req);
-    console.log("userlist", userList);
-    console.log(await User.count()); //lay tong so ban ghi
     res.render("students/home/studentList", {
       userList,
       user,
@@ -196,7 +172,6 @@ class UserController {
     const title = "Danh sách giảng viên";
     const user = req.user;
     const { keyword, typeId } = req.query;
-    console.log("login keyword", keyword, typeId);
     const filters = {};
     filters.typeId = 2;
     if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
@@ -240,10 +215,8 @@ class UserController {
     if (!page || page < 1 || page > totalPage) {
       page = 1;
     }
-    console.log(page);
     //Tính offset
     const offset = (page - 1) * PER_PAGE;
-    console.log(offset);
     const userList = await User.findAll({
       where: filters,
 
@@ -491,7 +464,6 @@ class UserController {
       console.log("b", item);
     });
     const permissions = await permissionUser(req);
-    // console.log("haha:", teacherLists.name);
     res.render("admin/teacher/index", {
       title,
       moduleName,

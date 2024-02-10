@@ -30,13 +30,11 @@ const moduleName = "Khóa học";
 class CourseController {
   async courseList(req, res) {
     const title = "Danh sách";
-    // const courseList = await Courses.findAll();
     const user = req.user;
     const msg = req.flash("error");
     const typeMsg = msg ? "danger" : "success";
     const success = req.flash("success");
     const { keyword } = req.query;
-    console.log(keyword);
     const filters = {};
     if (keyword?.length) {
       filters[Op.or] = [
@@ -59,20 +57,16 @@ class CourseController {
       where: filters,
     }); //Lấy tổng số bản ghi
     const totalCount = totalCountObj.count;
-    console.log(`totalCount ${totalCount}`);
     //Tính tổng số trang
     const totalPage = Math.ceil(totalCount / PER_PAGE);
-    console.log(`totalPage ${totalPage}`);
 
     //Lấy trang hiện tại
     let { page } = req.query;
     if (!page || page < 1 || page > totalPage) {
       page = 1;
     }
-    console.log(page);
     //Tính offset
     const offset = (page - 1) * PER_PAGE;
-    console.log(offset);
     const courseList = await Courses.findAll({
       include: {
         model: User,
@@ -81,7 +75,6 @@ class CourseController {
       limit: +PER_PAGE,
       offset: offset,
     });
-    console.log("1111111:", courseList);
     const permissions = await permissionUser(req);
     res.render("admin/manager.course/courseList", {
       courseList,
@@ -107,8 +100,6 @@ class CourseController {
     const teacherList = await userService.getAllTeacher();
     const message = req.flash("message");
     const errors = req.flash("errors");
-    console.log(req.flash("message"));
-    console.log(getError(errors, "name"));
     const permissions = await permissionUser(req);
     res.render("admin/manager.course/createCourse", {
       teacherList,
@@ -131,7 +122,6 @@ class CourseController {
     } else {
       req.flash("errors", errors.array());
       req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
-      console.log(errors.array());
       res.redirect("/admin/createCourse");
     }
   }
@@ -144,9 +134,7 @@ class CourseController {
     const success = req.flash("success");
     const courseDetail = await courseService.getCourseById(id);
     const teacher = courseDetail.User.name;
-    console.log("Ten giao vien", teacher);
     const teacherList = await userService.getAllTeacher();
-    console.log(`Danh sách teacher: ${teacherList}`);
     const permissions = await permissionUser(req);
     res.render("admin/manager.course/editCourse", {
       courseDetail,
@@ -170,7 +158,6 @@ class CourseController {
         id: id,
       },
     });
-    console.log("Cập nhật thành công");
     req.flash("success", "Cập nhật thông tin khóa học thành công!");
     res.redirect(`/admin/editCourse/${id}`);
   }
@@ -306,7 +293,6 @@ class CourseController {
         id,
       },
     });
-    console.log("tessttt:", courseModule);
     await ModuleDocument.create({
       pathName: pathName,
       moduleId: id,
@@ -333,7 +319,6 @@ class CourseController {
   }
   async handleEditModuleDocument(req, res) {
     const { name, pathName } = req.body;
-    console.log("pathname:", pathName);
     const { id } = req.params;
     await CourseModule.update(
       { name: name },
