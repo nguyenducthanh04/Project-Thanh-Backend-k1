@@ -85,6 +85,7 @@
   ></i>
 </div>
 <div style="display: none" id="comment-form">
+  <% if(isPermission(permissions, "comment.add")) { %>
   <form action="" method="post" class="mt-4" style="display: flex; gap: 6px">
     <textarea
       name="content"
@@ -102,6 +103,7 @@
       <span>Comment</span>
     </button>
   </form>
+  <% } %>
   <hr style="border-bottom: 1px solid #fff" />
   <% }) %>
   <!--Comment-->

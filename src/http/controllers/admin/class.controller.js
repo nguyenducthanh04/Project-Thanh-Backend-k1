@@ -471,14 +471,20 @@ class ClassController {
     let { studentId } = req.body;
     const statusId = 1;
     try {
+      const checkStudent = await StudentClass.findOne({
+        where: {
+          studentId: studentId,
+          classId: classId,
+        },
+      });
+      // if (checkStudent) {
+      //   return res.redirect(`/admin/createStudentClass/${classId}`);
+      // } else {
       await StudentClass.destroy({
         where: {
           id: classId,
         },
       });
-      if (studentId.length === 0) {
-        res.redirect("/admin/classList");
-      }
       if (typeof studentId === "string") {
         studentId = [studentId];
       }
@@ -512,6 +518,7 @@ class ClassController {
         }
       );
       res.redirect(`/admin/createStudentClass/${classId}`);
+      // }
     } catch (err) {
       console.log("Có lỗi xảy ra !");
       // throw err;

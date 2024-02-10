@@ -163,6 +163,37 @@
           </div>
         </td>
       </tr>
+      <tr>
+        <td>Quản lý comment</td>
+        <td>
+          <div class="row">
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="comment.read" <%= permissionUtil.get(permissionList, "comment.read") ? "checked" : ""%>/>
+                Xem
+              </label>
+            </div>
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="comment.add" <%= permissionUtil.get(permissionList, "comment.add") ? "checked" : ""%>/>
+                Thêm
+              </label>
+            </div>
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="comment.update" <%= permissionUtil.get(permissionList, "comment.update") ? "checked" : ""%>/>
+                Sửa
+              </label>
+            </div>
+            <div class="col">
+              <label for="">
+                <input type="checkbox" name="permission" value="comment.delete" <%= permissionUtil.get(permissionList, "comment.delete") ? "checked" : ""%>/>
+                Xóa
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
     </tbody>
   </table>
   <button type="submit" class="btn btn-success">Lưu</button>
