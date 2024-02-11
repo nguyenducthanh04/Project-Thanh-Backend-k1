@@ -1,0 +1,40 @@
+<h4>Sửa khóa học</h4>
+<%- msg.length ? `
+<div class="alert alert-${msgType}">${msg}</div>
+`: '';%> <%- success.length ? `
+<div class="alert alert-success">${success}</div>
+` : "" %>
+<form action="" method="post">
+    <div class="mb-3">
+        <label for="">Tên khóa học</label>
+        <input type="name" name="name" class="form-control" value='<%= courseDetail.name %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Học phí</label>
+        <input type="number" name="price" class="form-control" value='<%= courseDetail.price %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Giảng viên</label>
+        <select name="teacherId" class="form-select">
+            <option value="<%= %>">Chọn giảng viên</option>
+            <% teacherList.forEach(({id, name}) => { %>
+                <option value="<%= id %>" <%= name === teacher ? 'selected' : " "%> ><%= name %></option>
+          <%  }) %>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="">Số lượng học viên</label>
+        <input type="number" name="quantity" class="form-control" value='<%= courseDetail.quantity %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Học thử</label>
+        <input type="number" name="tryLearn" class="form-control" value='<%= courseDetail.tryLearn %>'>
+    </div>
+    <div class="mb-3">
+        <label for="">Thời gian</label>
+        <input type="text" name="duration" class="form-control" value='<%= courseDetail.duration %>'>
+    </div>
+    <div class="d-grid">
+        <button class="btn btn-success">Lưu</button>
+    </div>
+</form>

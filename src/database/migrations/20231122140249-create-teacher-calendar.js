@@ -16,6 +16,7 @@ module.exports = {
       classId: {
         type: Sequelize.INTEGER,
         references: { model: "classes", key: "id" },
+        onDelete: 'CASCADE',
       },
       scheduleDate: {
         type: Sequelize.DATE,

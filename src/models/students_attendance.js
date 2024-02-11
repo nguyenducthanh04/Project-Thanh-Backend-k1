@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       students_attendance.belongsTo(models.classes, {
         foreignKey: "classId",
       });
+      students_attendance.belongsTo(models.learning_status);
     }
   }
   students_attendance.init(

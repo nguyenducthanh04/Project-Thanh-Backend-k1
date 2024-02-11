@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .text-info-teacher {
+      font-size: 1.2rem;
+    }
+    table,
+    th,
+    td {
+      border: 1px solid #fff;
+      width: 300px;
+      height: 30px;
+      text-align: center;
+    }
+  </style>
+  <body>
+    <p class="text-info-teacher">
+      <strong style="text-decoration: underline">Tên giảng viên:</strong>
+      <%= teacherLists.name %>
+    </p>
+    <!-- <ul> -->
+    <p class="text-info-teacher">
+      <strong style="text-decoration: underline">Email:</strong>
+      <%= teacherLists.email %>
+    </p>
+    <p class="text-info-teacher">
+      <strong style="text-decoration: underline">Số điện thoại:</strong>
+      <%= teacherLists.phone %>
+    </p>
+    <p class="text-info-teacher">
+      <strong style="text-decoration: underline">Địa chỉ:</strong>
+      <%= teacherLists.address %>
+    </p>
+    <!-- </ul> -->
+    <hr />
+    <strong style="text-decoration: underline; font-size: 1.2rem"
+      >Danh sách lớp học đang giảng dạy</strong
+    >
+    <table style="margin: 12px 0px">
+      <thead>
+        <tr>
+          <th>Tên lớp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% classTeacherList.forEach((item) => { %>
+        <tr>
+          <td><%= item.name %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <a
+      href="/admin/teacher/calendar/<%= teacherLists.id %>"
+      style="font-size: 1.2rem; text-decoration: underline"
+      >Xem lịch giảng dạy</a
+    >
+  </body>
+</html>

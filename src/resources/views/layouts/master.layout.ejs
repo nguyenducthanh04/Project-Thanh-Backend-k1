@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AdminLTE 3 | Dashboard</title>
-
+    <title>F8 | Fullstack</title>
+    <link rel="icon" type="image/png" href="/assets/img/f8-icon.png" />
     <!-- Google Font: Source Sans Pro -->
     <link
       rel="stylesheet"
@@ -50,13 +50,13 @@
         width: 60px;
         height: 34px;
       }
-      
-      .switch input { 
+
+      .switch input {
         opacity: 0;
         width: 0;
         height: 0;
       }
-      
+
       .slider {
         position: absolute;
         cursor: pointer;
@@ -65,10 +65,10 @@
         right: 0;
         bottom: 0;
         background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
       }
-      
+
       .slider:before {
         position: absolute;
         content: "";
@@ -77,35 +77,38 @@
         left: 4px;
         bottom: 4px;
         background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
       }
-      
+
       input:checked + .slider {
-        background-color: #2196F3;
+        background-color: #2196f3;
       }
-      
+
       input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
+        box-shadow: 0 0 1px #2196f3;
       }
-      
+
       input:checked + .slider:before {
         -webkit-transform: translateX(26px);
         -ms-transform: translateX(26px);
         transform: translateX(26px);
       }
-      
+
       /* Rounded sliders */
       .slider.round {
         border-radius: 34px;
       }
-      
+
       .slider.round:before {
         border-radius: 50%;
       }
-      </style>
+    </style>
   </head>
-  <body class="hold-transition sidebar-mini layout-fixed">
+  <body
+    class="hold-transition sidebar-mini layout-fixed"
+    style="background-color: black; color: #fff"
+  >
     <div class="wrapper">
       <!-- Preloader -->
       <div
@@ -124,10 +127,10 @@
       <%- include('partials/sidebar') %>
 
       <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
+      <div class="content-wrapper" style="background-color: black">
         <!-- Content Header (Page header) -->
-        <div class="content-header">
-          <div class="container-fluid">
+        <div class="content-header" style="background-color: black">
+          <div class="container-fluid" style="background-color: black">
             <%- include('partials/breadcrums') %>
 
             <!-- /.row -->
@@ -137,13 +140,15 @@
         <!-- /.content-header -->
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content" style="background-color: black">
           <div class="container-fluid">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Dashboard</h3>
+              <div class="card-header" style="background-color: black">
+                <h3 class="card-title" style="color: #fff">LBX-Class</h3>
               </div>
-              <div class="card-body"><%- body %></div>
+              <div class="card-body" style="background-color: black">
+                <%- body %>
+              </div>
             </div>
           </div>
           <!-- /.container-fluid -->
@@ -151,7 +156,7 @@
         <!-- /.content -->
       </div>
       <!-- /.content-wrapper -->
-      <footer class="main-footer">
+      <footer class="main-footer" style="background-color: black">
         <strong>Copyright &copy; 2023 by Học viên Back-end F8.</strong>
         All rights reserved.
         <div class="float-right d-none d-sm-inline-block">

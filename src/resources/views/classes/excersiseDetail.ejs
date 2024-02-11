@@ -1,0 +1,311 @@
+<style>
+  h2 {
+    font-size: 1.4rem;
+  }
+  .excersise {
+    font-size: 1.5rem;
+    color: #fff;
+    text-decoration: underline;
+  }
+  #form-comment {
+    display: none;
+  }
+  /* From uiverse.io by @Ali-Tahmazi99 */
+  button {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #03045e;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease-in;
+    z-index: 1;
+  }
+
+  button::before,
+  button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 100%;
+    transform: skew(15deg);
+    transition: all 0.5s;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  button::before {
+    left: -10px;
+    background: #240046;
+  }
+
+  button::after {
+    right: -10px;
+    background: #5a189a;
+  }
+
+  button:hover::before,
+  button:hover::after {
+    width: 60%;
+  }
+
+  button:hover span {
+    color: #e0aaff;
+    transition: 0.3s;
+  }
+
+  button span {
+    color: #03045e;
+    font-size: 18px;
+    transition: all 0.3s ease-in;
+  }
+</style>
+<% excersiseList.forEach((item) => { %>
+<div>
+  <h1 class="excersise">Bài tập về nhà</h1>
+  <h2><%= item.title %></h2>
+  <p><%= item.content %></p>
+  <a
+    href="<%= item.attachment %>"
+    style="color: #5ebbff; text-decoration: underline"
+    ><%= item.attachment %></a
+  >
+</div>
+<div id="display-comment">
+  <i
+    class="far fa-comment"
+    style="
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 6px 0px 0px 0px;
+      margin-top: 12px;
+    "
+  ></i>
+</div>
+<div style="display: none" id="comment-form">
+  <% if(isPermission(permissions, "comment.add")) { %>
+  <form action="" method="post" class="mt-4" style="display: flex; gap: 6px">
+    <textarea
+      name="content"
+      placeholder="Comment"
+      style="
+        width: 500px;
+        height: 40px;
+        border-radius: 10px;
+        outline: none;
+        padding: 6px;
+      "
+    ></textarea
+    ><br />
+    <button>
+      <span>Comment</span>
+    </button>
+  </form>
+  <% } %>
+  <hr style="border-bottom: 1px solid #fff" />
+  <% }) %>
+  <!--Comment-->
+  <div class="container my-5" style="margin-left: -103px; margin-top: -40px">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-12 col-lg-10">
+        <div class="card text-dark" style="background-color: #000">
+          <h4 class="mt-3" style="padding: 0px 12px; color: #fff">
+            Câu trả lời
+          </h4>
+          <p class="fw-light pb-2" style="padding: 0px 12px; color: #fff">
+            Latest Comments section by users
+          </p>
+          <% commentAll.forEach((item) => { %>
+          <div class="card-body p-4">
+            <div class="d-flex flex-start">
+              <img
+                class="rounded-circle shadow-1-strong me-3"
+                src="/assets/img/thanhdz.jpg"
+                alt="avatar"
+                width="60"
+                height="60"
+                style="margin-right: 8px"
+              />
+              <div>
+                <h5 class="fw-bold mb-1" style="color: #fff">
+                  <%= item.User.name %>
+                </h5>
+                <div class="d-flex align-items-center mb-3">
+                  <p class="mb-0" style="color: #fff">
+                    March 07, 2021
+                    <span class="badge bg-primary" style="color: #fff"
+                      >Pending</span
+                    >
+                  </p>
+                  <a href="#!" class="link-muted">
+                    ><i class="fas fa-pencil-alt ms-2"></i
+                  ></a>
+                  <a href="#!" class="link-muted"
+                    ><i class="fas fa-heart ms-2"></i
+                  ></a>
+                </div>
+                <p class="mb-0" style="color: #fff"><%= item.content %></p>
+                <span
+                  class="rep-comment"
+                  data-value="<%= item.id %>"
+                  style="
+                    color: #fff;
+                    cursor: pointer;
+                    text-decoration: underline;
+                  "
+                >
+                  Trả lời
+                </span>
+                <div style="display: flex; margin-top: 8px">
+                  <a href="/admin/class/editComment/<%= item.id %>">
+                    <button class="btn btn-success" style="margin-right: 5px">
+                      Sửa
+                    </button>
+                  </a>
+                  <form
+                    action="/admin/class/destroy/comment/<%= item.id %>"
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận ?')"
+                    method="post"
+                  >
+                    <button class="btn btn-danger">Xóa</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="padding-left: 68px">
+            <% commentChild.forEach((itemChild) => { if(+itemChild.parentId ===
+            +item.id) { %>
+            <div class="card-body p-4">
+              <div class="d-flex flex-start">
+                <img
+                  class="rounded-circle shadow-1-strong me-3"
+                  src="/assets/img/thanhdz.jpg"
+                  alt="avatar"
+                  width="60"
+                  height="60"
+                  style="margin-right: 8px"
+                />
+                <div>
+                  <h5 class="fw-bold mb-1" style="color: #fff">
+                    <%= itemChild.User.name %>
+                  </h5>
+                  <div class="d-flex align-items-center mb-3">
+                    <p class="mb-0" style="color: #fff">
+                      March 07, 2021
+                      <span class="badge bg-primary" style="color: #fff"
+                        >Pending</span
+                      >
+                    </p>
+                    <a href="#!" class="link-muted">
+                      ><i class="fas fa-pencil-alt ms-2"></i
+                    ></a>
+                    <a href="#!" class="link-muted"
+                      ><i class="fas fa-heart ms-2"></i
+                    ></a>
+                  </div>
+                  <p class="mb-0" style="color: #fff">
+                    <%= itemChild.content %>
+                  </p>
+                  <span
+                    class="rep-comment"
+                    data-value="<%= item.id %>"
+                    style="
+                      color: #fff;
+                      cursor: pointer;
+                      text-decoration: underline;
+                    "
+                  >
+                    Trả lời
+                  </span>
+                  <div style="display: flex; margin-top: 8px">
+                    <a href="/admin/class/editComment/<%= itemChild.id %>">
+                      <button class="btn btn-success" style="margin-right: 5px">
+                        Sửa
+                      </button>
+                    </a>
+                    <form
+                      action="/admin/class/destroy/comment/<%= itemChild.id %>"
+                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận ?')"
+                      method="post"
+                    >
+                      <button class="btn btn-danger">Xóa</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } }) %>
+          </div>
+          <hr class="my-0" />
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<form
+  action=""
+  method="post"
+  class="mt-4"
+  id="form-comment"
+  style="
+    display: none;
+    position: fixed;
+    bottom: 0px;
+    z-index: 1;
+    width: 630px;
+    height: 104px;
+    background-color: #ccc;
+    padding: 10px;
+    border-radius: 10px;
+  "
+>
+  <div style="display: flex; gap: 6px">
+    <input type="hidden" name="parentId" id="parentId" />
+    <textarea
+      name="content"
+      placeholder="Comment"
+      style="
+        width: 500px;
+        height: 40px;
+        border-radius: 10px;
+        outline: none;
+        padding: 6px;
+      "
+    ></textarea
+    ><br />
+    <button>
+      <span>Comment</span>
+    </button>
+  </div>
+</form>
+<!-- </section> -->
+<script>
+  document.querySelectorAll(".rep-comment").forEach((item) => {
+    item.addEventListener("click", function () {
+      document.querySelector("#parentId").value = item.dataset.value;
+      var element = document.getElementById("form-comment");
+      if (element.style.display === "none") {
+        element.style.display = "block";
+      } else {
+        element.style.display = "none";
+      }
+    });
+  });
+  document
+    .getElementById("display-comment")
+    .addEventListener("click", function () {
+      var element = document.getElementById("comment-form");
+      if (element.style.display === "none") {
+        element.style.display = "block";
+      } else {
+        element.style.display = "none";
+      }
+    });
+
+  var element = document.getElementById("form-comment");
+  console.log(element.style);
+</script>

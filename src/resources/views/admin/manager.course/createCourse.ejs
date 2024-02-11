@@ -1,0 +1,74 @@
+<h4>Thêm khóa học</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %>
+<form action="" method="post">
+  <div class="mb-3">
+    <label for="">Tên khóa học</label>
+    <input
+      type="name"
+      name="name"
+      class="form-control"
+      placeholder="Nhập tên khoá học..."
+    />
+    <span class="text-danger"><%= getError(errors, 'name') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Học phí</label>
+    <input
+      type="number"
+      name="price"
+      class="form-control"
+      placeholder="Nhập học phí khóa học..."
+    />
+    <span class="text-danger"><%= getError(errors, 'price') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Giảng viên</label>
+    <select
+      name="teacherId"
+      class="form-select"
+      style="width: 1597px; height: 40px"
+    >
+      <option value="<%= %>">Chọn giảng viên</option>
+      <% teacherList.forEach(({id, name}) => { %>
+      <option value="<%= id %>"><%= name %></option>
+      <% }) %>
+    </select>
+    <span class="text-danger"><%= getError(errors, 'teacherId') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Học thử</label>
+    <input
+      type="number"
+      name="tryLearn"
+      class="form-control"
+      placeholder="Nhập số buổi học thử..."
+      value="0"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Số lượng học viên</label>
+    <input
+      type="number"
+      name="quantity"
+      class="form-control"
+      placeholder="Nhập số lượng học viên..."
+    />
+    <span class="text-danger"><%= getError(errors, 'quantity') %></span>
+  </div>
+  <div class="mb-3">
+    <label for="">Thời gian học</label>
+    <input
+      type="text"
+      name="duration"
+      class="form-control"
+      placeholder="Nhập thời gian khóa học..."
+    />
+    <span class="text-danger"><%= getError(errors, 'duration') %></span>
+  </div>
+  <div class="d-grid">
+    <button class="btn btn-success">Thêm</button>
+    <a href="/userList" class="btn btn-danger">Hủy</a>
+  </div>
+</form>

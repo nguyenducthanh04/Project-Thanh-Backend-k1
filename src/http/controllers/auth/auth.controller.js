@@ -7,14 +7,15 @@ const model = require("../../../models/index");
 const { Op } = require("sequelize");
 const User = model.User;
 const user_otp = model.user_otp;
+const createTokenUtil = require("../../../utils/loginToken");
 const login_tokens = model.login_tokens;
 const user_socials = model.user_socials;
 module.exports = {
   login: async (req, res) => {
-    // const user = req.user;
     const msg = req.flash("error");
     const msgType = msg ? "danger" : "success";
     const success = req.flash("success");
+    const user = req.user;
     res.render("auth/login", {
       msg,
       msgType,
@@ -24,12 +25,9 @@ module.exports = {
   },
   handleLogin: async (req, res) => {
     const { email } = req.body;
-    console.log(req.user);
-    if(req.user.firstLogin === 1) {
-      return res.redirect('/auth/changePassFirtLogin')
+    if (req.user.firstLogin === 1) {
+      return res.redirect("/auth/changePassFirtLogin");
     }
-    // const otpIn = req.body.otp;
-    // console.log("OTP khi ma login", otpIn);
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -89,7 +87,8 @@ module.exports = {
     });
   },
   verifyTwoFa: (req, res) => {
-    return res.render("auth/2fa", { layout: "layouts/auth.layout.ejs" });
+    const user = req.user;
+    return res.render("auth/2fa", { layout: "layouts/auth.layout.ejs", user });
   },
   handleVerify: async (req, res) => {
     const { otp } = req.body;
@@ -98,8 +97,6 @@ module.exports = {
         [Op.and]: [{ userId: req.user.id }, { otp: otp }],
       },
     });
-    console.log(check);
-    console.log(otp);
 
     if (check) {
       const loginToken = await login_tokens.findOne({
@@ -107,9 +104,7 @@ module.exports = {
           userId: req.user.id,
         },
       });
-      // console.log(req.user.id);
       const cookie = md5(Math.random());
-      // console.log(cookie);
       if (!loginToken) {
         await login_tokens.create({
           userId: req.user.id,
@@ -129,14 +124,12 @@ module.exports = {
         res.cookie("loginToken", cookie, { httpOnly: true });
       }
       if (req.user.typeId === 1) {
-        console.log("Login");
-        return res.redirect("/");
+        return res.redirect("/admin");
       } else if (req.user.typeId === 2) {
         return res.redirect("/teacher");
       }
       return res.redirect("/student");
     } else {
-      console.log("Verify Otp");
       res.redirect("/auth/verifyTwoFa");
       return;
     }
@@ -189,7 +182,6 @@ module.exports = {
     const salt = 10;
     const user = req.flash("user");
     const { password, resetpassword } = req.body;
-    console.log(password);
     if (password !== resetpassword) {
       req.flash("error", "Mật khẩu không khớp");
       res.redirect(`/auth/resetPass/${token}`);
@@ -213,76 +205,60 @@ module.exports = {
     return;
   },
   googleLogin: async (req, res) => {
-    console.log("Gooogle login")
-    console.log(req.user)
     const loginToken = await login_tokens.findOne({
       where: {
         userId: req.user.id,
       },
     });
-    // console.log(req.user.id);
-    const cookie = md5(Math.random());
-    if (!loginToken) {
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
-    } else {
-      login_tokens.destroy({
-        where: {
-          userId: req.user.id,
-        },
-      });
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
+    if (loginToken.token !== req.cookies.loginToken) {
+      const token = await createTokenUtil(req.user.id);
+      res.cookie("loginToken", token, { httpOnly: true });
+      if (req.user.typeId === 1) {
+        return res.redirect("/admin");
+      } else if (req.user.typeId === 2) {
+        return res.redirect("/teacher");
+      } else if (req.user.typeId === 3) {
+        return res.redirect("/student");
+      }
     }
 
     if (req.user.typeId === 1) {
-      console.log(`TypeId: `, req.user.typeId);
-      console.log("Login");
-      return res.redirect("/");
+      return res.redirect("/admin/settings");
     } else if (req.user.typeId === 2) {
       return res.redirect("/teacher");
     }
     return res.redirect("/student");
   },
   githubLogin: async (req, res) => {
-    console.log("Github login")
-    console.log(req.user)
     const loginToken = await login_tokens.findOne({
       where: {
         userId: req.user.id,
       },
     });
-    // console.log(req.user.id);
-    const cookie = md5(Math.random());
-    if (!loginToken) {
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
-    } else {
-      login_tokens.destroy({
-        where: {
-          userId: req.user.id,
-        },
-      });
-      await login_tokens.create({
-        userId: req.user.id,
-        token: cookie,
-      });
-      res.cookie("loginToken", cookie, { httpOnly: true });
+    if (loginToken.token !== req.cookies.loginToken) {
+      const token = await createTokenUtil(req.user.id);
+      res.cookie("loginToken", token, { httpOnly: true });
+      if (req.user.typeId === 1) {
+        return res.redirect("/admin");
+      } else if (req.user.typeId === 2) {
+        return res.redirect("/teacher");
+      } else if (req.user.typeId === 3) {
+        return res.redirect("/student");
+      }
     }
-    res.redirect('/')
+
+    if (req.user.typeId === 1) {
+      return res.redirect("/admin/settings");
+    } else if (req.user.typeId === 2) {
+      return res.redirect("/teacher");
+    }
+    return res.redirect("/student");
   },
   changePassFirstLogin: async (req, res) => {
     const user = req.user;
-    res.render('auth/changePassFirstLogin', { layout: "layouts/auth.layout.ejs" })
+    res.render("auth/changePassFirstLogin", {
+      layout: "layouts/auth.layout.ejs",
+    });
   },
   handleChangePassFirstLogin: async (req, res) => {
     const users = req.user;
@@ -298,45 +274,43 @@ module.exports = {
         }
       );
     });
-   const userUpdate = await User.update(
-    { firstLogin: 2 },
-        {
-          where: {
-            email: users.email,
-          },
-        }
-   )
-   const loginToken = await login_tokens.findOne({
-    where: {
-      userId: req.user.id,
-    },
-  });
-  // console.log(req.user.id);
-  const cookie = md5(Math.random());
-  if (!loginToken) {
-    await login_tokens.create({
-      userId: req.user.id,
-      token: cookie,
-    });
-    res.cookie("loginToken", cookie, { httpOnly: true });
-  } else {
-    login_tokens.destroy({
+    const userUpdate = await User.update(
+      { firstLogin: 2 },
+      {
+        where: {
+          email: users.email,
+        },
+      }
+    );
+    const loginToken = await login_tokens.findOne({
       where: {
         userId: req.user.id,
       },
     });
-    await login_tokens.create({
-      userId: req.user.id,
-      token: cookie,
-    });
-    res.cookie("loginToken", cookie, { httpOnly: true });
-  }
-   console.log(`Đổi pass thành công `);
+    const cookie = md5(Math.random());
+    if (!loginToken) {
+      await login_tokens.create({
+        userId: req.user.id,
+        token: cookie,
+      });
+      res.cookie("loginToken", cookie, { httpOnly: true });
+    } else {
+      login_tokens.destroy({
+        where: {
+          userId: req.user.id,
+        },
+      });
+      await login_tokens.create({
+        userId: req.user.id,
+        token: cookie,
+      });
+      res.cookie("loginToken", cookie, { httpOnly: true });
+    }
     if (req.user.typeId === 1) {
-      return res.redirect("/");
+      return res.redirect("/admin");
     } else if (req.user.typeId === 2) {
       return res.redirect("/teacher");
     }
     return res.redirect("/student");
-  }
+  },
 };

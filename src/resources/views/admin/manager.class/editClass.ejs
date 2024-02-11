@@ -1,0 +1,165 @@
+<%- msg.length ? `
+<div class="alert alert-${msgType}">${msg}</div>
+`: '';%> <%- success.length ? `
+<div class="alert alert-success">${success}</div>
+` : "" %>
+<h4>Sửa lớp học</h4>
+<form action="" method="post">
+  <div class="mb-3">
+    <label for="">Tên lớp học</label>
+    <input
+      type="name"
+      name="name"
+      class="form-control"
+      value="<%= classDetail.name %>"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Sĩ số</label>
+    <input
+      type="number"
+      name="quantity"
+      class="form-control"
+      value="<%= classDetail.quantity %>"
+    />
+  </div>
+  <button type="button" class="btn btn-primary js-btn-add-time">Thêm</button>
+  <% scheduleInfo.forEach(({schedule, timeLearn}) => {  %>
+    <div class="mb-3">
+      <!-- Start -->
+      <div class="time-select" name="timeSelect">
+        <label for="">Lịch học:</label><br />
+        <label for="daySelect">Chọn ngày:</label>
+        <select
+          id="daySelect"
+          name="schedule"
+          onchange="showTimeInput()"
+          class="mb-2"
+        >
+          <option value="clickDay" class="opt-hidden">Chọn ngày thứ nhất</option>
+          <option value="2" <%= schedule === 2 ? "selected" : "" %>>2</option>
+          <option value="3" <%= schedule === 3 ? "selected" : "" %>>3</option>
+          <option value="4" <%= schedule === 4 ? "selected" : "" %>>4</option>
+          <option value="5" <%= schedule === 5 ? "selected" : "" %>>5</option>
+          <option value="6" <%= schedule === 6 ? "selected" : "" %>>6</option>
+          <option value="7" <%= schedule === 7 ? "selected" : "" %>>7</option>
+          <option value="8" <%= schedule === 8 ? "selected" : "" %>>8</option></select
+        ><br />
+        <div class="time-group">
+          <label for="startTime"></label>
+          <input type="time" id="startTime" name="startTime" required value="<%= timeLearn.split('-')[0] %>" />
+  
+          <label for="endTime">-</label>
+          <input type="time" id="endTime" name="endTime" required value="<%= timeLearn.split('-')[1] %>"/>
+        </div>
+        <br />
+        <button class="btn btn-danger remove-time" type="button"> xóa </button>
+      </div>
+    <span class="text-danger"><%= getError(errors, 'schedule') %></span>
+      <!-- end -->
+    </div>
+  <% })%>
+      <script>
+          function insertAfter(referenceNode, newNode) {
+          referenceNode.parentNode.insertBefore(
+            newNode,
+            referenceNode.nextSibling
+          );
+        }
+        let removeTimeBtn = document.querySelectorAll('.remove-time')
+       removeTimeBtn.forEach((btn)=> {
+        btn.addEventListener("click", (e) => {
+          if (removeTimeBtn.length>1) {
+            e.target.parentElement.remove();
+            removeTimeBtn = document.querySelectorAll('.remove-time')
+          }
+         });
+       })
+        const btn = document.querySelector(".js-btn-add-time");
+        btn.addEventListener("click", (e) => {
+          const timeSelect = document.querySelectorAll(".time-select");
+          const nextTimeSelect = timeSelect[0].cloneNode(true);
+          nextTimeSelect.querySelector(".opt-hidden").textContent =
+            "Chọn ngày thứ " + (timeSelect.length + 1);
+          insertAfter(timeSelect[timeSelect.length - 1], nextTimeSelect);
+          removeTimeBtn = document.querySelectorAll('.remove-time')
+          removeTimeBtn.forEach((btn)=> {
+          btn.addEventListener("click", (e) => {
+            if (removeTimeBtn.length>1) {
+              e.target.parentElement.remove();
+              removeTimeBtn = document.querySelectorAll('.remove-time')
+            }
+            });
+          })
+        });
+      </script>
+  <div class="mb-3">
+    <label for="">Ngày khai giảng</label>
+    <input
+      type="date"
+      name="startDate"
+      class="form-control"
+      value="<%= moment(classDetail.startDate).format('YYYY-MM-DD') %>"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Ngày bế giảng</label>
+    <input
+      type="date"
+      name="endDate"
+      class="form-control"
+      value="<%= moment(classDetail.endDate).format('YYYY-MM-DD') %>"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Khóa học</label>
+    <select name="courseId" class="form-select">
+      <option value="<%= %>">Chọn khóa học</option>
+      <% courseList.forEach(({id, name}) => { %>
+      <option value="<%= id %>"<%= name === course ? 'selected' : " "%>><%= name %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="d-grid">
+    <button class="btn btn-success">Lưu</button>
+  </div>
+</form>
+
+
+<!-- <script>
+  function showTimeInput() {
+    var daySelect = document.getElementById("daySelect");
+    var timeInput = document.getElementById("timeInput");
+    var hourSelect = document.getElementById("hourSelect");
+
+    if (daySelect.value === "monday" || daySelect.value === "tuesday" ||
+        daySelect.value === "wednesday" || daySelect.value === "thursday" ||
+        daySelect.value === "friday" || daySelect.value === "saturday" ||
+        daySelect.value === "sunday") {
+      timeInput.style.display = "block";
+    } else {
+      timeInput.style.display = "none";
+      // Có thể làm gì đó khác nếu không phải chọn một trong 7 ngày
+    }
+  }
+  function showTimeInputs() {
+        var daySelected = document.getElementById("daySelected");
+        var timeInputs = document.getElementById("timeInputs");
+        var hourSelects = document.getElementById("hourSelects");
+
+        if (
+          daySelected.value === "monday" ||
+          daySelected.value === "tuesday" ||
+          daySelected.value === "wednesday" ||
+          daySelected.value === "thursday" ||
+          daySelected.value === "friday" ||
+          daySelected.value === "saturday" ||
+          daySelected.value === "sunday"
+        ) {
+          timeInputs.style.display = "block";
+        } else {
+          timeInputs.style.display = "none";
+          // Có thể làm gì đó khác nếu không phải chọn một trong 7 ngày
+        }
+      }
+</script> -->

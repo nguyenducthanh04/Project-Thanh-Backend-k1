@@ -12,6 +12,7 @@ module.exports = {
       classId: {
         type: Sequelize.INTEGER,
         references: { model: "classes", key: "id" },
+        onDelete: 'CASCADE',
       },
       title: {
         type: Sequelize.STRING(200),
@@ -25,6 +26,7 @@ module.exports = {
       studentId: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
+        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,

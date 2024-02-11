@@ -12,14 +12,17 @@ module.exports = {
       studentId: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
+        onDelete: 'CASCADE',
       },
       classId: {
         type: Sequelize.INTEGER,
         references: { model: "classes", key: "id" },
+        onDelete: 'CASCADE',
       },
       statusId: {
         type: Sequelize.INTEGER,
         references: { model: "learning_statuses", key: "id" },
+        onDelete: 'CASCADE',
       },
       completedDate: {
         type: Sequelize.DATE,

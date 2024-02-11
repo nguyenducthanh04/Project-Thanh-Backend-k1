@@ -1,19 +1,24 @@
-<h3>Settings</h3>
+<!-- <button style='margin-bottom: 30px; text-align: center; border-radius: 8px;'>Liên kết đăng nhập với mạng xã hội</button> -->
 <div class="mb-3">
-    <span>Liên kết đăng nhập với Google</span>
-    <label class="switch">
-        <a href="<%= socials.includes('google') ? '/deleteSocial': '/auth/google/redirect'%>">
-            <input type="checkbox" <%= socials.includes('google') ? 'checked': ''%>>
-        <span class="slider round"></span>
-        </a>
-      </label>
+  <span>Liên kết đăng nhập với Google</span>
+  <label class="switch">
+    <a
+      href="<%= socials.includes('google') ? '/admin/deleteSocialGoogle': '/auth/google/redirect'%>"
+    >
+      <input type="checkbox" <%= socials.includes('google') ? 'checked': ''%>>
+      <span class="slider round"></span>
+    </a>
+  </label>
 </div>
 <div class="mb-3">
-    <span>Liên kết đăng nhập với Github</span>
-    <label class="switch">
-        <a href="<%= socials.includes('github') ? '/deleteSocialGithub': '/auth/github/redirect'%>">
-            <input type="checkbox" <%= socials.includes('github') ? 'checked': ''%>>
-        <span class="slider round"></span>
-        </a>
-      </label><br>
-    <a href="/" class='btn btn-danger'>Thoát</a>
+  <span>Liên kết đăng nhập với Github</span>
+  <label class="switch">
+    <a
+      href="<%= socials.includes('github') ? '/admin/deleteSocialGithub': '/auth/github/redirect'%>"
+    >
+      <input type="checkbox" <%= socials.includes('github') ? 'checked': ''%>>
+      <span class="slider round"></span>
+    </a> </label
+  ><br />
+  <a href="/admin" class="btn btn-danger">Thoát</a>
+</div>

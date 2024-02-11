@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script>
+      let events = `<%- JSON.stringify(calendarArray)%>`;
+      // let events = "<%= calendarArray%>";
+      events = JSON.parse(events);
+      document.addEventListener("DOMContentLoaded", function () {
+        var calendarEl = document.getElementById("calendar");
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          events: events,
+          eventTimeFormat: {
+            // like '14:30:00'
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          },
+        });
+        calendar.render();
+      });
+    </script>
+  </head>
+  <body>
+    <div id="calendar"></div>
+  </body>
+</html>

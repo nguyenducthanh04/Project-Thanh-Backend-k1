@@ -1,0 +1,47 @@
+<%- msg.length ? `
+<div class="alert alert-${msgType}">${msg}</div>
+`: '';%> <%- success.length ? `
+<div class="alert alert-success">${success}</div>
+` : "" %>
+<h4>Sửa người dùng</h4>
+<form action="" method="post">
+  <div class="mb-3">
+    <label for="">Name</label>
+    <input
+      type="name"
+      name="name"
+      class="form-control"
+      value="<%= userDetail.name %>"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Email</label>
+    <input
+      type="email"
+      name="email"
+      class="form-control"
+      value="<%= userDetail.email %>"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Phone</label>
+    <input
+      type="number"
+      name="phone"
+      class="form-control"
+      value="<%= userDetail.phone %>"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="">Address</label>
+    <input
+      type="address"
+      name="address"
+      class="form-control"
+      value="<%= userDetail.address %>"
+    />
+  </div>
+  <div class="d-grid">
+    <button class="btn btn-success">Lưu</button>
+  </div>
+</form>

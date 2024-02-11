@@ -1,13 +1,13 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #dad7d7;">
   <!-- Brand Logo -->
   <a href="/" class="brand-link">
     <img
-      src="/assets/img/AdminLTELogo.png"
+      src="/assets/img/lbx-logo.jpg"
       alt="AdminLTE Logo"
       class="brand-image img-circle elevation-3"
-      style="opacity: 0.8"
+      style="opacity: 0.8; width: 35px; height: 35px"
     />
-    <span class="font-weight-bolt">F8-Classes</span>
+    <span class="font-weight-bolt" style="color: #000;">LBX-Class</span>
   </a>
 
   <!-- Sidebar -->
@@ -16,13 +16,14 @@
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
         <img
-          src="/assets/img/user2-160x160.jpg"
+          src="/assets/img/thanhdz.jpg"
           class="img-circle elevation-2"
           alt="User Image"
+          style="width: 35px; height: 35px"
         />
       </div>
       <div class="info">
-        <a href="#" class="d-block"><%= user.name %></a>
+        <a href="/admin/changeProfile" class="d-block" style="color: #000;">Nguyễn Đức Thanh</a>
       </div>
     </div>
     <!-- Sidebar Menu -->
@@ -35,30 +36,74 @@
       >
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
-        <li class="nav-item menu-open">
-          <a href="#" class="nav-link active">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-            <p>
+      <% if(isPermission(permissions, "admin.read")) { %>
+        <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+          <a href="/admin" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+            <i class="nav-icon fas fa-tachometer-alt" style="color: #000;"></i>
+            <p style="color: #000;">
               Tổng quan
-              <i class="right fas fa-angle-left"></i>
+              <i class="right fas fa-angle-left" style="color: #000;"></i>
             </p>
           </a>
         </li>
-
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-users"></i>
-            <p>
+      <% } %>
+      <% if(isPermission(permissions, "classesTeacher.read")) { %>
+        <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+          <a href="/teacher" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+            <i class="nav-icon fas fa-tachometer-alt" style="color: #000;"></i>
+            <p style="color: #000;">
+              Tổng quan
+              <i class="right fas fa-angle-left" style="color: #000;"></i>
+            </p>
+          </a>
+        </li>
+      <% } %>
+      <% if(isPermission(permissions, "classesTeacher.read")) { %>
+        <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+          <a href="/teacher/classes" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+            <i class="nav-icon fas fa-tachometer-alt" style="color: #000;"></i>
+            <p style="color: #000;">
+               Danh sách lớp
+              <i class="right fas fa-angle-left" style="color: #000;"></i>
+            </p>
+          </a>
+        </li>
+        <% } %>
+        <% if(isPermission(permissions, "classesTeacher.read")) { %>
+          <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+            <a href="/teacher/courses" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+              <i class="nav-icon fas fa-tachometer-alt" style="color: #000;"></i>
+              <p style="color: #000;">
+                 Danh sách khóa học
+                <i class="right fas fa-angle-left" style="color: #000;"></i>
+              </p>
+            </a>
+          </li>
+          <% } %>
+      <% if(isPermission(permissions, "admin.read")) { %>
+        <li class="nav-item <%= moduleName === "Người dùng" ? "menu-is-opening menu-open" : "" %>">
+          <a href="#" class="nav-link <%= moduleName === "Người dùng" ? "active" : "" %>">
+            <i class="nav-icon fas fa-users" style="color: #000;"></i>
+            <p style="color: #000;">
               Người dùng
-              <i class="fas fa-angle-left right"></i>
+              <i class="fas fa-angle-left right" style="color: #000;"></i>
               <!-- <span class="badge badge-info right">6</span> -->
             </p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a href="/admin/userList" class="nav-link <%= title === "Danh sách người quản trị" ? "active" : "" %>">
+                <p style="color: #000;">Danh sách người quản trị</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/admin/teacherList" class="nav-link <%= title === "Danh sách giảng viên" ? "active" : "" %>">
+                <p style="color: #000;">Danh sách giảng viên</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/admin/studentList" class="nav-link <%= title === "Danh sách học viên" ? "active" : "" %>">
+                <p style="color: #000;">Danh sách học viên</p>
               </a>
             </li>
             <!-- <li class="nav-item">
@@ -68,27 +113,27 @@
               </a>
             </li> -->
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Thêm mới</p>
+              <a href="/admin/createUser" class="nav-link <%= title === "Thêm mới người dùng" ? "active" : "" %>">
+                <p style="color: #000;">Thêm mới người dùng</p>
               </a>
             </li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
-            <p>
+      <% } %>
+      <% if(isPermission(permissions, "admin.read")) { %>
+        <li class="nav-item <%= moduleName === "Khóa học" ? "menu-is-opening menu-open" : "" %>">
+          <a href="#" class="nav-link <%= moduleName === "Khóa học" ? "active" : "" %>">
+            <i class="nav-icon fas fa-book" style="color: #000;"></i>
+            <p style="color: #000;">
               Khóa học
-              <i class="fas fa-angle-left right"></i>
+              <i class="fas fa-angle-left right" style="color: #000;"></i>
               <!-- <span class="badge badge-info right">6</span> -->
             </p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a href="/admin/courseList" class="nav-link <%= title === "Danh sách" ? "active" : "" %>">
+                <p style="color: #000;">Danh sách</p>
               </a>
             </li>
             <!-- <li class="nav-item">
@@ -98,13 +143,43 @@
                 </a>
               </li> -->
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Thêm mới</p>
+              <a href="/admin/createCourse" class="nav-link <%= title === "Thêm mới khóa học" ? "active" : "" %>">
+                <p style="color: #000;">Thêm mới khóa học</p>
               </a>
             </li>
           </ul>
         </li>
+      <% } %>
+      <% if(isPermission(permissions, "admin.read")) { %>
+        <li class="nav-item <%= moduleName === "Lớp học" ? "menu-is-opening menu-open" : "" %>">
+          <a href="#" class="nav-link <%= moduleName === "Lớp học" ? "active" : "" %>">
+            <i class="nav-icon fas fa-book" style="color: #000;"></i>
+            <p style="color: #000;">
+              Lớp học
+              <i class="fas fa-angle-left right" style="color: #000;"></i>
+              <!-- <span class="badge badge-info right">6</span> -->
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/classList" class="nav-link <%= title === "Danh sách lớp học" ? "active" : "" %>">
+                <p style="color: #000;">Danh sách</p>
+              </a>
+            </li>
+            <!-- <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Khóa học</p>
+                </a>
+              </li> -->
+            <li class="nav-item">
+              <a href="/admin/createClass" class="nav-link <%= title === "Thêm mới lớp học" ? "active" : "" %>">
+                <p style="color: #000;">Thêm mới lớp học</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <% } %>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

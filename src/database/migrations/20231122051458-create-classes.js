@@ -28,6 +28,7 @@ module.exports = {
       courseId: {
         type: Sequelize.INTEGER,
         references: { model: "courses", key: "id" },
+        onDelete: "CASCADE",
       },
       timeLearn: {
         type: Sequelize.STRING(50),

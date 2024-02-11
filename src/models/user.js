@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         through: "user_role",
         foreignKey: "userId",
       });
+      User.belongsToMany(models.permissions, {
+        through: "user_permission",
+        foreignKey: "userId",
+      });
       User.belongsTo(models.types, {
         foreignKey: "typeId",
       });
@@ -47,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.users_columns, {
         foreignKey: "userId",
       });
+      User.hasMany(models.exercises_submit);
     }
   }
   User.init(

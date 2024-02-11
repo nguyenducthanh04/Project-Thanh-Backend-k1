@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       classes.hasMany(models.comments, {
         foreignKey: "classId",
       });
+      classes.hasMany(models.scheduleclasses, {
+        foreignKey: "classId",
+      });
     }
   }
   classes.init(
@@ -44,9 +47,9 @@ module.exports = (sequelize, DataTypes) => {
       quantity: DataTypes.INTEGER,
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
-      schedule: DataTypes.TINYINT,
+      // schedule: DataTypes.TINYINT,
       courseId: DataTypes.INTEGER,
-      timeLearn: DataTypes.STRING,
+      // timeLearn: DataTypes.STRING,
     },
     {
       sequelize,

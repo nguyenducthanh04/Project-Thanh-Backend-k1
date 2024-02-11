@@ -10,7 +10,8 @@ var flash = require("connect-flash");
 const model = require("./models/index");
 const localPassport = require("./http/passports/local.passport");
 const googlePassport = require("./http/passports/google.passport");
-const githubPassport = require('./http/passports/github.passport')
+const githubPassport = require("./http/passports/github.passport");
+var methodOverride = require("method-override");
 var passport = require("passport");
 const studentRouter = require("./routes/students/index");
 const teacherRouter = require("./routes/teacher/index");
@@ -42,6 +43,7 @@ passport.deserializeUser(async function (id, done) {
 passport.use("local", localPassport);
 passport.use("google", googlePassport);
 passport.use("github", githubPassport);
+
 // view engine setup
 app.set("views", path.join(__dirname, "resources/views"));
 app.set("view engine", "ejs");
@@ -51,10 +53,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
+app.use(
+  methodOverride(function (req, res) {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      // look in urlencoded POST bodies and delete it
+      var method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+  })
+);
 //Router
 app.use("/student", studentRouter);
 app.use("/teacher", teacherRouter);
-app.use("/", adminRouter);
+app.use("/admin", adminRouter);
 app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler

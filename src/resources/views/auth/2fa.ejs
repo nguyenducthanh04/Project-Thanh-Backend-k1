@@ -17,18 +17,22 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="/admin" class="h1">F8-Classes</a>
+      <a href="/admin" class="h1">LBX-Class</a>
     </div>
     <div class="card-body">
+      <p class="login-box-msg">
+        Mã OTP đã được gửi đến email:
+        <span style="color: red"><%= user.email %></span>
+      </p>
       <p class="login-box-msg">VERIFY OTP</p>
       <form action="" method="post">
         <div class="input-group mb-3">
           <input
-          type="number"
-          name="otp"
-          class="form-control"
-          placeholder="Nhập mã ..."
-        />
+            type="number"
+            name="otp"
+            class="form-control"
+            placeholder="Nhập mã ..."
+          />
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -36,8 +40,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-8">
-          </div>
+          <div class="col-8"></div>
           <!-- /.col -->
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">

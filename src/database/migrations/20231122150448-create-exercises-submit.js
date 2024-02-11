@@ -12,10 +12,12 @@ module.exports = {
       studentId: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
+        onDelete: 'CASCADE',
       },
       exerciseId: {
         type: Sequelize.INTEGER,
         references: { model: "exercises", key: "id" },
+        onDelete: 'CASCADE',
       },
       content: {
         type: Sequelize.TEXT,
