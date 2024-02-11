@@ -522,11 +522,7 @@ class ClassController {
     } catch (err) {
       console.log("Có lỗi xảy ra !");
       // throw err;
-      res.redirect(
-        `/admin/createStudentClass/${classId}?error=${encodeURIComponent(
-          "Có lỗi xảy ra!"
-        )}`
-      ); // Truyền thông báo lỗi qua query parameter
+      res.send("Lỗi 500 rồi bro !");
     }
   }
   async excersiseClass(req, res) {
