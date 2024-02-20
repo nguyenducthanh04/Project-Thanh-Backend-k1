@@ -132,7 +132,8 @@
                 </h5>
                 <div class="d-flex align-items-center mb-3">
                   <p class="mb-0" style="color: #fff">
-                    March 07, 2021
+                    <!-- March 07, 2021 -->
+                    <%= moment(item.createdAt).format('MM/DD/YYYY') %>
                     <span class="badge bg-primary" style="color: #fff"
                       >Pending</span
                     >
@@ -182,8 +183,8 @@
                   class="rounded-circle shadow-1-strong me-3"
                   src="/assets/img/thanhdz.jpg"
                   alt="avatar"
-                  width="60"
-                  height="60"
+                  width="40"
+                  height="40"
                   style="margin-right: 8px"
                 />
                 <div>
@@ -192,7 +193,7 @@
                   </h5>
                   <div class="d-flex align-items-center mb-3">
                     <p class="mb-0" style="color: #fff">
-                      March 07, 2021
+                      <%= moment(itemChild.createdAt).format('MM/DD/YYYY') %>
                       <span class="badge bg-primary" style="color: #fff"
                         >Pending</span
                       >

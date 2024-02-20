@@ -89,6 +89,38 @@
         </td>
       </tr>
       <tr>
+        <tr>
+          <td>Quản lý tài liệu</td>
+          <td>
+            <div class="row">
+              <div class="col">
+                <label for="">
+                  <input type="checkbox" name="permission" value="document.read" <%= permissionUtil.get(permissionList, "document.read") ? "checked" : ""%>/>
+                  Xem
+                </label>
+              </div>
+              <div class="col">
+                <label for="">
+                  <input type="checkbox" name="permission" value="document.add" <%= permissionUtil.get(permissionList, "document.add") ? "checked" : ""%>/>
+                  Thêm
+                </label>
+              </div>
+              <div class="col">
+                <label for="">
+                  <input type="checkbox" name="permission" value="document.update" <%= permissionUtil.get(permissionList, "document.update") ? "checked" : ""%>/>
+                  Sửa
+                </label>
+              </div>
+              <div class="col">
+                <label for="">
+                  <input type="checkbox" name="permission" value="document.delete" <%= permissionUtil.get(permissionList, "document.delete") ? "checked" : ""%>/>
+                  Xóa
+                </label>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
         <td>Quản lý Classes</td>
         <td>
           <div class="row">
@@ -157,7 +189,7 @@
             <div class="col">
               <label for="">
                 <input type="checkbox" name="permission" value="admin.read" <%= permissionUtil.get(permissionList, "admin.read") ? "checked" : ""%>/>
-                Admin
+                Super Admin
               </label>
             </div>
           </div>

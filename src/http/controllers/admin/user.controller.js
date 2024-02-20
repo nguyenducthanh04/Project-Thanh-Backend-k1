@@ -512,18 +512,13 @@ class UserController {
         },
       ],
     });
-    console.log("hello", teacherCalendars);
     const calendarArray = [];
     teacherCalendars.forEach((calendar) => {
-      console.log("hic", calendar.class.scheduleclasses);
-      console.log(calendar.scheduleDate);
       calendarArray.push({
         title: calendar.class.name,
         start: calendar.scheduleDate,
       });
     });
-    console.log(4564654);
-    console.log("calendarArray", calendarArray);
     const permissions = await permissionUser(req);
     res.render("admin/calendar", {
       moduleName,

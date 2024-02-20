@@ -32,4 +32,10 @@ router.post("/addDocument/:id", TeacherController.handleAddDocuments);
 router.get("/addMoreDocument/:id", TeacherController.addMoreDocument);
 router.post("/addMoreDocument/:id", TeacherController.handleAddMoreDocument);
 router.get("/listStudentClass/:id", TeacherController.listStudentClass);
+router.get("/editModuleDocument/:id", TeacherController.editModuleDocument);
+router.post(
+  "/editModuleDocument/:id",
+  TeacherController.handleEditModuleDocument
+);
+
 module.exports = router;

@@ -346,7 +346,7 @@ class CourseController {
         });
       }
     }
-    res.send("edit");
+    res.redirect(`/admin/editModuleDocument/${id}`);
   }
   async deleleAllDocument(req, res) {
     const { id } = req.params;

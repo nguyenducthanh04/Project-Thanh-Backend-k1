@@ -177,6 +177,7 @@ class TeacherController {
       user,
       permissions,
       isPermission,
+      moment,
     });
   }
   async handleCommentExcersise(req, res) {
@@ -308,6 +309,55 @@ class TeacherController {
       isPermission,
       listStudent,
     });
+  }
+  async editModuleDocument(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const Modules = await CourseModule.findByPk(id, {
+      include: {
+        model: ModuleDocument,
+      },
+    });
+    console.log("log id:", Modules);
+    const permissions = await permissionUser(req);
+    res.render("courses/editModuleDocument", {
+      title,
+      moduleName,
+      Modules,
+      permissions,
+      isPermission,
+    });
+  }
+  async handleEditModuleDocument(req, res) {
+    const { name, pathName } = req.body;
+    const { id } = req.params;
+    await CourseModule.update(
+      { name: name },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    await ModuleDocument.destroy({
+      where: {
+        moduleId: id,
+      },
+    });
+    if (pathName.length === 1) {
+      await ModuleDocument.create({
+        pathName: pathName,
+        moduleId: id,
+      });
+    } else {
+      for (let i = 0; i < pathName.length; i++) {
+        await ModuleDocument.create({
+          pathName: pathName[i],
+          moduleId: id,
+        });
+      }
+    }
+    res.redirect(`/teacher/editModuleDocument/${id}`);
   }
 }
 module.exports = new TeacherController();

@@ -20,6 +20,7 @@ const StudentClass = model.students_classes;
 const Excersise = model.exercises;
 const TeacherCalendar = model.teacher_calendar;
 const Comments = model.comments;
+const { getArrayTimeLearn } = require("../../../utils/admin.util");
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -144,12 +145,24 @@ class ClassController {
         endDate: endDate,
         courseId: courseId,
       });
+      let arrayTimeLearn = [];
+      arrayTimeLearn.push(startTime, endTime);
+      const newArrayTimeLearn = arrayTimeLearn.flat();
+      console.log("log1:", schedule, startDate, endDate, newArrayTimeLearn);
+      const selectedDays = getArrayTimeLearn(
+        schedule,
+        startDate,
+        endDate,
+        newArrayTimeLearn
+      );
       await Class.addUser(teacher);
-      await TeacherCalendar.create({
-        teacherId: teacher.id,
-        classId: Class.id,
-        scheduleDate: null,
-      });
+      for (let i = 0; i < selectedDays.length; i += 2) {
+        await TeacherCalendar.create({
+          teacherId: teacher.id,
+          classId: Class.id,
+          scheduleDate: selectedDays[i],
+        });
+      }
       if (schedule.length === 1) {
         await Schedule.create({
           schedule: schedule,
@@ -588,6 +601,7 @@ class ClassController {
       user,
       permissions,
       isPermission,
+      moment,
     });
   }
   async handleCommentExcersise(req, res) {
@@ -704,6 +718,25 @@ class ClassController {
       },
     });
     res.redirect(`/admin/classList`);
+  }
+  async attendance(req, res) {
+    const title = "";
+    const user = req.user;
+    const classId = req.params.id;
+    const classItem = await Classes.findByPk(classId, [
+      {
+        include: {
+          model: TeacherCalendar,
+        },
+      },
+    ]);
+    const permissions = await permissionUser(req);
+    res.render("classes/attendance", {
+      title,
+      isPermission,
+      permissions,
+      user,
+    });
   }
 }
 module.exports = new ClassController();

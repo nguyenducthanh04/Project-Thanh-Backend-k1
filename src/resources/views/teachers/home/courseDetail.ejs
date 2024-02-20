@@ -40,11 +40,13 @@
             <% item.module_documents.forEach((itemList) => { %>
             <div class="panel-body">
               <a href="<%= itemList.pathName %>"><%= itemList.pathName %></a>
+              <% if(isPermission(permissions, "document.delete")) { %>
               <a
                 href="/admin/deleteDocument/<%= itemList.id %>"
                 class="btn btn-danger"
                 >Delete</a
               >
+              <% } %>
             </div>
             <% }) %>
           </div>
@@ -55,13 +57,15 @@
           >Thêm link tài liệu</a
         >
         <div style="display: flex; margin-bottom: 6px">
+          <% if(isPermission(permissions, "document.delete")) { %>
           <a
             href="/admin/deleteALlDocument/<%= item.id %>"
             class="btn btn-danger"
             >Delete</a
           >
+          <% } %>
           <a
-            href="/admin/editModuleDocument/<%= item.id %>"
+            href="/teacher/editModuleDocument/<%= item.id %>"
             class="btn btn-warning"
             style="margin-left: 8px"
             >Edit</a
@@ -81,73 +85,6 @@
 </div>
 
 <style>
-  /* body {
-    background: #ccc;
-  }
-  .container {
-    margin-left: 0;
-    margin-right: 0;
-  }
-  .accordion {
-    margin: 40px 0;
-  }
-  .accordion .item {
-    border: none;
-    margin-bottom: 50px;
-    background: none;
-  }
-  .t-p {
-    color: #000;
-    padding: 40px 30px 0px 30px;
-  }
-  .accordion .item .item-header h2 button.btn.btn-link {
-    background: #ccc;
-    color: #000;
-    border-radius: 0px;
-    font-family: "Poppins";
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 2.5;
-    text-decoration: none;
-  }
-  .accordion .item .item-header {
-    border-bottom: none;
-    background: transparent;
-    padding: 0px;
-    margin: 2px;
-  }
-
-  .accordion .item .item-header h2 button {
-    color: white;
-    font-size: 20px;
-    padding: 15px;
-    display: block;
-    width: 100%;
-    text-align: left;
-  }
-
-  .accordion .item .item-header h2 i {
-    float: right;
-    font-size: 30px;
-    color: #eca300;
-    background-color: black;
-    width: 60px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-  }
-
-  button.btn.btn-link.collapsed i {
-    transform: rotate(0deg);
-  }
-
-  button.btn.btn-link i {
-    transform: rotate(180deg);
-    transition: 0.5s;
-  } */
-
   a:hover,
   a:focus {
     text-decoration: none;
