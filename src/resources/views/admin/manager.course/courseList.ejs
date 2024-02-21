@@ -55,9 +55,7 @@
       <th width="10%">Học thử</th>
       <th>Thời gian</th>
       <th>Sửa</th>
-      <% if(isPermission(permissions, "courses.delete")) { %>
       <th>Xóa</th>
-      <% } %>
     </tr>
   </thead>
   <tbody>
@@ -80,7 +78,6 @@
           ><i class="far fa-edit" style="font-size: 1.2rem"></i
         ></a>
       </td>
-      <% if(isPermission(permissions, "courses.delete")) { %>
       <td>
         <form
           action="/admin/deleteCourse/<%= course.id %>"
@@ -88,14 +85,10 @@
           method="post"
         >
           <button class="btn btn-sm">
-            <i
-              class="fas fa-trash-alt"
-              style="font-size: 1.2rem; color: #fff"
-            ></i>
+            <i class="fas fa-trash-alt" style="font-size: 1.2rem"></i>
           </button>
         </form>
       </td>
-      <% } %>
     </tr>
     <% }) %>
   </tbody>

@@ -600,7 +600,6 @@ class UserController {
         model: Roles,
       },
     });
-    console.log("haha", user);
     const permissions = await permissionUser(req);
     res.render("admin/permissions/index", {
       title,

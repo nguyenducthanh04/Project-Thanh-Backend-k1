@@ -20,6 +20,7 @@ const StudentClass = model.students_classes;
 const Excersise = model.exercises;
 const TeacherCalendar = model.teacher_calendar;
 const Comments = model.comments;
+const StudentAttendance = model.students_attendance;
 const { getArrayTimeLearn } = require("../../../utils/admin.util");
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
@@ -28,7 +29,6 @@ const userService = require("../../../http/services/userService");
 const typeService = require("../../services/typeService");
 const courseService = require("../../services/courseService");
 const classService = require("../../services/classService");
-const { Console } = require("console");
 const moduleName = "Lớp học";
 
 class ClassController {
@@ -723,20 +723,75 @@ class ClassController {
     const title = "";
     const user = req.user;
     const classId = req.params.id;
-    const classItem = await Classes.findByPk(classId, [
-      {
-        include: {
+    const classItem = await Classes.findByPk(classId, {
+      include: [
+        {
           model: TeacherCalendar,
         },
+        {
+          model: StudentClass,
+          include: {
+            model: User,
+          },
+        },
+      ],
+    });
+    const TeacherCalendars = classItem.teacher_calendars;
+    const StudentClassList = classItem.students_classes;
+    const studentAtend = await StudentAttendance.findAll({
+      where: {
+        classId: classId,
       },
-    ]);
+      attributes: {
+        exclude: ["learningStatusId"],
+      },
+    });
+    const arrayAttendances = [];
+    studentAtend.forEach((attendance) => {
+      const data = `${moment(attendance.dateLearning).format("YYYY-MM-DD")}||${
+        attendance.studentId
+      }||${attendance.classId}${attendance.status}`;
+      arrayAttendances.push(data);
+    });
+    console.log("ok:", TeacherCalendars);
     const permissions = await permissionUser(req);
     res.render("classes/attendance", {
       title,
       isPermission,
       permissions,
+      moduleName,
       user,
+      classItem,
+      TeacherCalendars,
+      StudentClassList,
+      arrayAttendances,
+      moment,
     });
+  }
+  async handleAttendance(req, res) {
+    const classId = req.params.id;
+    const { attendance } = req.body;
+    const attendanceList = [attendance];
+    console.log("diem danh:", attendance);
+    // await StudentAttendance.destroy({
+    //   where: {
+    //     classId: classId,
+    //   },
+    // });
+    for (let elm of attendance) {
+      if (elm) {
+        console.log(elm);
+        const attendanceItem = elm.split("||");
+        console.log(attendanceItem);
+        await StudentAttendance.create({
+          dateLearning: attendanceItem[0],
+          studentId: +attendanceItem[1],
+          classId: +classId,
+          status: +attendanceItem[2],
+        });
+      }
+    }
+    res.redirect(`/admin/class/attendance/${classId}`);
   }
 }
 module.exports = new ClassController();
