@@ -1,4 +1,4 @@
-<h1>Danh sach class</h1>
+<h3>Danh sách lớp đang dạy</h3>
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -8,6 +8,7 @@
       <th>Ngày khai giảng</th>
       <th>Ngày kết thúc</th>
       <th>Danh sách học viên</th>
+      <th>Điểm danh</th>
     </tr>
   </thead>
   <tbody>
@@ -25,6 +26,13 @@
           href="/teacher/listStudentClass/<%= item.id %>"
           class="btn btn-success"
           >Danh sách học viên</a
+        >
+      </td>
+      <td>
+        <a
+          href="/teacher/class/attendance/<%= item.id %>"
+          class="btn btn-success"
+          >Điểm danh</a
         >
       </td>
     </tr>

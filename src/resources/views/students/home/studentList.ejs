@@ -51,6 +51,7 @@
       <th>Phone</th>
       <th>Address</th>
       <th width="10%">Chức vụ</th>
+      <th width="10%">Phân quyền</th>
       <th>Sửa</th>
       <th>Xóa</th>
     </tr>
@@ -76,6 +77,11 @@
       <td>Học viên</td>
       <% } %>
       <td>
+        <a href="/admin/users/permission/<%= user.id %>" class="btn btn-success"
+          >Phân quyền</a
+        >
+      </td>
+      <td>
         <a href="/admin/editUser/<%= user.id %>"
           ><i class="far fa-edit" style="font-size: 1.2rem"></i
         ></a>
@@ -87,10 +93,7 @@
           method="post"
         >
           <button class="btn btn-sm">
-            <i
-              class="fas fa-trash-alt"
-              style="font-size: 1.2rem; color: #fff"
-            ></i>
+            <i class="fas fa-trash-alt" style="font-size: 1.2rem"></i>
           </button>
         </form>
       </td>

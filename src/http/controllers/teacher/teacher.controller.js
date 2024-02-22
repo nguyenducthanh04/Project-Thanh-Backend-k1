@@ -8,8 +8,12 @@ const { Op, where } = require("sequelize");
 const StudentClass = model.students_classes;
 const Schedule = model.scheduleclasses;
 const Excersise = model.exercises;
+const LearningStatus = model.learning_status;
+const StudentStatus = model.student_status;
 const moment = require("moment");
 const Comments = model.comments;
+const StudentAttendance = model.students_attendance;
+const TeacherCalendar = model.teacher_calendar;
 const { isPermission } = require("../../../utils/permission");
 const permissionUser = require("../../../utils/permissionUser");
 const classService = require("../../services/classService");
@@ -34,29 +38,18 @@ class TeacherController {
     const { id } = req.params;
     const user = req.user;
     const userId = user.id;
-    console.log("teacherId:", userId);
-    // const teacherLists = await User.findOne({
-    //   where: {
-    //     typeId: 2,
-    //     id: id,
-    //   },
-    // });
     const classTeacher = await User.findByPk(userId, {
       include: {
         model: Classes,
       },
     });
     const permissions = await permissionUser(req);
-    console.log("okTeacher:", classTeacher);
     const classTeacherList = classTeacher.classes;
-    console.log("0810:", classTeacherList);
-    // console.log("haha:", teacherLists.name);
     const schedules = await Schedule.findAll({
       include: {
         model: Classes,
       },
     });
-    console.log("okeae:", schedules);
     res.render("teachers/home/classTeacher", {
       title,
       moduleName,
@@ -78,9 +71,6 @@ class TeacherController {
       },
     });
     const permissions = await permissionUser(req);
-    console.log("classDetail:", classList);
-    console.log("course:", courseList);
-    console.log("schedule:", scheduleList);
     res.render("teachers/home/classDetail", {
       title,
       moduleName,
@@ -100,7 +90,6 @@ class TeacherController {
         classId: id,
       },
     });
-    console.log("excersise: ", excersiseList);
     const permissions = await permissionUser(req);
     res.render("teachers/home/classExcersise", {
       title,
@@ -135,9 +124,7 @@ class TeacherController {
   async excersiseClassDetail(req, res) {
     const title = "";
     const user = req.user;
-    console.log("user", user);
     const { id } = req.params;
-    console.log("id", typeof id);
     let excersiseList = await Excersise.findAll({
       where: {
         id: id,
@@ -165,8 +152,6 @@ class TeacherController {
         model: User,
       },
     });
-    console.log("Tet", commentAll);
-    // console.log("excersise: ", excersiseList);
     const permissions = await permissionUser(req);
     res.render("teachers/home/excersiseDetail", {
       title,
@@ -177,6 +162,7 @@ class TeacherController {
       user,
       permissions,
       isPermission,
+      moment,
     });
   }
   async handleCommentExcersise(req, res) {
@@ -207,7 +193,6 @@ class TeacherController {
         model: User,
       },
     });
-    console.log("ok:", CoursesList);
     const permissions = await permissionUser(req);
     res.render("teachers/home/coursesTeacher", {
       title,
@@ -229,8 +214,6 @@ class TeacherController {
         model: ModuleDocument,
       },
     });
-    console.log("courseList:", CourseList);
-    console.log("module:", Modules);
     const permissions = await permissionUser(req);
     res.render("teachers/home/courseDetail", {
       title,
@@ -299,7 +282,6 @@ class TeacherController {
         model: User,
       },
     });
-    console.log("2024:", listStudent);
     const permissions = await permissionUser(req);
     res.render("teachers/home/listStudentClass", {
       title,
@@ -308,6 +290,158 @@ class TeacherController {
       isPermission,
       listStudent,
     });
+  }
+  async editModuleDocument(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const Modules = await CourseModule.findByPk(id, {
+      include: {
+        model: ModuleDocument,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("courses/editModuleDocument", {
+      title,
+      moduleName,
+      Modules,
+      permissions,
+      isPermission,
+    });
+  }
+  async handleEditModuleDocument(req, res) {
+    const { name, pathName } = req.body;
+    const { id } = req.params;
+    await CourseModule.update(
+      { name: name },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    await ModuleDocument.destroy({
+      where: {
+        moduleId: id,
+      },
+    });
+    if (pathName.length === 1) {
+      await ModuleDocument.create({
+        pathName: pathName,
+        moduleId: id,
+      });
+    } else {
+      for (let i = 0; i < pathName.length; i++) {
+        await ModuleDocument.create({
+          pathName: pathName[i],
+          moduleId: id,
+        });
+      }
+    }
+    res.redirect(`/teacher/editModuleDocument/${id}`);
+  }
+  async studentClassDetail(req, res) {
+    const title = "";
+    const user = req.user;
+    const { id } = req.params;
+    const studentLists = await StudentClass.findOne({
+      where: {
+        id: id,
+      },
+      include: {
+        model: User,
+      },
+    });
+    const statusList = await LearningStatus.findAll();
+    const permissions = await permissionUser(req);
+    res.render("teachers/home/studentDetail", {
+      studentLists,
+      title,
+      moduleName,
+      user,
+      permissions,
+      statusList,
+      isPermission,
+    });
+  }
+  async handleLearningStatus(req, res) {
+    const { id } = req.params;
+    const { learning_status } = req.body;
+    // await StudentStatus.create({
+    //   learningStatusId: learning_status,
+    //   classId: null,
+    //   courseId: null,
+    //   studentId: id,
+    // });
+    res.send(`/teacher/studentDetail/${id}`);
+  }
+  async attendance(req, res) {
+    const title = "";
+    const user = req.user;
+    const classId = req.params.id;
+    const classItem = await Classes.findByPk(classId, {
+      include: [
+        {
+          model: TeacherCalendar,
+        },
+        {
+          model: StudentClass,
+          include: {
+            model: User,
+          },
+        },
+      ],
+    });
+    const TeacherCalendars = classItem.teacher_calendars;
+    const StudentClassList = classItem.students_classes;
+    const studentAtend = await StudentAttendance.findAll({
+      where: {
+        classId: classId,
+      },
+      attributes: {
+        exclude: ["learningStatusId"],
+      },
+    });
+    const arrayAttendances = [];
+    studentAtend.forEach((attendance) => {
+      const data = `${moment(attendance.dateLearning).format("YYYY-MM-DD")}||${
+        attendance.studentId
+      }||${attendance.classId}${attendance.status}`;
+      arrayAttendances.push(data);
+    });
+    const permissions = await permissionUser(req);
+    res.render("teachers/home/attendance", {
+      title,
+      isPermission,
+      permissions,
+      moduleName,
+      user,
+      classItem,
+      TeacherCalendars,
+      StudentClassList,
+      arrayAttendances,
+      moment,
+    });
+  }
+  async handleAttendance(req, res) {
+    const classId = req.params.id;
+    const { attendance } = req.body;
+    const deleteStudent = await StudentAttendance.destroy({
+      where: {
+        classId: classId,
+      },
+    });
+    for (let elm of attendance) {
+      if (elm) {
+        const attendanceItem = elm.split("||");
+        await StudentAttendance.create({
+          dateLearning: attendanceItem[0],
+          studentId: +attendanceItem[1],
+          classId: +classId,
+          status: +attendanceItem[2],
+        });
+      }
+    }
+    res.redirect(`/admin/class/attendance/${classId}`);
   }
 }
 module.exports = new TeacherController();

@@ -20,6 +20,8 @@ const StudentClass = model.students_classes;
 const Excersise = model.exercises;
 const TeacherCalendar = model.teacher_calendar;
 const Comments = model.comments;
+const StudentAttendance = model.students_attendance;
+const { getArrayTimeLearn } = require("../../../utils/admin.util");
 const { getError } = require("../../../utils/validate");
 const { make } = require("../../../utils/hash");
 const ExcelJS = require("exceljs");
@@ -27,14 +29,12 @@ const userService = require("../../../http/services/userService");
 const typeService = require("../../services/typeService");
 const courseService = require("../../services/courseService");
 const classService = require("../../services/classService");
-const { Console } = require("console");
 const moduleName = "Lớp học";
 
 class ClassController {
   async classList(req, res) {
     const title = "Danh sách lớp học";
     const { keyword } = req.query;
-    console.log(keyword);
     const filters = {};
     if (keyword?.length) {
       filters[Op.or] = [
@@ -57,20 +57,16 @@ class ClassController {
       where: filters,
     }); //Lấy tổng số bản ghi
     const totalCount = totalCountObj.count;
-    console.log(`totalCount ${totalCount}`);
     //Tính tổng số trang
     const totalPage = Math.ceil(totalCount / PER_PAGE);
-    console.log(`totalPage ${totalPage}`);
 
     //Lấy trang hiện tại
     let { page } = req.query;
     if (!page || page < 1 || page > totalPage) {
       page = 1;
     }
-    console.log(page);
     //Tính offset
     const offset = (page - 1) * PER_PAGE;
-    console.log(offset);
     const classList = await Classes.findAll({
       include: {
         model: Courses,
@@ -88,10 +84,6 @@ class ClassController {
       JSON.parse
     );
     const permissions = await permissionUser(req);
-
-    // console.log("classList:", classList);
-    // console.log("schedule list: ", schedules);
-    // console.log("schedule list new set: ", uniqueSchedules);
     res.render("admin/manager.class/classList", {
       classList,
       req,
@@ -114,8 +106,6 @@ class ClassController {
     const message = req.flash("message");
     const success = req.flash("success");
     const errors = req.flash("errors");
-    const Day = new Date();
-    console.log("Day", Day);
     const permissions = await permissionUser(req);
     res.render("admin/manager.class/createClass", {
       courseList,
@@ -144,12 +134,23 @@ class ClassController {
         endDate: endDate,
         courseId: courseId,
       });
+      let arrayTimeLearn = [];
+      arrayTimeLearn.push(startTime, endTime);
+      const newArrayTimeLearn = arrayTimeLearn.flat();
+      const selectedDays = getArrayTimeLearn(
+        schedule,
+        startDate,
+        endDate,
+        newArrayTimeLearn
+      );
       await Class.addUser(teacher);
-      await TeacherCalendar.create({
-        teacherId: teacher.id,
-        classId: Class.id,
-        scheduleDate: null,
-      });
+      for (let i = 0; i < selectedDays.length; i += 2) {
+        await TeacherCalendar.create({
+          teacherId: teacher.id,
+          classId: Class.id,
+          scheduleDate: selectedDays[i],
+        });
+      }
       if (schedule.length === 1) {
         await Schedule.create({
           schedule: schedule,
@@ -183,13 +184,9 @@ class ClassController {
     const { id } = req.params;
     const message = req.flash("message");
     const errors = req.flash("errors");
-    // const classId = req.params.classId;
     const classDetail = await classService.getClassByPk(id);
-    console.log("ClassDetail: ", classDetail);
     const course = classDetail.course.name;
     const courseList = await courseService.getAllCourses();
-    console.log("Course: ", course);
-    // const scheduleList = await Schedule.findAll();
     const scheduleInfo = await Schedule.findAll({
       where: { classId: id },
     });
@@ -238,7 +235,6 @@ class ClassController {
           model: User,
         },
       });
-      console.log("hi", course.User.id);
       await TeacherCalendar.update(
         {
           teacherId: course.User.id,
@@ -277,13 +273,11 @@ class ClassController {
           });
         }
       }
-      console.log("Cập nhật thành công");
       req.flash("success", "Cập nhật thông tin lớp học thành công!");
       res.redirect(`/admin/editClass/${id}`);
     } else {
       req.flash("errors", errors.array());
       // req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
-      console.log(errors.array());
       return res.redirect(`/admin/editClass/${id}`);
     }
   }
@@ -375,9 +369,7 @@ class ClassController {
         classId: id,
       },
     });
-    console.log("ok:", classList);
     const permissions = await permissionUser(req);
-    // console.log("hihi: ", scheduleList);
     res.render("classes/index", {
       classList,
       scheduleList,
@@ -401,12 +393,9 @@ class ClassController {
       },
     });
     const studentIds = [];
-    // console.log("081024", classItem);
     classItem.students_classes.forEach((studentClass) => {
-      console.log("081024", studentClass);
       studentIds.push(studentClass.studentId);
     });
-    console.log("studentId:", studentIds);
     const filters = {};
     filters.typeId = 3;
     if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
@@ -469,17 +458,8 @@ class ClassController {
   async handleCreateStudentClass(req, res) {
     const classId = req.params.id;
     let { studentId } = req.body;
-    const statusId = 1;
+    const statusId = 3;
     try {
-      const checkStudent = await StudentClass.findOne({
-        where: {
-          studentId: studentId,
-          classId: classId,
-        },
-      });
-      // if (checkStudent) {
-      //   return res.redirect(`/admin/createStudentClass/${classId}`);
-      // } else {
       await StudentClass.destroy({
         where: {
           id: classId,
@@ -518,7 +498,6 @@ class ClassController {
         }
       );
       res.redirect(`/admin/createStudentClass/${classId}`);
-      // }
     } catch (err) {
       console.log("Có lỗi xảy ra !");
       // throw err;
@@ -533,7 +512,6 @@ class ClassController {
         classId: id,
       },
     });
-    console.log("excersise: ", excersiseList);
     const permissions = await permissionUser(req);
     res.render("classes/excersise", {
       title,
@@ -547,9 +525,7 @@ class ClassController {
   async excersiseClassDetail(req, res) {
     const title = "";
     const user = req.user;
-    console.log("user", user);
     const { id } = req.params;
-    console.log("id", typeof id);
     let excersiseList = await Excersise.findAll({
       where: {
         id: id,
@@ -577,7 +553,6 @@ class ClassController {
         model: User,
       },
     });
-    console.log("Tet", commentAll);
     const permissions = await permissionUser(req);
     res.render("classes/excersiseDetail", {
       title,
@@ -588,6 +563,7 @@ class ClassController {
       user,
       permissions,
       isPermission,
+      moment,
     });
   }
   async handleCommentExcersise(req, res) {
@@ -595,9 +571,6 @@ class ClassController {
     const { id } = req.params;
     const { parentId } = req.body;
     const classExcersise = await Excersise.findByPk(id);
-    console.log("ok", classExcersise.classId);
-    console.log("oki", id);
-    console.log("userId", user);
     const { content } = req.body;
     await Comments.create({
       classId: classExcersise.classId,
@@ -631,7 +604,6 @@ class ClassController {
   }
   async deleteComment(req, res) {
     const { id } = req.params;
-    console.log("id,", id);
     await Comments.destroy({
       where: {
         id: id,
@@ -704,6 +676,76 @@ class ClassController {
       },
     });
     res.redirect(`/admin/classList`);
+  }
+  async attendance(req, res) {
+    const title = "";
+    const user = req.user;
+    const classId = req.params.id;
+    const classItem = await Classes.findByPk(classId, {
+      include: [
+        {
+          model: TeacherCalendar,
+        },
+        {
+          model: StudentClass,
+          include: {
+            model: User,
+          },
+        },
+      ],
+    });
+    const TeacherCalendars = classItem.teacher_calendars;
+    const StudentClassList = classItem.students_classes;
+    const studentAtend = await StudentAttendance.findAll({
+      where: {
+        classId: classId,
+      },
+      attributes: {
+        exclude: ["learningStatusId"],
+      },
+    });
+    const arrayAttendances = [];
+    studentAtend.forEach((attendance) => {
+      const data = `${moment(attendance.dateLearning).format("YYYY-MM-DD")}||${
+        attendance.studentId
+      }||${attendance.classId}${attendance.status}`;
+      arrayAttendances.push(data);
+    });
+    const permissions = await permissionUser(req);
+    res.render("classes/attendance", {
+      title,
+      isPermission,
+      permissions,
+      moduleName,
+      user,
+      classItem,
+      TeacherCalendars,
+      StudentClassList,
+      arrayAttendances,
+      moment,
+    });
+  }
+  async handleAttendance(req, res) {
+    const classId = req.params.id;
+    const { attendance } = req.body;
+    const attendanceList = [attendance];
+    await StudentAttendance.destroy({
+      where: {
+        classId: classId,
+      },
+    });
+    for (let elm of attendance) {
+      if (elm) {
+        const attendanceItem = elm.split("||");
+        await StudentAttendance.create({
+          dateLearning: attendanceItem[0],
+          studentId: +attendanceItem[1],
+          classId: +classId,
+          status: +attendanceItem[2],
+        });
+      }
+    }
+    res.redirect(`/admin/class/attendance/${classId}`);
   }
 }
 module.exports = new ClassController();

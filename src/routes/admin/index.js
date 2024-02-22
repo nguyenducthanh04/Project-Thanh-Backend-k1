@@ -203,7 +203,6 @@ router.get("/deleteDocument/:id", CourseController.deleleDocument);
 router.get("/exportClass", ClassController.exportClass);
 // router.get("/teacher/calendar/:id", UserController.teacherCalendarAll);
 router.get("/teacher/calendar/:id", UserController.teacherCalendar);
-router.get("/student/attendance/class/:id", UserController.studentAttendance);
 router.get("/class/excersise/:id", ClassController.excersiseClass);
 router.get(
   "/class/excersiseDetail/:id",
@@ -232,5 +231,7 @@ router.post("/roles/edit/:id", UserController.handleEditRole);
 router.post("/roles/delete/:id", UserController.deleteRole);
 router.get("/class/listStudent/:id", ClassController.listStudentClass);
 router.post("/class/deleteStudent/:id", ClassController.deleteStudentClass);
+router.get("/class/attendance/:id", ClassController.attendance);
+router.post("/class/attendance/:id", ClassController.handleAttendance);
 
 module.exports = router;

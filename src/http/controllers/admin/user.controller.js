@@ -41,11 +41,9 @@ class UserController {
     const typeMsg = msg ? "danger" : "success";
     const success = req.flash("success");
     const { keyword, typeId } = req.query;
-    // console.log(keyword, typeId);
     const filters = {};
     filters.typeId = 1;
     if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
-      // filters.typeId = typeId === 'teacher' ? 2 : 3;
       if (typeId === "admin") {
         filters.typeId = 1;
       } else if (typeId === "teacher") {
@@ -201,15 +199,13 @@ class UserController {
       //   [Op.like] : `%${keyword}%`
       // }
     }
-    console.log(filters.name);
-    console.log(filters.email);
+
     const totalCountObj = await User.findAndCountAll({
       where: filters,
     }); //Lấy tổng số bản ghi
     const totalCount = totalCountObj.count;
     //Tính tổng số trang
     const totalPage = Math.ceil(totalCount / PER_PAGE);
-    console.log(totalPage);
     //Lấy trang hiện tại
     let { page } = req.query;
     if (!page || page < 1 || page > totalPage) {
@@ -224,9 +220,6 @@ class UserController {
       offset: offset,
     });
     const permissions = await permissionUser(req);
-    console.log("userlist", userList);
-    console.log(await User.count()); //lay tong so ban ghi
-    console.log(`Tổng số trang: ${totalPage}`);
     res.render("teachers/home/teacherList", {
       userList,
       user,
@@ -245,7 +238,6 @@ class UserController {
     const title = "Thêm mới người dùng";
     const user = req.user;
     const typeUser = await typeService.getAllType();
-    console.log(`Danh sách typeUser ${typeUser}`);
     const message = req.flash("message");
     const success = req.flash("success");
     const errors = req.flash("errors");
@@ -273,7 +265,6 @@ class UserController {
     } else {
       req.flash("errors", errors.array());
       req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
-      console.log(errors.array());
       return res.redirect("/admin/createUser");
     }
   }
@@ -309,7 +300,6 @@ class UserController {
         id: id,
       },
     });
-    console.log("Cập nhật thành công");
     req.flash("success", "Cập nhật thành công");
     res.redirect(`/admin/editUser/${id}`);
   }
@@ -350,7 +340,6 @@ class UserController {
       { header: "Phone", key: "phone", width: 30 },
       { header: "Address", key: "address", width: 30 },
     ];
-    // console.log('Danh sach hoc sinh: ', studentList);
     adminList.forEach((user) => {
       worksheet.addRow(user);
     });
@@ -383,7 +372,6 @@ class UserController {
       { header: "Phone", key: "phone", width: 30 },
       { header: "Address", key: "address", width: 30 },
     ];
-    // console.log('Danh sach hoc sinh: ', studentList);
     studentList.forEach((user) => {
       worksheet.addRow(user);
     });
@@ -459,10 +447,6 @@ class UserController {
       },
     });
     const classTeacherList = classTeacher.classes;
-    console.log("0810:", classTeacherList);
-    const b = classTeacherList.forEach((item) => {
-      console.log("b", item);
-    });
     const permissions = await permissionUser(req);
     res.render("admin/teacher/index", {
       title,
@@ -512,18 +496,13 @@ class UserController {
         },
       ],
     });
-    console.log("hello", teacherCalendars);
     const calendarArray = [];
     teacherCalendars.forEach((calendar) => {
-      console.log("hic", calendar.class.scheduleclasses);
-      console.log(calendar.scheduleDate);
       calendarArray.push({
         title: calendar.class.name,
         start: calendar.scheduleDate,
       });
     });
-    console.log(4564654);
-    console.log("calendarArray", calendarArray);
     const permissions = await permissionUser(req);
     res.render("admin/calendar", {
       moduleName,
@@ -558,13 +537,7 @@ class UserController {
         },
       ],
     });
-    console.log("studentClass:", studentClass);
     const permissions = await permissionUser(req);
-    // let studentClassList = studentClass.class;
-    // if (typeof studentClassList === "object") {
-    //   studentClassList = [studentClassList];
-    // }
-    // console.log("haha", studentClassList);
     res.render("admin/student/index", {
       studentLists,
       title,
@@ -581,10 +554,6 @@ class UserController {
 
     const startDate = classDate.startDate;
     const endDate = classDate.endDate;
-
-    const numberOfWeeks = differenceInWeeks(endDate, startDate);
-
-    console.log("Số tuần trong khoảng thời gian là:", numberOfWeeks);
     const permissions = await permissionUser(req);
     res.render("admin/student/attendance", {
       title,
@@ -605,7 +574,6 @@ class UserController {
         model: Roles,
       },
     });
-    console.log("haha", user);
     const permissions = await permissionUser(req);
     res.render("admin/permissions/index", {
       title,

@@ -152,7 +152,6 @@ class CourseController {
   async handleEditCourse(req, res) {
     const { id } = req.params;
     const courseData = req.body;
-    console.log("reqbody:", courseData);
     await Courses.update(courseData, {
       where: {
         id: id,
@@ -287,7 +286,6 @@ class CourseController {
   async handleAddMoreDocument(req, res) {
     const { id } = req.params;
     const { pathName } = req.body;
-    console.log("id test:", id);
     const courseModule = await CourseModule.findOne({
       where: {
         id,
@@ -307,7 +305,6 @@ class CourseController {
         model: ModuleDocument,
       },
     });
-    console.log("log id:", Modules);
     const permissions = await permissionUser(req);
     res.render("courses/editModuleDocument", {
       title,
@@ -346,7 +343,7 @@ class CourseController {
         });
       }
     }
-    res.send("edit");
+    res.redirect(`/admin/editModuleDocument/${id}`);
   }
   async deleleAllDocument(req, res) {
     const { id } = req.params;
@@ -365,6 +362,128 @@ class CourseController {
       },
     });
     res.send("ok");
+  }
+  async createStudentClass(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const user = req.user;
+    const { keyword, typeId } = req.query;
+    const classItem = await Courses.findByPk(id, {
+      include: {
+        model: StudentClass,
+      },
+    });
+    const studentIds = [];
+    classItem.students_classes.forEach((studentClass) => {
+      studentIds.push(studentClass.studentId);
+    });
+    const filters = {};
+    filters.typeId = 3;
+    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
+      // filters.typeId = typeId === 'teacher' ? 2 : 3;
+      if (typeId === "admin") {
+        filters.typeId = 1;
+      } else if (typeId === "teacher") {
+        filters.typeId = 2;
+      } else {
+        filters.typeId = 3;
+      }
+    }
+    if (keyword?.length) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like]: `%${keyword}%`,
+          },
+        },
+        {
+          email: {
+            [Op.like]: `%${keyword}%`,
+          },
+        },
+      ];
+    }
+    const totalCountObj = await User.findAndCountAll({
+      where: filters,
+    }); //Lấy tổng số bản ghi
+    const totalCount = totalCountObj.count;
+    //Tính tổng số trang
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    //Lấy trang hiện tại
+    let { page } = req.query;
+    if (!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+    //Tính offset
+    const offset = (page - 1) * PER_PAGE;
+    const userList = await User.findAll({
+      where: filters,
+      limit: +PER_PAGE,
+      offset: offset,
+    });
+    const permissions = await permissionUser(req);
+    res.render("classes/createStudent", {
+      userList,
+      user,
+      req,
+      totalPage,
+      getUrl,
+      page,
+      moduleName,
+      title,
+      studentIds,
+      permissions,
+      isPermission,
+    });
+  }
+  async handleCreateStudentClass(req, res) {
+    const classId = req.params.id;
+    let { studentId } = req.body;
+    const statusId = 3;
+    try {
+      await StudentClass.destroy({
+        where: {
+          id: classId,
+        },
+      });
+      if (typeof studentId === "string") {
+        studentId = [studentId];
+      }
+      if (studentId.length === 1) {
+        await StudentClass.create({
+          studentId: studentId,
+          classId: classId,
+          statusId: statusId,
+          completedDate: null,
+          dropDate: null,
+          recover: null,
+        });
+      } else {
+        for (let i = 0; i < studentId.length; i++) {
+          await StudentClass.create({
+            studentId: studentId[i],
+            classId: classId,
+            statusId: statusId,
+            completedDate: null,
+            dropDate: null,
+            recover: null,
+          });
+        }
+      }
+      await Classes.update(
+        { quantity: studentId.length },
+        {
+          where: {
+            id: classId,
+          },
+        }
+      );
+      res.redirect(`/admin/createStudentClass/${classId}`);
+      // }
+    } catch (err) {
+      // throw err;
+      res.send("Lỗi 500 rồi bro !");
+    }
   }
 }
 module.exports = new CourseController();

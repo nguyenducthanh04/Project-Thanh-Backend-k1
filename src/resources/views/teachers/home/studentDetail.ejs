@@ -21,38 +21,29 @@
   <body>
     <p class="text-info-teacher">
       <strong style="text-decoration: underline">Tên học viên:</strong> <%=
-      studentLists.name %>
+      studentLists.User.name %>
     </p>
     <p class="text-info-teacher">
       <strong style="text-decoration: underline">Email:</strong> <%=
-      studentLists.email %>
+      studentLists.User.email %>
     </p>
     <p class="text-info-teacher">
       <strong style="text-decoration: underline">Số điện thoại:</strong> <%=
-      studentLists.phone %>
+      studentLists.User.phone %>
     </p>
     <p class="text-info-teacher">
       <strong style="text-decoration: underline">Địa chỉ:</strong> <%=
-      studentLists.address %>
+      studentLists.User.address %>
     </p>
-    <strong style="text-decoration: underline; font-size: 1.2rem"
-      >Danh sách lớp học và khóa học đang tham gia</strong
-    >
-    <table style="margin: 12px 0px">
-      <thead>
-        <tr>
-          <th>Tên lớp</th>
-          <th>Tên khóa học</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% studentClass.forEach((item) => { %>
-        <tr>
-          <td><%= item.class.name %></td>
-          <td><%= item.class.course.name %></td>
-        </tr>
+    <form action="" method="post">
+      <label for="learning_status">Trạng thái học:</label>
+      <select name="learning_status" class="form-select">
+        <option value="<%= %>">Chọn trạng thái</option>
+        <% statusList.forEach(({id, name}) => { %>
+        <option value="<%= id %>"><%= name %></option>
         <% }) %>
-      </tbody>
-    </table>
+      </select>
+      <button class="btn btn-success" type="submit">Lưu trạng thái</button>
+    </form>
   </body>
 </html>

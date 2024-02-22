@@ -12,17 +12,19 @@
     </tr>
   </thead>
   <tbody>
-    <% CoursesList.forEach((item, index) => { %>
+    <% studentClass.forEach((item, index) => { %>
     <tr>
       <td><%= index + 1 %></td>
       <td>
-        <a href="/teacher/coursesDetail/<%= item.id %>"><%= item.name %></a>
+        <a href="/student/coursesDetail/<%= item.class.course.id %>"
+          ><%= item.class.course.name %></a
+        >
       </td>
-      <td><%= item.price %></td>
-      <td><%= item.User.name %></td>
-      <td><%= item.tryLearn %></td>
-      <td><%= item.quantity %></td>
-      <td><%= item.duration %></td>
+      <td><%= item.class.course.price %></td>
+      <td><%= item.class.course.User.name %></td>
+      <td><%= item.class.course.tryLearn %></td>
+      <td><%= item.class.coursequantity %></td>
+      <td><%= item.class.course.duration %></td>
     </tr>
     <% }) %>
   </tbody>

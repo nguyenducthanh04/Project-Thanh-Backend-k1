@@ -1,0 +1,35 @@
+<h3>Danh sách lớp đang tham gia</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th width="5%">STT</th>
+      <th>Tên</th>
+      <th>Sĩ số</th>
+      <th>Ngày khai giảng</th>
+      <th>Ngày kết thúc</th>
+      <th>Điểm danh</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% classStudent.forEach((item, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td>
+        <a href="/student/classDetail/<%= item.class.id %>"
+          ><%= item.class.name %></a
+        >
+      </td>
+      <td><%= item.class.quantity %></td>
+      <td><%= moment(item.class.startDate).format('MM/DD/YYYY') %></td>
+      <td><%= moment(item.class.endDate).format('MM/DD/YYYY') %></td>
+      <td>
+        <a
+          href="/student/class/attendance/<%= item.class.id %>"
+          class="btn btn-success"
+          >Điểm danh</a
+        >
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>

@@ -12,9 +12,7 @@ module.exports = async (req, res) => {
         model: Roles,
       },
     });
-    console.log("user", user);
     const roles = user.roles;
-    console.log("roles", roles);
     // Lấy tất cả permission của từng Role
     let permissions = await Promise.all(
       roles.map(async ({ id }) => {
@@ -26,11 +24,9 @@ module.exports = async (req, res) => {
             model: Permission,
           },
         });
-        console.log("role:", role);
         return role.permissions;
       })
     );
-    console.log("permissions:", permissions);
     permissions = permissions.map((item) => {
       return item.map(({ value }) => value);
     });

@@ -1,0 +1,38 @@
+<h2>Điểm danh lớp : <%= classItem.name %></h2>
+<div class="" style="overflow-x: auto">
+  <form action="" method="post">
+    <table class="table table-bordered mb-3 mt-3">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Họ Tên</th>
+          <% TeacherCalendars.forEach((teacherCalendar)=> { %>
+          <th>
+            <%= moment(teacherCalendar.scheduleDate).format("DD/MM/YYYY") %>
+          </th>
+          <% }) %>
+        </tr>
+      </thead>
+      <tbody>
+        <% StudentClassList.forEach((stlCls, index) => {%>
+  
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= stlCls.User.name %></td>
+  
+          <% TeacherCalendars.forEach((teacherCalendar)=> { %>
+          <td>
+            <select name="attendance" id="">
+              <option value="">Chọn</option>
+              <option  <%= arrayAttendances.includes(`${moment(teacherCalendar.scheduleDate).format("YYYY-MM-DD")}||${stlCls.User.id}||${classItem.id}0`) ? "selected" : "" %> value="<%= moment(teacherCalendar.scheduleDate).format("YYYY-MM-DD") %>||<%= stlCls.User.id %>||0" >Nghỉ</option>
+              <option <%= arrayAttendances.includes(`${moment(teacherCalendar.scheduleDate).format("YYYY-MM-DD")}||${stlCls.User.id}||${classItem.id}1`) ? "selected" : "" %> value="<%= moment(teacherCalendar.scheduleDate).format("YYYY-MM-DD") %>||<%= stlCls.User.id %>||1" >Đến muộn</option>
+              <option <%= arrayAttendances.includes(`${moment(teacherCalendar.scheduleDate).format("YYYY-MM-DD")}||${stlCls.User.id}||${classItem.id}2`) ? "selected" : "" %> value="<%= moment(teacherCalendar.scheduleDate).format("YYYY-MM-DD") %>||<%= stlCls.User.id %>||2" >Đúng giờ</option>
+            </select>
+          </td>
+          <% }) %>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </form>
+</div>

@@ -11,25 +11,68 @@ router.get(
   AuthMiddleware,
   TeacherController.classTeacherDetail
 );
-router.get("/class/excersise/:id", TeacherController.classExcersise);
-router.get("/class/createExcersise/:id", TeacherController.createExcersise);
+router.get(
+  "/class/excersise/:id",
+  AuthMiddleware,
+  TeacherController.classExcersise
+);
+router.get(
+  "/class/createExcersise/:id",
+  AuthMiddleware,
+  TeacherController.createExcersise
+);
 router.post(
   "/class/createExcersise/:id",
   TeacherController.handleCreateExcersise
 );
 router.get(
   "/class/excersiseDetail/:id",
+  AuthMiddleware,
   TeacherController.excersiseClassDetail
 );
 router.post(
   "/class/excersiseDetail/:id",
   TeacherController.handleCommentExcersise
 );
-router.get("/courses", TeacherController.coursesList);
-router.get("/coursesDetail/:id", TeacherController.courseDetail);
-router.get("/addDocument/:id", TeacherController.addDocuments);
+router.get("/courses", AuthMiddleware, TeacherController.coursesList);
+router.get(
+  "/coursesDetail/:id",
+  AuthMiddleware,
+  TeacherController.courseDetail
+);
+router.get("/addDocument/:id", AuthMiddleware, TeacherController.addDocuments);
 router.post("/addDocument/:id", TeacherController.handleAddDocuments);
-router.get("/addMoreDocument/:id", TeacherController.addMoreDocument);
+router.get(
+  "/addMoreDocument/:id",
+  AuthMiddleware,
+  TeacherController.addMoreDocument
+);
 router.post("/addMoreDocument/:id", TeacherController.handleAddMoreDocument);
-router.get("/listStudentClass/:id", TeacherController.listStudentClass);
+router.get(
+  "/listStudentClass/:id",
+  AuthMiddleware,
+  TeacherController.listStudentClass
+);
+router.get(
+  "/editModuleDocument/:id",
+  AuthMiddleware,
+  TeacherController.editModuleDocument
+);
+router.post(
+  "/editModuleDocument/:id",
+  TeacherController.handleEditModuleDocument
+);
+router.get(
+  "/studentDetail/:id",
+  AuthMiddleware,
+  TeacherController.studentClassDetail
+);
+router.post("/studentDetail/:id", TeacherController.handleLearningStatus);
+router.get(
+  "/class/attendance/:id",
+  AuthMiddleware,
+  TeacherController.attendance
+);
+router.post("/class/attendance/:id", TeacherController.handleAttendance);
+
 module.exports = router;
