@@ -1,0 +1,31 @@
+<h2>Danh sách khóa học đang dạy</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th width="5%">STT</th>
+      <th>Tên</th>
+      <th>Học phí</th>
+      <th>Giảng viên</th>
+      <th>Học thử</th>
+      <th>Sĩ số</th>
+      <th>Thời gian học</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% studentClass.forEach((item, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td>
+        <a href="/student/coursesDetail/<%= item.class.course.id %>"
+          ><%= item.class.course.name %></a
+        >
+      </td>
+      <td><%= item.class.course.price %></td>
+      <td><%= item.class.course.User.name %></td>
+      <td><%= item.class.course.tryLearn %></td>
+      <td><%= item.class.coursequantity %></td>
+      <td><%= item.class.course.duration %></td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>

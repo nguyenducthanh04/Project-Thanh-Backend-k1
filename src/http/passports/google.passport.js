@@ -26,9 +26,6 @@ module.exports = new GoogleStrategy(
           email: email,
         },
       });
-      // if (userAccount) {
-      //   return done(null, request.user, { message: "Email đã liên kết" });
-      // }
       const provider = "google";
       let providerDetail = await user_socials.findOne({
         where: {
@@ -52,11 +49,7 @@ module.exports = new GoogleStrategy(
         return done(null, user, { message: "Liên kết thành công" });
       } else {
         console.log("Tài khoản đã liên kết ");
-        const user = await User.findOne({
-          where: {
-            id: providerDetail.userId,
-          },
-        });
+        request.flash("error", "Email đã được liên kết với tài khoản khác!");
         return done(null, request.user, { message: "Tài khoản đã liên kết" });
       }
 

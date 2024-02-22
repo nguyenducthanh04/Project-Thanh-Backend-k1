@@ -131,7 +131,7 @@ class StudentController {
       arrayAttendances.push(data);
     });
     const permissions = await permissionUser(req);
-    res.render("classes/attendance", {
+    res.render("students/home/attendance", {
       title,
       isPermission,
       permissions,
@@ -143,6 +143,139 @@ class StudentController {
       arrayAttendances,
       moment,
     });
+  }
+  async studentCourses(req, res) {
+    const title = "";
+    const user = req.user;
+    const studentId = req.user.id;
+    const studentClass = await StudentClass.findAll({
+      where: {
+        studentId: studentId,
+      },
+      include: [
+        {
+          model: Classes,
+          include: [
+            {
+              model: Courses,
+              include: [
+                {
+                  model: User, // Eager load User data linked with Courses
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    const permissions = await permissionUser(req);
+    res.render("students/home/studentCourses", {
+      title,
+      moduleName,
+      isPermission,
+      permissions,
+      user,
+      studentClass,
+    });
+  }
+  async courseDetail(req, res) {
+    const title = "";
+    const { id } = req.params;
+    const CourseList = await courseService.getCourseById(id);
+    const Modules = await CourseModule.findAll({
+      where: {
+        courseId: CourseList.id,
+      },
+      include: {
+        model: ModuleDocument,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("students/home/courseDetail", {
+      title,
+      moduleName,
+      permissions,
+      isPermission,
+      Modules,
+      CourseList,
+    });
+  }
+  async classExcersise(req, res) {
+    const title = "";
+    const { id } = req.params;
+    let excersiseList = await Excersise.findAll({
+      where: {
+        classId: id,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("students/home/classExcersise", {
+      title,
+      moduleName,
+      excersiseList,
+      id,
+      permissions,
+      isPermission,
+    });
+  }
+  async excersiseClassDetail(req, res) {
+    const title = "";
+    const user = req.user;
+    const { id } = req.params;
+    let excersiseList = await Excersise.findAll({
+      where: {
+        id: id,
+      },
+    });
+    const commentAll = await Comments.findAll({
+      where: {
+        title: id,
+        parentId: {
+          [Op.is]: null,
+        },
+      },
+      include: {
+        model: User,
+      },
+    });
+    const commentChild = await Comments.findAll({
+      where: {
+        title: id,
+        parentId: {
+          [Op.not]: null,
+        },
+      },
+      include: {
+        model: User,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("students/home/excersiseDetail", {
+      title,
+      moduleName,
+      excersiseList,
+      commentAll,
+      commentChild,
+      user,
+      permissions,
+      isPermission,
+      moment,
+    });
+  }
+  async handleCommentExcersise(req, res) {
+    const user = req.user;
+    const { id } = req.params;
+    const { parentId } = req.body;
+    const classExcersise = await Excersise.findByPk(id);
+    const { content } = req.body;
+    await Comments.create({
+      classId: classExcersise.classId,
+      title: id,
+      content: content,
+      parentId: parentId,
+      studentId: user.id,
+    });
+    res.redirect(`/teacher/class/excersiseDetail/${id}`);
   }
 }
 module.exports = new StudentController();

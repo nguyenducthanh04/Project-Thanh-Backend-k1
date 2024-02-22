@@ -194,8 +194,10 @@ class DashboardController {
   }
   async deleteSocialGithub(req, res) {
     const provider = "github";
+    const user = req.user;
     user_socials.destroy({
       where: {
+        userId: user.id,
         provider: provider,
       },
     });

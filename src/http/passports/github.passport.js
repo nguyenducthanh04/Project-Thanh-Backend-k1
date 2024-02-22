@@ -26,14 +26,18 @@ module.exports = new GitHubStrategy(
           providerId: profile.id,
           userId: request.user.id,
         });
+        const user = await User.findOne({
+          where: {
+            id: providerDetail.userId,
+          },
+        });
+        request.flash("success", "Liên kết đăng nhập với Gihub thành công");
+        return done(null, user, { message: "Liên kết thành công" });
+      } else {
+        console.log("Tài khoản đã liên kết ");
+        request.flash("error", "Email đã được liên kết với tài khoản khác!");
+        return done(null, request.user, { message: "Tài khoản đã liên kết" });
       }
-      const user = await User.findOne({
-        where: {
-          id: providerDetail.userId,
-        },
-      });
-      request.flash("success", "Liên kết đăng nhập với Gihub thành công");
-      return done(null, user, { message: "Liên kết thành công" });
     } else {
       let providerIdCheck = await user_socials.findOne({
         where: {
