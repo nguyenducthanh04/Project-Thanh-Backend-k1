@@ -37,5 +37,9 @@ router.post(
   "/editModuleDocument/:id",
   TeacherController.handleEditModuleDocument
 );
+router.get("/studentDetail/:id", TeacherController.studentClassDetail);
+router.post("/studentDetail/:id", TeacherController.handleLearningStatus);
+router.get("/class/attendance/:id", TeacherController.attendance);
+router.post("/class/attendance/:id", TeacherController.handleAttendance);
 
 module.exports = router;

@@ -221,7 +221,7 @@ module.exports = {
         return res.redirect("/student");
       }
     }
-
+    console.log("Type User: ", req.user.typeId);
     if (req.user.typeId === 1) {
       return res.redirect("/admin/settings");
     } else if (req.user.typeId === 2) {

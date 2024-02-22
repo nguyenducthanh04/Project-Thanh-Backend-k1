@@ -1,4 +1,4 @@
-<h3>Danh sách lớp đang dạy</h3>
+<h3>Danh sách lớp đang tham gia</h3>
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -7,27 +7,21 @@
       <th>Sĩ số</th>
       <th>Ngày khai giảng</th>
       <th>Ngày kết thúc</th>
-      <th>Danh sách học viên</th>
       <th>Điểm danh</th>
     </tr>
   </thead>
   <tbody>
-    <% classTeacherList.forEach((item, index) => { %>
+    <% classStudent.forEach((item, index) => { %>
     <tr>
       <td><%= index + 1 %></td>
       <td>
-        <a href="/teacher/classDetail/<%= item.id %>"><%= item.name %></a>
-      </td>
-      <td><%= item.quantity %></td>
-      <td><%= moment(item.startDate).format('MM/DD/YYYY') %></td>
-      <td><%= moment(item.endDate).format('MM/DD/YYYY') %></td>
-      <td>
-        <a
-          href="/teacher/listStudentClass/<%= item.id %>"
-          class="btn btn-success"
-          >Danh sách học viên</a
+        <a href="/student/classDetail/<%= item.class.id %>"
+          ><%= item.class.name %></a
         >
       </td>
+      <td><%= item.class.quantity %></td>
+      <td><%= moment(item.class.startDate).format('MM/DD/YYYY') %></td>
+      <td><%= moment(item.class.endDate).format('MM/DD/YYYY') %></td>
       <td>
         <a
           href="/teacher/class/attendance/<%= item.id %>"

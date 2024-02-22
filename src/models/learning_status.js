@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "statusId",
       });
       learning_status.hasMany(models.students_attendance);
+      // learning_status.hasMany(models.student_status, {
+      //   foreignKey: "learningStatusId",
+      // });
     }
   }
   learning_status.init(

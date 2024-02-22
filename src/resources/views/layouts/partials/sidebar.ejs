@@ -58,6 +58,18 @@
           </a>
         </li>
       <% } %>
+      <% if(isPermission(permissions, "student.read")) { %>
+        <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+          <a href="/student" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+              Tổng quan
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+        </li>
+      <% } %>
+   
       <% if(isPermission(permissions, "classesTeacher.read")) { %>
         <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
           <a href="/teacher/classes" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
@@ -69,6 +81,17 @@
           </a>
         </li>
         <% } %>
+        <% if(isPermission(permissions, "student.read")) { %>
+          <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+            <a href="/student/classes" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                 Danh sách lớp
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <% } %>
         <% if(isPermission(permissions, "classesTeacher.read")) { %>
           <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
             <a href="/teacher/courses" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
@@ -80,6 +103,17 @@
             </a>
           </li>
           <% } %>
+          <% if(isPermission(permissions, "student.read")) { %>
+            <li class="nav-item" <%= moduleName === "Tổng quan" ? "menu-is-opening menu-open" : "" %>>
+              <a href="/student/courses" class="nav-link <%= moduleName === "Tổng quan" ? "active" : "" %>">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                   Danh sách khóa học
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+            </li>
+            <% } %>
       <% if(isPermission(permissions, "admin.read")) { %>
         <li class="nav-item <%= moduleName === "Người dùng" ? "menu-is-opening menu-open" : "" %>">
           <a href="#" class="nav-link <%= moduleName === "Người dùng" ? "active" : "" %>">

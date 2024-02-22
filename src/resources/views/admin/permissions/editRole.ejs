@@ -152,32 +152,29 @@
         </td>
       </tr>
       <tr>
-        <td>Quản lý ClassesTeacher</td>
+        <td>Teacher</td>
         <td>
           <div class="row">
             <div class="col">
               <label for="">
                 <input type="checkbox" name="permission" value="classesTeacher.read" <%= permissionUtil.get(permissionList, "classesTeacher.read") ? "checked" : ""%>/>
-                Xem
+                Teacher
               </label>
             </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Student</td>
+        <td>
+          <div class="row">
             <div class="col">
               <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.add" <%= permissionUtil.get(permissionList, "classesTeacher.add") ? "checked" : ""%>/>
-                Thêm
+                <input type="checkbox" name="permission" value="student.read" <%= permissionUtil.get(permissionList, "student.read") ? "checked" : ""%>/>
+                Student
               </label>
             </div>
-            <div class="col">
-              <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.update" <%= permissionUtil.get(permissionList, "classesTeacher.update") ? "checked" : ""%>/>
-                Sửa
-              </label>
-            </div>
-            <div class="col">
-              <label for="">
-                <input type="checkbox" name="permission" value="classesTeacher.delete" <%= permissionUtil.get(permissionList, "classesTeacher.delete") ? "checked" : ""%>/>
-                Xóa
-              </label>
             </div>
           </div>
         </td>
