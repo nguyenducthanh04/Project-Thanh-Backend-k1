@@ -74,5 +74,10 @@ router.get(
   TeacherController.attendance
 );
 router.post("/class/attendance/:id", TeacherController.handleAttendance);
+router.get("/student/updateStatus/:id", TeacherController.updateStatusStudent);
+router.post(
+  "/student/updateStatus/:id",
+  TeacherController.handleUpdateStatusStudent
+);
 
 module.exports = router;

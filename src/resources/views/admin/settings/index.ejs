@@ -1,3 +1,8 @@
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <div class="mb-3">
   <span>Liên kết đăng nhập với Google</span>
   <label class="switch">

@@ -14,6 +14,7 @@ const user_socials = model.user_socials;
 const User = model.User;
 const type = model.types;
 const Courses = model.courses;
+const LearningStatus = model.learning_status;
 const Classes = model.classes;
 const Schedule = model.scheduleclasses;
 const StudentClass = model.students_classes;
@@ -34,6 +35,11 @@ const moduleName = "Lớp học";
 class ClassController {
   async classList(req, res) {
     const title = "Danh sách lớp học";
+    const msg = req.flash("error");
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
+    const success = req.flash("success");
+    const errors = req.flash("errors");
     const { keyword } = req.query;
     const filters = {};
     if (keyword?.length) {
@@ -86,6 +92,7 @@ class ClassController {
     const permissions = await permissionUser(req);
     res.render("admin/manager.class/classList", {
       classList,
+      typeMsg,
       req,
       moment,
       schedules,
@@ -96,6 +103,9 @@ class ClassController {
       title,
       permissions,
       isPermission,
+      message,
+      success,
+      errors,
     });
   }
   //Create Class
@@ -289,6 +299,7 @@ class ClassController {
         id: id,
       },
     });
+    req.flash("success", "Đã xóa thành công lớp học!");
     res.redirect("/admin/classList");
   }
   //Delete All Class
@@ -384,6 +395,11 @@ class ClassController {
 
   async createStudentClass(req, res) {
     const title = "";
+    const msg = req.flash("error");
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
+    const success = req.flash("success");
+    const errors = req.flash("errors");
     const { id } = req.params;
     const user = req.user;
     const { keyword, typeId } = req.query;
@@ -392,67 +408,32 @@ class ClassController {
         model: StudentClass,
       },
     });
+    const listUser = await User.findAll({
+      where: {
+        typeId: 3,
+      },
+    });
     const studentIds = [];
     classItem.students_classes.forEach((studentClass) => {
       studentIds.push(studentClass.studentId);
     });
-    const filters = {};
-    filters.typeId = 3;
-    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
-      // filters.typeId = typeId === 'teacher' ? 2 : 3;
-      if (typeId === "admin") {
-        filters.typeId = 1;
-      } else if (typeId === "teacher") {
-        filters.typeId = 2;
-      } else {
-        filters.typeId = 3;
-      }
-    }
-    if (keyword?.length) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
-    }
-    const totalCountObj = await User.findAndCountAll({
-      where: filters,
-    }); //Lấy tổng số bản ghi
-    const totalCount = totalCountObj.count;
-    //Tính tổng số trang
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
-    //Lấy trang hiện tại
-    let { page } = req.query;
-    if (!page || page < 1 || page > totalPage) {
-      page = 1;
-    }
-    //Tính offset
-    const offset = (page - 1) * PER_PAGE;
-    const userList = await User.findAll({
-      where: filters,
-      limit: +PER_PAGE,
-      offset: offset,
-    });
+    const studentClassList = await StudentClass.findAll();
     const permissions = await permissionUser(req);
     res.render("classes/createStudent", {
-      userList,
       user,
       req,
-      totalPage,
-      getUrl,
-      page,
       moduleName,
       title,
-      studentIds,
       permissions,
       isPermission,
+      studentClassList,
+      typeMsg,
+      message,
+      errors,
+      success,
+      classItem,
+      listUser,
+      studentIds,
     });
   }
   async handleCreateStudentClass(req, res) {
@@ -462,7 +443,7 @@ class ClassController {
     try {
       await StudentClass.destroy({
         where: {
-          id: classId,
+          classId: classId,
         },
       });
       if (typeof studentId === "string") {
@@ -497,6 +478,7 @@ class ClassController {
           },
         }
       );
+      req.flash("success", "Thêm thành công học viên vào lớp học!");
       res.redirect(`/admin/createStudentClass/${classId}`);
     } catch (err) {
       console.log("Có lỗi xảy ra !");
@@ -642,13 +624,19 @@ class ClassController {
   async listStudentClass(req, res) {
     const title = "";
     const { id } = req.params;
+    const className = await Classes.findByPk(id);
     const listStudent = await StudentClass.findAll({
       where: {
         classId: id,
       },
-      include: {
-        model: User,
-      },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: LearningStatus,
+        },
+      ],
     });
     const permissions = await permissionUser(req);
     res.render("classes/listStudent", {
@@ -657,30 +645,70 @@ class ClassController {
       isPermission,
       permissions,
       listStudent,
+      className,
     });
+  }
+  async updateStatusStudent(req, res) {
+    const title = "";
+    const user = req.user;
+    const msg = req.flash("error");
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
+    const success = req.flash("success");
+    const errors = req.flash("errors");
+    const { id } = req.params;
+    const studentInfo = await StudentClass.findByPk(id, {
+      include: {
+        model: User,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("classes/updateStatus", {
+      title,
+      user,
+      moduleName,
+      isPermission,
+      permissions,
+      studentInfo,
+      typeMsg,
+      errors,
+      success,
+      message,
+    });
+  }
+  async handleUpdateStatusStudent(req, res) {
+    const id = req.params.id;
+    const { statusId } = req.body;
+    await StudentClass.update(
+      { statusId: statusId },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    req.flash("success", "Cập nhật trạng thái học viên thành công!");
+    res.redirect(`/admin/student/updateStatus/${id}`);
   }
   async deleteStudentClass(req, res) {
     const { id } = req.params;
-    const studentClassId = await StudentClass.findOne({
-      where: {
-        id,
-      },
-      include: {
-        model: Classes,
-      },
-    });
     await StudentClass.destroy({
       where: {
         id: id,
-        classId: studentClassId.class.id,
       },
     });
+    req.flash("success", "Xóa thành công học viên khỏi lớp học!");
     res.redirect(`/admin/classList`);
   }
   async attendance(req, res) {
     const title = "";
     const user = req.user;
     const classId = req.params.id;
+    const msg = req.flash("error");
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
+    const success = req.flash("success");
+    const errors = req.flash("errors");
     const classItem = await Classes.findByPk(classId, {
       include: [
         {
@@ -723,6 +751,10 @@ class ClassController {
       StudentClassList,
       arrayAttendances,
       moment,
+      typeMsg,
+      message,
+      errors,
+      success,
     });
   }
   async handleAttendance(req, res) {
@@ -745,6 +777,7 @@ class ClassController {
         });
       }
     }
+    req.flash("success", "Điểm danh đã được lưu thành công!");
     res.redirect(`/admin/class/attendance/${classId}`);
   }
 }

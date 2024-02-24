@@ -278,9 +278,14 @@ class TeacherController {
       where: {
         classId: id,
       },
-      include: {
-        model: User,
-      },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: LearningStatus,
+        },
+      ],
     });
     const permissions = await permissionUser(req);
     res.render("teachers/home/listStudentClass", {
@@ -442,6 +447,38 @@ class TeacherController {
       }
     }
     res.redirect(`/admin/class/attendance/${classId}`);
+  }
+  async updateStatusStudent(req, res) {
+    const title = "";
+    const user = req.user;
+    const { id } = req.params;
+    const studentInfo = await StudentClass.findByPk(id, {
+      include: {
+        model: User,
+      },
+    });
+    const permissions = await permissionUser(req);
+    res.render("teachers/home/updateStatus", {
+      title,
+      user,
+      moduleName,
+      isPermission,
+      permissions,
+      studentInfo,
+    });
+  }
+  async handleUpdateStatusStudent(req, res) {
+    const id = req.params.id;
+    const { statusId } = req.body;
+    await StudentClass.update(
+      { statusId: statusId },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    res.redirect(`/teacher/student/updateStatus/${id}`);
   }
 }
 module.exports = new TeacherController();

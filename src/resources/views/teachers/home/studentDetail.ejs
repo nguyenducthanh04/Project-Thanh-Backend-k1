@@ -35,15 +35,5 @@
       <strong style="text-decoration: underline">Địa chỉ:</strong> <%=
       studentLists.User.address %>
     </p>
-    <form action="" method="post">
-      <label for="learning_status">Trạng thái học:</label>
-      <select name="learning_status" class="form-select">
-        <option value="<%= %>">Chọn trạng thái</option>
-        <% statusList.forEach(({id, name}) => { %>
-        <option value="<%= id %>"><%= name %></option>
-        <% }) %>
-      </select>
-      <button class="btn btn-success" type="submit">Lưu trạng thái</button>
-    </form>
   </body>
 </html>

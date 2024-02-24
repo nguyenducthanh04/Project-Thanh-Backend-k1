@@ -43,6 +43,7 @@
       class="form-control"
       placeholder="Nhập số điện thoại người dùng..."
     />
+    <span class="text-danger"><%= getError(errors, 'phone') %></span>
   </div>
   <div class="mb-3">
     <label for="">Address</label>
@@ -52,6 +53,7 @@
       class="form-control"
       placeholder="Nhập địa chỉ người dùng..."
     />
+    <span class="text-danger"><%= getError(errors, 'address') %></span>
   </div>
   <div class="mb-3">
     <label for="">Chức vụ</label>
@@ -69,6 +71,6 @@
   </div>
   <div class="d-grid">
     <button class="btn btn-success">Thêm</button>
-    <a href="/userList" class="btn btn-danger">Hủy</a>
+    <a href="/admin" class="btn btn-danger">Hủy</a>
   </div>
 </form>

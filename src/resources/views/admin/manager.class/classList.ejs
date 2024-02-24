@@ -1,4 +1,9 @@
 <h4 style="text-align: center">Danh sách lớp học</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="/admin/deleteAllClass" method="POST" style="margin-bottom: 8px">
   <input type="hidden" id="listDelete" name="listUserDelete" value="" />
   <button type="submit" class="btn btn-danger" id="deleteAll">
@@ -42,12 +47,12 @@
     <tr>
       <th><input id="checkboxAll" type="checkbox" /></th>
       <th width="5%">STT</th>
-      <th>Tên</th>
+      <th width="10%">Tên</th>
       <th>Sĩ số</th>
-      <th>Ngày khai giảng</th>
-      <th>Ngày kết thúc</th>
+      <th width="5%">Ngày khai giảng</th>
+      <th width="5%">Ngày kết thúc</th>
       <th>Lịch học</th>
-      <th>Thời gian học</th>
+      <th width="10%">Thời gian học</th>
       <th>Khóa học</th>
       <th width="10%">Thêm học viên</th>
       <th width="14%">Danh sách học viên</th>
@@ -100,21 +105,21 @@
       <td>
         <a
           href="/admin/createStudentClass/<%= classItem.id %>"
-          class="btn btn-success"
+          class="btn btn-primary"
           >Thêm học viên</a
         >
       </td>
       <td>
         <a
           href="/admin/class/listStudent/<%= classItem.id %>"
-          class="btn btn-success"
+          class="btn btn-primary"
           >Danh sách học viên</a
         >
       </td>
       <td>
         <a
           href="/admin/class/attendance/<%= classItem.id %>"
-          class="btn btn-success"
+          class="btn btn-primary"
           >Điểm danh</a
         >
       </td>

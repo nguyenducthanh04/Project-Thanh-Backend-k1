@@ -1,20 +1,12 @@
+<h4 style="text-align: center">
+  Thêm học viên vào lớp học <%= classItem.name %>
+</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="" class="mb-2" method="post">
-  <div class="row">
-    <div class="col-10">
-      <input
-        type="search"
-        name="keyword"
-        class="form-control"
-        value="<%= req.query.keyword %>"
-        placeholder="Tìm kiếm theo tên học viên hoặc email của học viên"
-      />
-    </div>
-    <div class="col-2">
-      <button type="submit" class="btn btn-primary">
-        <i class="fas fa-search"></i>
-      </button>
-    </div>
-  </div>
   <table class="table table-bordered mt-3">
     <thead>
       <tr>
@@ -27,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <% userList.forEach((user, index) => { %>
+      <% listUser.forEach((user, index) => { %>
       <tr>
         <td><%= index + 1 %></td>
         <td><%= user.name %></td>
@@ -44,88 +36,7 @@
     </tbody>
   </table>
   <button class="btn btn-success">Thêm</button>
+  <a href="/admin/classList" class="btn btn-danger">Hủy</a>
 </form>
 
 <!--Paginate--->
-<% if(totalPage >= 2) { %>
-<nav class="d-flex justify-content-end mt-4">
-  <ul class="pagination">
-    <% if(page > 1) { %>
-    <li class="page-item">
-      <a href="?<%= getUrl(req, page - 1) %>" class="page-link">Trước</a>
-    </li>
-    <% } %> <% if (page <= 4) { %>
-    <!-- Hiển thị 4 trang đầu -->
-    <% for (let i = 1; i <= 4 && i <= totalPage; i++) { %>
-    <li class="page-item <%= +page === +i ? 'active': ''%>">
-      <a href="?<%= getUrl(req, i) %>" class="page-link"><%= i %></a>
-    </li>
-    <% } %> <% if(page = 4) { %>
-    <!-- Hiển thị 1 trang sau trang hiện tại -->
-    <% if (page < totalPage) { %>
-    <li class="page-item">
-      <a href="?<%= getUrl(req, +page + 1) %>" class="page-link"
-        ><%= +page + 1 %></a
-      >
-    </li>
-    <% } %> <% } %> <% if(totalPage !== 2 && totalPage !== 3 && totalPage !== 4
-    && totalPage !== 5) { %> <% if(totalPage !== 5 + 1) { %>
-    <!-- Hiển thị dấu ba chấm -->
-    <li class="page-item">
-      <span class="page-link">...</span>
-    </li>
-    <% } %>
-    <!-- Hiển thị trang cuối -->
-    <li class="page-item">
-      <a href="/admin/studentList?page=<%= totalPage %>" class="page-link"
-        ><%= totalPage %></a
-      >
-    </li>
-    <% } %>
-
-    <!-- Hiển thị dấu ba chấm nếu trang hiện tại không thuộc 4 trang đầu -->
-    <% } else { %>
-    <!-- Hiển thị trang đầu -->
-    <li class="page-item">
-      <a href="/admin/studentList?page=1" class="page-link">1</a>
-    </li>
-    <!-- Hiển thị dấu ba chấm -->
-    <li class="page-item">
-      <span class="page-link">...</span>
-    </li>
-    <!-- Hiển thị 1 trang trước trang hiện tại -->
-    <% if (page > 1) { %>
-    <li class="page-item">
-      <a href="?<%= getUrl(req, page - 1) %>" class="page-link"
-        ><%= page - 1 %></a
-      >
-    </li>
-    <% } %>
-
-    <!-- Hiển thị trang hiện tại -->
-    <li class="page-item active">
-      <a href="?<%= getUrl(req, page) %>" class="page-link"><%= page %></a>
-    </li>
-
-    <!-- Hiển thị 1 trang sau trang hiện tại -->
-    <% if (page < totalPage) { %>
-    <li class="page-item">
-      <a href="?<%= getUrl(req, +page + 1) %>" class="page-link"
-        ><%= +page + 1 %></a
-      >
-    </li>
-    <% } %>
-
-    <!-- Ẩn dấu ba chấm khi đến trang thứ totalPage - 1 -->
-    <% if (page < totalPage - 2) { %>
-    <li class="page-item">
-      <span class="page-link">...</span>
-    </li>
-    <% } %> <% } %> <% if(page < totalPage) { %>
-    <li class="page-item">
-      <a href="?<%= getUrl(req, +page + 1) %>" class="page-link">Sau</a>
-    </li>
-    <% } %>
-  </ul>
-</nav>
-<% } %>
