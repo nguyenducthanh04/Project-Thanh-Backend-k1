@@ -33,7 +33,9 @@ class CourseController {
     const user = req.user;
     const msg = req.flash("error");
     const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
     const success = req.flash("success");
+    const errors = req.flash("errors");
     const { keyword } = req.query;
     const filters = {};
     if (keyword?.length) {
@@ -90,6 +92,8 @@ class CourseController {
       title,
       isPermission,
       permissions,
+      message,
+      errors,
     });
   }
   //Create Course
@@ -99,6 +103,7 @@ class CourseController {
     const courseList = await courseService.getAllCourses();
     const teacherList = await userService.getAllTeacher();
     const message = req.flash("message");
+    const success = req.flash("success");
     const errors = req.flash("errors");
     const permissions = await permissionUser(req);
     res.render("admin/manager.course/createCourse", {
@@ -112,12 +117,14 @@ class CourseController {
       moduleName,
       permissions,
       isPermission,
+      success,
     });
   }
   async handleCreateCourse(req, res) {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       await Courses.create(req.body);
+      req.flash("success", "Thêm thành công khóa học!");
       return res.redirect("/admin/createCourse");
     } else {
       req.flash("errors", errors.array());

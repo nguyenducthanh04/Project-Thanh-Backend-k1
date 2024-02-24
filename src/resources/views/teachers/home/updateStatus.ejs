@@ -1,0 +1,10 @@
+<form method="post">
+    Update trạng thái học của sinh viên: <%= studentInfo.User.name %>
+        <select name="statusId" class="form-select">
+            <option value="3" <%= studentInfo.statusId === 3 ? "selected" : "" %>>Đang học</option>
+            <option value="4" <%= studentInfo.statusId === 4 ? "selected" : "" %>>Bảo lưu</option>
+            <option value="5" <%= studentInfo.statusId === 5 ? "selected" : "" %>>Thôi học</option>
+            <option value="6" <%= studentInfo.statusId === 6 ? "selected" : "" %>>Hoàn thành</option>
+          </select>
+          <button class="btn btn-success">Lưu</button>
+    </form>

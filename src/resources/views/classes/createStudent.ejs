@@ -1,3 +1,11 @@
+<h4 style="text-align: center">
+  Thêm học viên vào lớp học <%= classItem.name %>
+</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="" class="mb-2" method="post">
   <div class="row">
     <div class="col-10">

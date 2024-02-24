@@ -1,9 +1,9 @@
-<%- msg.length ? `
-<div class="alert alert-${msgType}">${msg}</div>
-`: '';%> <%- success.length ? `
-<div class="alert alert-success">${success}</div>
-` : "" %>
 <h4 style="text-align: center">Danh sách khóa học tại F8</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="/admin/deleteAllCourse" method="POST" style="margin-bottom: 8px">
   <input type="hidden" id="listDelete" name="listUserDelete" value="" />
   <button type="submit" class="btn btn-danger" id="deleteAll">
@@ -48,7 +48,7 @@
     <tr>
       <th><input id="checkboxAll" type="checkbox" /></th>
       <th width="5%">STT</th>
-      <th>Tên</th>
+      <th width="10%">Tên</th>
       <th>Học phí</th>
       <th>Giảng viên</th>
       <th>Số lượng học viên</th>

@@ -9,6 +9,8 @@ module.exports = () => {
     check("email", "Email không đúng định dạng").isEmail(),
     check("password", "Mật khẩu bắt buộc phải nhập").notEmpty(),
     check("typeId", "Chức vụ bắt buộc phải nhập").notEmpty(),
+    check("phone", "Số điện thoại bắt buộc phải nhập").notEmpty(),
+    check("address", "Địa chỉ bắt buộc phải nhập").notEmpty(),
     // check("password", "Mật khẩu không đủ mạnh").isStrongPassword({
     //   minLength: 6, //6 kí tự
     //   minUpperCase: 1, //1 chữ hoa

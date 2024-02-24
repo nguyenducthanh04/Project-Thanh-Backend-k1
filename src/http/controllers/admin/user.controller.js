@@ -40,6 +40,8 @@ class UserController {
     const msg = req.flash("error");
     const typeMsg = msg ? "danger" : "success";
     const success = req.flash("success");
+    const message = req.flash("message");
+    const errors = req.flash("errors");
     const { keyword, typeId } = req.query;
     const filters = {};
     filters.typeId = 1;
@@ -100,6 +102,8 @@ class UserController {
       title,
       permissions,
       isPermission,
+      errors,
+      message,
     });
   }
   //Quản lý học viên
@@ -300,7 +304,7 @@ class UserController {
         id: id,
       },
     });
-    req.flash("success", "Cập nhật thành công");
+    req.flash("success", "Cập nhật thông tin người dùng thành công!");
     res.redirect(`/admin/editUser/${id}`);
   }
   //Delete User
@@ -311,7 +315,7 @@ class UserController {
         id: id,
       },
     });
-    req.flash("success", "Đã xóa thành công nguời dùng!");
+    req.flash("success", "Xóa thành công nguời dùng!");
     res.redirect("/admin/userList");
   }
   //Delete All Student
@@ -442,9 +446,16 @@ class UserController {
       },
     });
     const classTeacher = await User.findByPk(id, {
-      include: {
-        model: Classes,
-      },
+      include: [
+        {
+          model: Classes,
+          include: [
+            {
+              model: Courses,
+            },
+          ],
+        },
+      ],
     });
     const classTeacherList = classTeacher.classes;
     const permissions = await permissionUser(req);

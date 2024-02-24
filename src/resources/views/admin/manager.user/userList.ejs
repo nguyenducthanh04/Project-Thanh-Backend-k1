@@ -1,9 +1,9 @@
-<%- msg.length ? `
-<div class="alert alert-${msgType}">${msg}</div>
-`: '';%> <%- success.length ? `
-<div class="alert alert-success">${success}</div>
-` : "" %>
 <h4 style="text-align: center">Danh sách quản trị viên</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="/deleteAllStudents" method="POST" style="margin-bottom: 14px">
   <input type="hidden" id="listDelete" name="listUserDelete" value="" />
   <button type="submit" class="btn btn-danger" id="deleteAll">

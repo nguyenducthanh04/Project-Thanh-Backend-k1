@@ -7,6 +7,8 @@
       <th>Email</th>
       <th>Phone</th>
       <th>Address</th>
+      <th>Status</th>
+      <th>Sửa status</th>
     </tr>
   </thead>
   <tbody>
@@ -21,6 +23,14 @@
       <td><%= item.User.email %></td>
       <td><%= item.User.phone %></td>
       <td><%= item.User.address %></td>
+      <td><%= item.learning_status.name %></td>
+      <td>
+        <a
+          href="/admin/student/updateStatus/<%= item.id %>"
+          class="btn btn-warning"
+          >Sửa status</a
+        >
+      </td>
     </tr>
     <% }) %>
   </tbody>
