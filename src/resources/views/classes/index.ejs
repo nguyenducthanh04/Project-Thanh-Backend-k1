@@ -4,26 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      .text-info-course {
+        font-size: 1.2rem;
+      }
+      strong {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <h3>Tên lớp học: <%= classList.name %></h3>
-    <ul>
-      <li>Sĩ số: <%= classList.quantity %></li>
-      <li>
-        Ngày khai giảng: <%= moment(classList.startDate).format('MM/DD/YYYY') %>
-      </li>
-      <li>
-        Ngày bế giảng: <%= moment(classList.endDate).format('MM/DD/YYYY') %>
-      </li>
-      <li>Khóa học: <%= classList.course.name %></li>
-      <li>Giảng viên: <%= courseList.User.name %></li>
-      <% scheduleList.forEach((scheduleItem) => { %>
-      <ul>
-        <li>Lịch học: Thứ <%= scheduleItem.schedule %></li>
-        <li>Thời gian học: <%= scheduleItem.timeLearn %></li>
-      </ul>
-      <% }) %>
-    </ul>
+    <p class="text-info-class">
+      <strong>Tên lớp học:</strong> <%= classList.name %>
+    </p>
+    <p class="text-info-class">
+      <strong>Sĩ số:</strong> <%= classList.quantity %>
+    </p>
+    <p class="text-info-class">
+      <strong>Ngày khai giảng:</strong> <%=
+      moment(classList.startDate).format('MM/DD/YYYY') %>
+    </p>
+    <p class="text-info-class">
+      <strong>Ngày bế giảng:</strong> <%=
+      moment(classList.endDate).format('MM/DD/YYYY') %>
+    </p>
+    <p class="text-info-class">
+      <strong>Khóa học:</strong> <%= classList.course.name %>
+    </p>
+    <p class="text-info-class">
+      <strong>Giảng viên:</strong> <%= courseList.User.name %>
+    </p>
+    <% scheduleList.forEach((scheduleItem) => { %>
+    <p class="text-info-class">
+      <strong>Lịch học:</strong> Thứ <%= scheduleItem.schedule %>
+    </p>
+    <p class="text-info-class">
+      <strong>Thời gian học:</strong> <%= scheduleItem.timeLearn %>
+    </p>
+    <% }) %>
     <a href="/admin/class/excersise/<%= classList.id %>">Câu hỏi và bài tập</a>
   </body>
 </html>

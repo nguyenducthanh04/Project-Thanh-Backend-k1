@@ -1,4 +1,9 @@
   <h4>Điểm danh lớp : <%= classItem.name %></h4>
+  <% if(message?.length) { %>
+    <div class="alert alert-danger"><%= message %></div>
+    <% } %> <% if(success?.length) { %>
+    <div class="alert alert-success"><%= success %></div>
+    <% } %>
   <div class="" style="overflow-x: auto">
     <form action="" method="post">
       <table class="table table-bordered mb-3 mt-3">
@@ -35,8 +40,8 @@
         </tbody>
       </table>
       <div class="mb-5">
-        
-      <button class="btn btn-primary" type="submit">Lưu</button>
+      <button class="btn btn-success" type="submit">Lưu</button>
+      <a href="/admin/classList" class="btn btn-danger">Hủy</a>
       </div>
     </form>
   </div>

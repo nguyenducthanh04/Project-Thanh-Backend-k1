@@ -158,8 +158,10 @@ class DashboardController {
     const user = req.user;
     const title = "";
     const msg = req.flash("error");
-    const msgType = msg ? "danger" : "success";
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
     const success = req.flash("success");
+    const errors = req.flash("errors");
     const userSocials = await user_socials.findAll({
       where: {
         userId: req.user.id,
@@ -172,12 +174,14 @@ class DashboardController {
       user,
       req,
       msg,
-      msgType,
+      typeMsg,
+      message,
       success,
       moduleName,
       title,
       permissions,
       isPermission,
+      errors,
     });
   }
   //Delete Social

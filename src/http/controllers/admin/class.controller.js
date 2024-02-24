@@ -408,66 +408,22 @@ class ClassController {
         model: StudentClass,
       },
     });
+    const listUser = await User.findAll({
+      where: {
+        typeId: 3,
+      },
+    });
     const studentIds = [];
     classItem.students_classes.forEach((studentClass) => {
       studentIds.push(studentClass.studentId);
     });
-    const filters = {};
-    filters.typeId = 3;
-    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
-      // filters.typeId = typeId === 'teacher' ? 2 : 3;
-      if (typeId === "admin") {
-        filters.typeId = 1;
-      } else if (typeId === "teacher") {
-        filters.typeId = 2;
-      } else {
-        filters.typeId = 3;
-      }
-    }
-    if (keyword?.length) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
-    }
-    const totalCountObj = await User.findAndCountAll({
-      where: filters,
-    }); //Lấy tổng số bản ghi
-    const totalCount = totalCountObj.count;
-    //Tính tổng số trang
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
-    //Lấy trang hiện tại
-    let { page } = req.query;
-    if (!page || page < 1 || page > totalPage) {
-      page = 1;
-    }
-    //Tính offset
-    const offset = (page - 1) * PER_PAGE;
-    const userList = await User.findAll({
-      where: filters,
-      limit: +PER_PAGE,
-      offset: offset,
-    });
     const studentClassList = await StudentClass.findAll();
     const permissions = await permissionUser(req);
     res.render("classes/createStudent", {
-      userList,
       user,
       req,
-      totalPage,
-      getUrl,
-      page,
       moduleName,
       title,
-      studentIds,
       permissions,
       isPermission,
       studentClassList,
@@ -476,6 +432,8 @@ class ClassController {
       errors,
       success,
       classItem,
+      listUser,
+      studentIds,
     });
   }
   async handleCreateStudentClass(req, res) {
@@ -693,6 +651,11 @@ class ClassController {
   async updateStatusStudent(req, res) {
     const title = "";
     const user = req.user;
+    const msg = req.flash("error");
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
+    const success = req.flash("success");
+    const errors = req.flash("errors");
     const { id } = req.params;
     const studentInfo = await StudentClass.findByPk(id, {
       include: {
@@ -707,6 +670,10 @@ class ClassController {
       isPermission,
       permissions,
       studentInfo,
+      typeMsg,
+      errors,
+      success,
+      message,
     });
   }
   async handleUpdateStatusStudent(req, res) {
@@ -720,6 +687,7 @@ class ClassController {
         },
       }
     );
+    req.flash("success", "Cập nhật trạng thái học viên thành công!");
     res.redirect(`/admin/student/updateStatus/${id}`);
   }
   async deleteStudentClass(req, res) {
@@ -736,6 +704,11 @@ class ClassController {
     const title = "";
     const user = req.user;
     const classId = req.params.id;
+    const msg = req.flash("error");
+    const typeMsg = msg ? "danger" : "success";
+    const message = req.flash("message");
+    const success = req.flash("success");
+    const errors = req.flash("errors");
     const classItem = await Classes.findByPk(classId, {
       include: [
         {
@@ -778,6 +751,10 @@ class ClassController {
       StudentClassList,
       arrayAttendances,
       moment,
+      typeMsg,
+      message,
+      errors,
+      success,
     });
   }
   async handleAttendance(req, res) {
@@ -800,6 +777,7 @@ class ClassController {
         });
       }
     }
+    req.flash("success", "Điểm danh đã được lưu thành công!");
     res.redirect(`/admin/class/attendance/${classId}`);
   }
 }

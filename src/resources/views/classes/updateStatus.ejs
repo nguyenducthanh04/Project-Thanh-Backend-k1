@@ -1,10 +1,18 @@
 <form method="post">
-Update trạng thái học của sinh viên: <%= studentInfo.User.name %>
-    <select name="statusId" class="form-select">
+<h4>Trạng thái học của sinh viên: <%= studentInfo.User.name %></h4> 
+<% if(message?.length) { %>
+  <div class="alert alert-danger"><%= message %></div>
+  <% } %> <% if(success?.length) { %>
+  <div class="alert alert-success"><%= success %></div>
+  <% } %>
+    <select name="statusId" class="form-select" style="height: 38px;">
         <option value="3" <%= studentInfo.statusId === 3 ? "selected" : "" %>>Đang học</option>
         <option value="4" <%= studentInfo.statusId === 4 ? "selected" : "" %>>Bảo lưu</option>
         <option value="5" <%= studentInfo.statusId === 5 ? "selected" : "" %>>Thôi học</option>
         <option value="6" <%= studentInfo.statusId === 6 ? "selected" : "" %>>Hoàn thành</option>
       </select>
-      <button class="btn btn-success">Lưu</button>
+      <div class="mt-2">
+        <button class="btn btn-success">Lưu</button>
+        <a href="/admin/classList" class="btn btn-danger">Hủy</a>
+      </div>
 </form>
