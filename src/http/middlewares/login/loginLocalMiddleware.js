@@ -1,7 +1,13 @@
 module.exports = async (req, res, next) => {
   try {
     if (req.user) {
-      return res.redirect("/");
+      if (req.user.typeId === 1) {
+        return res.redirect("/admin");
+      } else if (req.user.typeId === 2) {
+        return res.redirect("/teacher");
+      } else {
+        return res.redirect("/student");
+      }
     }
     next();
   } catch (error) {

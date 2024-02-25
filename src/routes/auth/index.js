@@ -6,7 +6,7 @@ const LoginMiddleware = require("../../http/middlewares/login/loginLocalMiddlewa
 const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 const TwoFaMiddleware = require("../../http/middlewares/2fa.auth.middleware");
 /* GET home page. */
-router.get("/login", LoginMiddleware, AuthController.login);
+router.get("/login", AuthController.login);
 router.post(
   "/login",
   passport.authenticate("local", {
