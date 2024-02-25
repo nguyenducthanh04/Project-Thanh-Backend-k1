@@ -1,6 +1,10 @@
 module.exports = async (req, res, next) => {
-  if (req.user) {
-    return res.redirect("/");
+  try {
+    if (req.user) {
+      return res.redirect("/");
+    }
+    next();
+  } catch (error) {
+    res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
   }
-  next();
 };

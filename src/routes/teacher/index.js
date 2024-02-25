@@ -67,7 +67,6 @@ router.get(
   AuthMiddleware,
   TeacherController.studentClassDetail
 );
-router.post("/studentDetail/:id", TeacherController.handleLearningStatus);
 router.get(
   "/class/attendance/:id",
   AuthMiddleware,
