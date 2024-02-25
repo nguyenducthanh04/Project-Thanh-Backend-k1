@@ -1,4 +1,9 @@
 <h2>Phân quyền</h2>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <a href="/admin/users/roles" class="btn btn-warning">Quản lý Roles</a>
 <form action="" method="post" class="mt-4">
   <table class="table table-bordered">
@@ -15,7 +20,7 @@
       <tr>
         <td>
           <input type="checkbox" name="roles" value="<%= id %>" <%=
-          isRole(user.roles, id) ? 'checked': '' %> />
+          isRole(users.roles, id) ? 'checked': '' %> />
         </td>
         <td><%= name %></td>
       </tr>

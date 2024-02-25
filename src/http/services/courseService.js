@@ -3,20 +3,28 @@ const Courses = model.courses;
 const User = model.User;
 module.exports = {
   getAllCourses: async () => {
-    return await Courses.findAll({
-      include: {
-        model: User,
-      },
-    });
+    try {
+      return await Courses.findAll({
+        include: {
+          model: User,
+        },
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   },
   getCourseById: async (id) => {
-    return await Courses.findOne({
-      include: {
-        model: User,
-      },
-      where: {
-        id: id,
-      },
-    });
+    try {
+      return await Courses.findOne({
+        include: {
+          model: User,
+        },
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   },
 };

@@ -1,4 +1,9 @@
-<h2>Thêm Role</h2>
+<h4>Thêm Role</h4>
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="" method="post" class="mt-4">
   <div class="mb-3">
     <label for="">Tên</label>

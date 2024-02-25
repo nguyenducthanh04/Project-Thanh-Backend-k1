@@ -1,3 +1,8 @@
+<% if(message?.length) { %>
+<div class="alert alert-danger"><%= message %></div>
+<% } %> <% if(success?.length) { %>
+<div class="alert alert-success"><%= success %></div>
+<% } %>
 <form action="" method="post">
   <div class="mb-3">
     <label for="">Link tài liệu</label>
@@ -10,5 +15,6 @@
   </div>
   <div class="d-grid">
     <button class="btn btn-success">Thêm tài liệu</button>
+    <a href="/admin/courseList" class="btn btn-danger">Huỷ</a>
   </div>
 </form>

@@ -35,301 +35,337 @@ const moduleName = "Người dùng";
 class UserController {
   //Quản lý admin
   async userList(req, res) {
-    const title = "Danh sách người quản trị";
-    const user = req.user;
-    const msg = req.flash("error");
-    const typeMsg = msg ? "danger" : "success";
-    const success = req.flash("success");
-    const message = req.flash("message");
-    const errors = req.flash("errors");
-    const { keyword, typeId } = req.query;
-    const filters = {};
-    filters.typeId = 1;
-    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
-      if (typeId === "admin") {
-        filters.typeId = 1;
-      } else if (typeId === "teacher") {
-        filters.typeId = 2;
-      } else {
-        filters.typeId = 3;
+    try {
+      const title = "Danh sách người quản trị";
+      const user = req.user;
+      const msg = req.flash("error");
+      const typeMsg = msg ? "danger" : "success";
+      const success = req.flash("success");
+      const message = req.flash("message");
+      const errors = req.flash("errors");
+      const { keyword, typeId } = req.query;
+      const filters = {};
+      filters.typeId = 1;
+      if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
+        if (typeId === "admin") {
+          filters.typeId = 1;
+        } else if (typeId === "teacher") {
+          filters.typeId = 2;
+        } else {
+          filters.typeId = 3;
+        }
       }
-    }
-    if (keyword?.length) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
+      if (keyword?.length) {
+        filters[Op.or] = [
+          {
+            name: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
+          {
+            email: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
-        },
-      ];
-    }
-    const totalCountObj = await User.findAndCountAll({
-      where: filters,
-    }); //Lấy tổng số bản ghi
-    const totalCount = totalCountObj.count;
-    //Tính tổng số trang
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
-    //Lấy trang hiện tại
-    let { page } = req.query;
-    if (!page || page < 1 || page > totalPage) {
-      page = 1;
-    }
-    //Tính offset
-    const offset = (page - 1) * PER_PAGE;
-    const userList = await User.findAll({
-      where: filters,
+        ];
+      }
+      const totalCountObj = await User.findAndCountAll({
+        where: filters,
+      }); //Lấy tổng số bản ghi
+      const totalCount = totalCountObj.count;
+      //Tính tổng số trang
+      const totalPage = Math.ceil(totalCount / PER_PAGE);
+      //Lấy trang hiện tại
+      let { page } = req.query;
+      if (!page || page < 1 || page > totalPage) {
+        page = 1;
+      }
+      //Tính offset
+      const offset = (page - 1) * PER_PAGE;
+      const userList = await User.findAll({
+        where: filters,
 
-      limit: +PER_PAGE,
-      offset: offset,
-    });
-    const permissions = await permissionUser(req);
-    res.render("admin/manager.user/userList", {
-      userList,
-      user,
-      req,
-      totalPage,
-      getUrl,
-      page,
-      msg,
-      typeMsg,
-      success,
-      moduleName,
-      title,
-      permissions,
-      isPermission,
-      errors,
-      message,
-    });
+        limit: +PER_PAGE,
+        offset: offset,
+      });
+      const permissions = await permissionUser(req);
+      res.render("admin/manager.user/userList", {
+        userList,
+        user,
+        req,
+        totalPage,
+        getUrl,
+        page,
+        msg,
+        typeMsg,
+        success,
+        moduleName,
+        title,
+        permissions,
+        isPermission,
+        errors,
+        message,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   //Quản lý học viên
   async studentList(req, res) {
-    const title = "Danh sách học viên";
-    const user = req.user;
-    const { keyword, typeId } = req.query;
-    const filters = {};
-    filters.typeId = 3;
-    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
-      // filters.typeId = typeId === 'teacher' ? 2 : 3;
-      if (typeId === "admin") {
-        filters.typeId = 1;
-      } else if (typeId === "teacher") {
-        filters.typeId = 2;
-      } else {
-        filters.typeId = 3;
+    try {
+      const title = "Danh sách học viên";
+      const user = req.user;
+      const { keyword, typeId } = req.query;
+      const filters = {};
+      filters.typeId = 3;
+      if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
+        // filters.typeId = typeId === 'teacher' ? 2 : 3;
+        if (typeId === "admin") {
+          filters.typeId = 1;
+        } else if (typeId === "teacher") {
+          filters.typeId = 2;
+        } else {
+          filters.typeId = 3;
+        }
       }
-    }
-    if (keyword?.length) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
+      if (keyword?.length) {
+        filters[Op.or] = [
+          {
+            name: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
+          {
+            email: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
-        },
-      ];
+        ];
+      }
+      const totalCountObj = await User.findAndCountAll({
+        where: filters,
+      }); //Lấy tổng số bản ghi
+      const totalCount = totalCountObj.count;
+      //Tính tổng số trang
+      const totalPage = Math.ceil(totalCount / PER_PAGE);
+      //Lấy trang hiện tại
+      let { page } = req.query;
+      if (!page || page < 1 || page > totalPage) {
+        page = 1;
+      }
+      //Tính offset
+      const offset = (page - 1) * PER_PAGE;
+      const userList = await User.findAll({
+        where: filters,
+        limit: +PER_PAGE,
+        offset: offset,
+      });
+      const permissions = await permissionUser(req);
+      res.render("students/home/studentList", {
+        userList,
+        user,
+        req,
+        totalPage,
+        getUrl,
+        page,
+        moduleName,
+        title,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
     }
-    const totalCountObj = await User.findAndCountAll({
-      where: filters,
-    }); //Lấy tổng số bản ghi
-    const totalCount = totalCountObj.count;
-    //Tính tổng số trang
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
-    //Lấy trang hiện tại
-    let { page } = req.query;
-    if (!page || page < 1 || page > totalPage) {
-      page = 1;
-    }
-    //Tính offset
-    const offset = (page - 1) * PER_PAGE;
-    const userList = await User.findAll({
-      where: filters,
-      limit: +PER_PAGE,
-      offset: offset,
-    });
-    const permissions = await permissionUser(req);
-    res.render("students/home/studentList", {
-      userList,
-      user,
-      req,
-      totalPage,
-      getUrl,
-      page,
-      moduleName,
-      title,
-      permissions,
-      isPermission,
-    });
   }
   //Quản lý giáo viên
   async teacherList(req, res) {
-    const title = "Danh sách giảng viên";
-    const user = req.user;
-    const { keyword, typeId } = req.query;
-    const filters = {};
-    filters.typeId = 2;
-    if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
-      // filters.typeId = typeId === 'teacher' ? 2 : 3;
-      if (typeId === "admin") {
-        filters.typeId = 1;
-      } else if (typeId === "teacher") {
-        filters.typeId = 2;
-      } else {
-        filters.typeId = 3;
+    try {
+      const title = "Danh sách giảng viên";
+      const user = req.user;
+      const { keyword, typeId } = req.query;
+      const filters = {};
+      filters.typeId = 2;
+      if (typeId === "teacher" || typeId === "student" || typeId === "admin") {
+        // filters.typeId = typeId === 'teacher' ? 2 : 3;
+        if (typeId === "admin") {
+          filters.typeId = 1;
+        } else if (typeId === "teacher") {
+          filters.typeId = 2;
+        } else {
+          filters.typeId = 3;
+        }
       }
-    }
-    if (keyword?.length) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
+      if (keyword?.length) {
+        filters[Op.or] = [
+          {
+            name: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
+          {
+            email: {
+              [Op.like]: `%${keyword}%`,
+            },
           },
-        },
-      ];
-      // filters.name = {
-      //   [Op.like] : `%${keyword}%`
-      // }
-    }
+        ];
+        // filters.name = {
+        //   [Op.like] : `%${keyword}%`
+        // }
+      }
 
-    const totalCountObj = await User.findAndCountAll({
-      where: filters,
-    }); //Lấy tổng số bản ghi
-    const totalCount = totalCountObj.count;
-    //Tính tổng số trang
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
-    //Lấy trang hiện tại
-    let { page } = req.query;
-    if (!page || page < 1 || page > totalPage) {
-      page = 1;
-    }
-    //Tính offset
-    const offset = (page - 1) * PER_PAGE;
-    const userList = await User.findAll({
-      where: filters,
+      const totalCountObj = await User.findAndCountAll({
+        where: filters,
+      }); //Lấy tổng số bản ghi
+      const totalCount = totalCountObj.count;
+      //Tính tổng số trang
+      const totalPage = Math.ceil(totalCount / PER_PAGE);
+      //Lấy trang hiện tại
+      let { page } = req.query;
+      if (!page || page < 1 || page > totalPage) {
+        page = 1;
+      }
+      //Tính offset
+      const offset = (page - 1) * PER_PAGE;
+      const userList = await User.findAll({
+        where: filters,
 
-      limit: +PER_PAGE,
-      offset: offset,
-    });
-    const permissions = await permissionUser(req);
-    res.render("teachers/home/teacherList", {
-      userList,
-      user,
-      req,
-      totalPage,
-      getUrl,
-      page,
-      moduleName,
-      title,
-      isPermission,
-      permissions,
-    });
+        limit: +PER_PAGE,
+        offset: offset,
+      });
+      const permissions = await permissionUser(req);
+      res.render("teachers/home/teacherList", {
+        userList,
+        user,
+        req,
+        totalPage,
+        getUrl,
+        page,
+        moduleName,
+        title,
+        isPermission,
+        permissions,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   //Create User
   async createUser(req, res) {
-    const title = "Thêm mới người dùng";
-    const user = req.user;
-    const typeUser = await typeService.getAllType();
-    const message = req.flash("message");
-    const success = req.flash("success");
-    const errors = req.flash("errors");
-    const permissions = await permissionUser(req);
-    res.render("admin/manager.user/createUser", {
-      typeUser,
-      user,
-      errors,
-      message,
-      getError,
-      success,
-      title,
-      moduleName,
-      permissions,
-      isPermission,
-    });
+    try {
+      const title = "Thêm mới người dùng";
+      const user = req.user;
+      const typeUser = await typeService.getAllType();
+      const message = req.flash("message");
+      const success = req.flash("success");
+      const errors = req.flash("errors");
+      const permissions = await permissionUser(req);
+      res.render("admin/manager.user/createUser", {
+        typeUser,
+        user,
+        errors,
+        message,
+        getError,
+        success,
+        title,
+        moduleName,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async handleCreateUser(req, res) {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-      req.body.password = make(req.body.password);
-      await User.create(req.body);
-      req.flash("success", "Thêm thành công!");
-      return res.redirect("/admin/createUser");
-    } else {
-      req.flash("errors", errors.array());
-      req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
-      return res.redirect("/admin/createUser");
+    try {
+      const errors = validationResult(req);
+      if (errors.isEmpty()) {
+        req.body.password = make(req.body.password);
+        await User.create(req.body);
+        req.flash("success", "Thêm thành công!");
+        return res.redirect("/admin/createUser");
+      } else {
+        req.flash("errors", errors.array());
+        req.flash("message", "Vui lòng nhập đầy đủ thông tin !");
+        return res.redirect("/admin/createUser");
+      }
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
     }
   }
   //Edit User
   async editUser(req, res) {
-    const title = "";
-    const user = req.user;
-    const msg = req.flash("error");
-    const msgType = msg ? "danger" : "success";
-    const success = req.flash("success");
-    const { id } = req.params;
-    const userDetail = await userService.getUserByPk(id);
-    const typeList = await typeService.getAllType();
-    const permissions = await permissionUser(req);
-    res.render("admin/manager.user/editUser", {
-      userDetail,
-      typeList,
-      user,
-      msg,
-      msgType,
-      success,
-      title,
-      moduleName,
-      permissions,
-      isPermission,
-    });
+    try {
+      const title = "";
+      const user = req.user;
+      const msg = req.flash("error");
+      const msgType = msg ? "danger" : "success";
+      const success = req.flash("success");
+      const { id } = req.params;
+      const userDetail = await userService.getUserByPk(id);
+      const typeList = await typeService.getAllType();
+      const permissions = await permissionUser(req);
+      res.render("admin/manager.user/editUser", {
+        userDetail,
+        typeList,
+        user,
+        msg,
+        msgType,
+        success,
+        title,
+        moduleName,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async handleEditUser(req, res) {
-    const { id } = req.params;
-    const userData = req.body;
-    await User.update(userData, {
-      where: {
-        id: id,
-      },
-    });
-    req.flash("success", "Cập nhật thông tin người dùng thành công!");
-    res.redirect(`/admin/editUser/${id}`);
+    try {
+      const { id } = req.params;
+      const userData = req.body;
+      await User.update(userData, {
+        where: {
+          id: id,
+        },
+      });
+      req.flash("success", "Cập nhật thông tin người dùng thành công!");
+      res.redirect(`/admin/editUser/${id}`);
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   //Delete User
   async deleteUser(req, res) {
-    const { id } = req.params;
-    await User.destroy({
-      where: {
-        id: id,
-      },
-    });
-    req.flash("success", "Xóa thành công nguời dùng!");
-    res.redirect("/admin/userList");
+    try {
+      const { id } = req.params;
+      await User.destroy({
+        where: {
+          id: id,
+        },
+      });
+      req.flash("success", "Xóa thành công nguời dùng!");
+      res.redirect("/admin/userList");
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   //Delete All Student
   async deleteAllStudents(req, res) {
-    const { listUserDelete } = req.body;
-    const listArr = listUserDelete.split(",");
-    await User.destroy({
-      where: {
-        id: {
-          [Op.in]: listArr,
+    try {
+      const { listUserDelete } = req.body;
+      const listArr = listUserDelete.split(",");
+      await User.destroy({
+        where: {
+          id: {
+            [Op.in]: listArr,
+          },
         },
-      },
-    });
-    res.redirect("/admin/userList");
+      });
+      res.redirect("/admin/userList");
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   //Export Admin
   async exportAdmin(req, res) {
@@ -427,46 +463,58 @@ class UserController {
       });
   }
   async importExcelUser(req, res) {
-    const title = "";
-    const permissions = await permissionUser(req);
-    return res.render("admin/importExcelUser", {
-      moduleName,
-      title,
-      permissions,
-      isPermission,
-    });
+    try {
+      const title = "";
+      const user = req.user;
+      const permissions = await permissionUser(req);
+      return res.render("admin/importExcelUser", {
+        moduleName,
+        title,
+        permissions,
+        isPermission,
+        user,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async teacherDetail(req, res) {
-    const title = "";
-    const { id } = req.params;
-    const teacherLists = await User.findOne({
-      where: {
-        typeId: 2,
-        id: id,
-      },
-    });
-    const classTeacher = await User.findByPk(id, {
-      include: [
-        {
-          model: Classes,
-          include: [
-            {
-              model: Courses,
-            },
-          ],
+    try {
+      const title = "";
+      const user = req.user;
+      const { id } = req.params;
+      const teacherLists = await User.findOne({
+        where: {
+          typeId: 2,
+          id: id,
         },
-      ],
-    });
-    const classTeacherList = classTeacher.classes;
-    const permissions = await permissionUser(req);
-    res.render("admin/teacher/index", {
-      title,
-      moduleName,
-      teacherLists,
-      classTeacherList,
-      permissions,
-      isPermission,
-    });
+      });
+      const classTeacher = await User.findByPk(id, {
+        include: [
+          {
+            model: Classes,
+            include: [
+              {
+                model: Courses,
+              },
+            ],
+          },
+        ],
+      });
+      const classTeacherList = classTeacher.classes;
+      const permissions = await permissionUser(req);
+      res.render("admin/teacher/index", {
+        title,
+        moduleName,
+        teacherLists,
+        user,
+        classTeacherList,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   // async teacherCalendarAll(req, res) {
   //   const title = "";
@@ -492,268 +540,365 @@ class UserController {
   //   res.render("admin/calendar", { title, moduleName, calendarArray });
   // }
   async teacherCalendar(req, res) {
-    const title = "";
-    const { id } = req.params;
-    const teacherCalendars = await TeacherCalendar.findAll({
-      where: {
-        teacherId: id,
-      },
-      include: [
-        {
-          model: Classes,
-          include: {
-            model: Schedule,
-          },
+    try {
+      const title = "";
+      const { id } = req.params;
+      const user = req.user;
+      const teacherCalendars = await TeacherCalendar.findAll({
+        where: {
+          teacherId: id,
         },
-      ],
-    });
-    const calendarArray = [];
-    teacherCalendars.forEach((calendar) => {
-      calendarArray.push({
-        title: calendar.class.name,
-        start: calendar.scheduleDate,
+        include: [
+          {
+            model: Classes,
+            include: {
+              model: Schedule,
+            },
+          },
+        ],
       });
-    });
-    const permissions = await permissionUser(req);
-    res.render("admin/calendar", {
-      moduleName,
-      title,
-      calendarArray,
-      permissions,
-      isPermission,
-    });
+      const calendarArray = [];
+      teacherCalendars.forEach((calendar) => {
+        calendarArray.push({
+          title: calendar.class.name,
+          start: calendar.scheduleDate,
+        });
+      });
+      const permissions = await permissionUser(req);
+      res.render("admin/calendar", {
+        moduleName,
+        title,
+        user,
+        calendarArray,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async studentDetail(req, res) {
-    const title = "";
-    const { id } = req.params;
-    const studentLists = await User.findOne({
-      where: {
-        typeId: 3,
-        id: id,
-      },
-    });
-    let studentId = id;
-    const studentClass = await StudentClass.findAll({
-      where: {
-        studentId: id,
-      },
-      include: [
-        {
-          model: Classes,
-          include: [
-            {
-              model: Courses,
-            },
-          ],
+    try {
+      const title = "";
+      const { id } = req.params;
+      const user = req.user;
+      const studentLists = await User.findOne({
+        where: {
+          typeId: 3,
+          id: id,
         },
-      ],
-    });
-    const permissions = await permissionUser(req);
-    res.render("admin/student/index", {
-      studentLists,
-      title,
-      moduleName,
-      studentClass,
-      permissions,
-      isPermission,
-    });
+      });
+      let studentId = id;
+      const studentClass = await StudentClass.findAll({
+        where: {
+          studentId: id,
+        },
+        include: [
+          {
+            model: Classes,
+            include: [
+              {
+                model: Courses,
+              },
+            ],
+          },
+        ],
+      });
+      const permissions = await permissionUser(req);
+      res.render("admin/student/index", {
+        studentLists,
+        title,
+        moduleName,
+        studentClass,
+        user,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async studentAttendance(req, res) {
-    const title = "";
-    const { id } = req.params;
-    const classDate = await Classes.findByPk(id);
+    try {
+      const title = "";
+      const { id } = req.params;
+      const user = req.user;
+      const classDate = await Classes.findByPk(id);
 
-    const startDate = classDate.startDate;
-    const endDate = classDate.endDate;
-    const permissions = await permissionUser(req);
-    res.render("admin/student/attendance", {
-      title,
-      moduleName,
-      permissions,
-      isPermission,
-    });
+      const startDate = classDate.startDate;
+      const endDate = classDate.endDate;
+      const permissions = await permissionUser(req);
+      res.render("admin/student/attendance", {
+        title,
+        moduleName,
+        permissions,
+        isPermission,
+        user,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async permission(req, res) {
-    const title = "";
-    const { id } = req.params;
-    const roleList = await Roles.findAll();
-    const user = await User.findOne({
-      where: {
-        id,
-      },
-      include: {
-        model: Roles,
-      },
-    });
-    const permissions = await permissionUser(req);
-    res.render("admin/permissions/index", {
-      title,
-      moduleName,
-      roleList,
-      user,
-      isRole,
-      isPermission,
-      permissions,
-    });
-  }
-  async handlePermission(req, res) {
-    const { permission } = req.body;
-    let { roles } = req.body;
-    const { id } = req.params;
-    const user = await User.findOne({ where: { id } });
-    if (!user) {
-      res.redirect("/users");
-      return;
-    }
-
-    if (roles) {
-      roles = typeof roles === "string" ? [roles] : roles;
-
-      const roleUpdate = await Promise.all(
-        roles.map((roleId) =>
-          Roles.findOne({
-            where: {
-              id: roleId,
-            },
-          })
-        )
-      );
-
-      await user.setRoles(roleUpdate);
-    }
-    res.redirect(`/admin/users/permission/${id}`);
-  }
-  async roles(req, res) {
-    const title = "";
-    const roleList = await Roles.findAll();
-    const permissions = await permissionUser(req);
-    res.render("admin/permissions/roles", {
-      title,
-      moduleName,
-      roleList,
-      permissions,
-      isPermission,
-    });
-  }
-  async addRole(req, res) {
-    const title = "";
-    const permissions = await permissionUser(req);
-    res.render("admin/permissions/addRole", {
-      title,
-      moduleName,
-      permissions,
-      isPermission,
-    });
-  }
-  async handleAddRole(req, res) {
-    const { name, permission } = req.body;
-    const role = await Roles.create({
-      name: name,
-    });
-    if (permission) {
-      let dataPermission = [];
-      if (typeof permission === "string") {
-        dataPermission.push({
-          value: permission,
-        });
-      } else {
-        dataPermission = permission.map((item) => ({ value: item }));
-      }
-      dataPermission.forEach(async (item) => {
-        const permissionIntance = await Permission.findOne({
-          where: item,
-        });
-        if (!permissionIntance) {
-          await role.createPermission(item);
-        } else {
-          await role.addPermission(permissionIntance);
-        }
-      });
-    }
-    res.redirect("/admin/users/roles");
-  }
-  async editRole(req, res) {
-    const title = "";
-    const { id } = req.params;
-    const role = await Roles.findOne({
-      where: {
-        id,
-      },
-      include: {
-        model: Permission,
-      },
-    });
-    const roles = await Roles.findAll();
-    const { permissions: permissionList } = role;
-    const permissions = await permissionUser(req);
-    res.render("admin/permissions/editRole", {
-      title,
-      moduleName,
-      role,
-      roles,
-      permissionList,
-      permissionUtil,
-      permissions,
-      isPermission,
-    });
-  }
-  async handleEditRole(req, res) {
-    const { id } = req.params;
-    const { name, permission } = req.body;
-    await Roles.update(
-      {
-        name,
-      },
-      {
+    try {
+      const title = "";
+      const user = req.user;
+      const msg = req.flash("error");
+      const typeMsg = msg ? "danger" : "success";
+      const message = req.flash("message");
+      const success = req.flash("success");
+      const errors = req.flash("errors");
+      const { id } = req.params;
+      const roleList = await Roles.findAll();
+      const users = await User.findOne({
         where: {
           id,
         },
-      }
-    );
-    const role = await Roles.findOne({
-      where: {
-        id,
-      },
-    });
-    if (permission) {
-      let dataPermission = [];
-      if (typeof permission === "string") {
-        dataPermission.push({
-          value: permission,
-        });
-      } else {
-        dataPermission = permission.map((item) => ({ value: item }));
-      }
-      dataPermission.forEach(async (item) => {
-        const permissionIntance = await Permission.findOne({
-          where: item,
-        });
-        if (!permissionIntance) {
-          await role.createPermission(item);
-        }
+        include: {
+          model: Roles,
+        },
       });
-      const permissonsUpdate = await Promise.all(
-        dataPermission.map((item) => Permission.findOne({ where: item }))
-      );
-
-      role.setPermissions(permissonsUpdate);
+      const permissions = await permissionUser(req);
+      res.render("admin/permissions/index", {
+        title,
+        moduleName,
+        roleList,
+        users,
+        user,
+        isRole,
+        isPermission,
+        permissions,
+        typeMsg,
+        message,
+        success,
+        errors,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
     }
-    res.redirect(`/admin/roles/edit/${id}`);
+  }
+  async handlePermission(req, res) {
+    try {
+      const { permission } = req.body;
+      let { roles } = req.body;
+      const { id } = req.params;
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        res.redirect("/users");
+        return;
+      }
+
+      if (roles) {
+        roles = typeof roles === "string" ? [roles] : roles;
+
+        const roleUpdate = await Promise.all(
+          roles.map((roleId) =>
+            Roles.findOne({
+              where: {
+                id: roleId,
+              },
+            })
+          )
+        );
+
+        await user.setRoles(roleUpdate);
+      }
+      req.flash("success", "Thêm thành công quyền cho người dùng!");
+      res.redirect(`/admin/users/permission/${id}`);
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
+  }
+  async roles(req, res) {
+    try {
+      const title = "";
+      const user = req.user;
+      const msg = req.flash("error");
+      const typeMsg = msg ? "danger" : "success";
+      const message = req.flash("message");
+      const success = req.flash("success");
+      const errors = req.flash("errors");
+      const roleList = await Roles.findAll();
+      const permissions = await permissionUser(req);
+      res.render("admin/permissions/roles", {
+        title,
+        moduleName,
+        roleList,
+        permissions,
+        isPermission,
+        user,
+        typeMsg,
+        message,
+        success,
+        errors,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
+  }
+  async addRole(req, res) {
+    try {
+      const title = "";
+      const msg = req.flash("error");
+      const typeMsg = msg ? "danger" : "success";
+      const message = req.flash("message");
+      const success = req.flash("success");
+      const errors = req.flash("errors");
+      const user = req.user;
+      const permissions = await permissionUser(req);
+      res.render("admin/permissions/addRole", {
+        title,
+        moduleName,
+        permissions,
+        isPermission,
+        user,
+        typeMsg,
+        success,
+        message,
+        errors,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
+  }
+  async handleAddRole(req, res) {
+    try {
+      const { name, permission } = req.body;
+      const role = await Roles.create({
+        name: name,
+      });
+      if (permission) {
+        let dataPermission = [];
+        if (typeof permission === "string") {
+          dataPermission.push({
+            value: permission,
+          });
+        } else {
+          dataPermission = permission.map((item) => ({ value: item }));
+        }
+        dataPermission.forEach(async (item) => {
+          const permissionIntance = await Permission.findOne({
+            where: item,
+          });
+          if (!permissionIntance) {
+            await role.createPermission(item);
+          } else {
+            await role.addPermission(permissionIntance);
+          }
+        });
+      }
+      req.flash("success", "Thêm thành công role!");
+      res.redirect("/admin/users/roles");
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
+  }
+  async editRole(req, res) {
+    try {
+      const title = "";
+      const msg = req.flash("error");
+      const typeMsg = msg ? "danger" : "success";
+      const message = req.flash("message");
+      const success = req.flash("success");
+      const errors = req.flash("errors");
+      const user = req.user;
+      const { id } = req.params;
+      const role = await Roles.findOne({
+        where: {
+          id,
+        },
+        include: {
+          model: Permission,
+        },
+      });
+      const roles = await Roles.findAll();
+      const { permissions: permissionList } = role;
+      const permissions = await permissionUser(req);
+      res.render("admin/permissions/editRole", {
+        title,
+        moduleName,
+        typeMsg,
+        message,
+        success,
+        errors,
+        user,
+        role,
+        roles,
+        permissionList,
+        permissionUtil,
+        permissions,
+        isPermission,
+      });
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
+  }
+  async handleEditRole(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, permission } = req.body;
+      await Roles.update(
+        {
+          name,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      const role = await Roles.findOne({
+        where: {
+          id,
+        },
+      });
+      if (permission) {
+        let dataPermission = [];
+        if (typeof permission === "string") {
+          dataPermission.push({
+            value: permission,
+          });
+        } else {
+          dataPermission = permission.map((item) => ({ value: item }));
+        }
+        dataPermission.forEach(async (item) => {
+          const permissionIntance = await Permission.findOne({
+            where: item,
+          });
+          if (!permissionIntance) {
+            await role.createPermission(item);
+          }
+        });
+        const permissonsUpdate = await Promise.all(
+          dataPermission.map((item) => Permission.findOne({ where: item }))
+        );
+
+        role.setPermissions(permissonsUpdate);
+      }
+      req.flash("success", "Sửa role thành công!");
+      res.redirect(`/admin/roles/edit/${id}`);
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
   async deleteRole(req, res) {
-    const { id } = req.params;
-    //Lấy instance của role cần xóa
-    const role = await Roles.findOne({ where: { id } });
+    try {
+      const { id } = req.params;
+      //Lấy instance của role cần xóa
+      const role = await Roles.findOne({ where: { id } });
 
-    //Xóa tất cả Permission liên quan đến Role cần xóa
-    await role.removePermissions(await Permission.findAll());
+      //Xóa tất cả Permission liên quan đến Role cần xóa
+      await role.removePermissions(await Permission.findAll());
 
-    //Xóa Role
-    await Roles.destroy({
-      where: { id },
-    });
-
-    res.redirect("/admin/users/roles");
+      //Xóa Role
+      await Roles.destroy({
+        where: { id },
+      });
+      req.flash("success", "Xóa thành công role!");
+      res.redirect("/admin/users/roles");
+    } catch (error) {
+      res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
+    }
   }
 }
 module.exports = new UserController();
