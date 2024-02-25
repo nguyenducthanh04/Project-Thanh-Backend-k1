@@ -164,14 +164,14 @@ router.post(
   }
 );
 
-router.get("/classList", ClassController.classList);
-router.get("/createClass", ClassController.createClass);
+router.get("/classList", AuthMiddleware, ClassController.classList);
+router.get("/createClass", AuthMiddleware, ClassController.createClass);
 router.post(
   "/createClass",
   ClassesValidateMiddleware(),
   ClassController.handleCreateClass
 );
-router.get("/editClass/:id", ClassController.editClass);
+router.get("/editClass/:id", AuthMiddleware, ClassController.editClass);
 router.post(
   "/editClass/:id",
   EditClassesValidateMiddleware,
@@ -179,31 +179,59 @@ router.post(
 );
 router.post("/deleteClass/:id", ClassController.deleteClass);
 router.post("/deleteAllClass", ClassController.deleteAllClass);
-router.get("/exportClass", ClassController.exportClass);
-router.get("/courseDetail/:id", CourseController.courseDetails);
-router.get("/classDetail/:id", ClassController.classDetails);
-router.get("/teacherDetail/:id", UserController.teacherDetail);
-router.get("/studentDetail/:id", UserController.studentDetail);
-router.get("/createStudentClass/:id", ClassController.createStudentClass);
+router.get("/exportClass", AuthMiddleware, ClassController.exportClass);
+router.get("/courseDetail/:id", AuthMiddleware, CourseController.courseDetails);
+router.get("/classDetail/:id", AuthMiddleware, ClassController.classDetails);
+router.get("/teacherDetail/:id", AuthMiddleware, UserController.teacherDetail);
+router.get("/studentDetail/:id", AuthMiddleware, UserController.studentDetail);
+router.get(
+  "/createStudentClass/:id",
+  AuthMiddleware,
+  ClassController.createStudentClass
+);
 router.post(
   "/createStudentClass/:id",
   ClassController.handleCreateStudentClass
 );
-router.get("/addDocument/:id", CourseController.addDocuments);
+router.get("/addDocument/:id", AuthMiddleware, CourseController.addDocuments);
 router.post("/addDocument/:id", CourseController.handleAddDocuments);
-router.get("/addMoreDocument/:id", CourseController.addMoreDocument);
+router.get(
+  "/addMoreDocument/:id",
+  AuthMiddleware,
+  CourseController.addMoreDocument
+);
 router.post("/addMoreDocument/:id", CourseController.handleAddMoreDocument);
-router.get("/editModuleDocument/:id", CourseController.editModuleDocument);
+router.get(
+  "/editModuleDocument/:id",
+  AuthMiddleware,
+  CourseController.editModuleDocument
+);
 router.post(
   "/editModuleDocument/:id",
   CourseController.handleEditModuleDocument
 );
-router.get("/deleteAllDocument/:id", CourseController.deleleAllDocument);
-router.get("/deleteDocument/:id", CourseController.deleleDocument);
-router.get("/exportClass", ClassController.exportClass);
+router.get(
+  "/deleteAllDocument/:id",
+  AuthMiddleware,
+  CourseController.deleleAllDocument
+);
+router.get(
+  "/deleteDocument/:id",
+  AuthMiddleware,
+  CourseController.deleleDocument
+);
+router.get("/exportClass", AuthMiddleware, ClassController.exportClass);
 // router.get("/teacher/calendar/:id", UserController.teacherCalendarAll);
-router.get("/teacher/calendar/:id", UserController.teacherCalendar);
-router.get("/class/excersise/:id", ClassController.excersiseClass);
+router.get(
+  "/teacher/calendar/:id",
+  AuthMiddleware,
+  UserController.teacherCalendar
+);
+router.get(
+  "/class/excersise/:id",
+  AuthMiddleware,
+  ClassController.excersiseClass
+);
 router.get(
   "/class/excersiseDetail/:id",
   AuthMiddleware,
@@ -214,29 +242,44 @@ router.post(
   ClassController.handleCommentExcersise
 );
 router.post("/class/destroy/comment/:id", ClassController.deleteComment);
-router.get("/class/CreateExcersise/:id", ClassController.createExcersise);
+router.get(
+  "/class/CreateExcersise/:id",
+  AuthMiddleware,
+  ClassController.createExcersise
+);
 router.post(
   "/class/CreateExcersise/:id",
   ClassController.handleCreateExcersise
 );
-router.get("/class/editComment/:id", ClassController.editComment);
+router.get(
+  "/class/editComment/:id",
+  AuthMiddleware,
+  ClassController.editComment
+);
 router.post("/class/editComment/:id", ClassController.handleEditComment);
-router.get("/users/permission/:id", UserController.permission);
+router.get("/users/permission/:id", AuthMiddleware, UserController.permission);
 router.post("/users/permission/:id", UserController.handlePermission);
-router.get("/users/roles", UserController.roles);
-router.get("/roles/add", UserController.addRole);
+router.get("/users/roles", AuthMiddleware, UserController.roles);
+router.get("/roles/add", AuthMiddleware, UserController.addRole);
 router.post("/roles/add", UserController.handleAddRole);
-router.get("/roles/edit/:id", UserController.editRole);
-router.post("/roles/edit/:id", UserController.handleEditRole);
+router.get("/roles/edit/:id", AuthMiddleware, UserController.editRole);
 router.post("/roles/delete/:id", UserController.deleteRole);
-router.get("/class/listStudent/:id", ClassController.listStudentClass);
-router.get("/student/updateStatus/:id", ClassController.updateStatusStudent);
+router.get(
+  "/class/listStudent/:id",
+  AuthMiddleware,
+  ClassController.listStudentClass
+);
+router.get(
+  "/student/updateStatus/:id",
+  AuthMiddleware,
+  ClassController.updateStatusStudent
+);
 router.post(
   "/student/updateStatus/:id",
   ClassController.handleUpdateStatusStudent
 );
 router.post("/class/deleteStudent/:id", ClassController.deleteStudentClass);
-router.get("/class/attendance/:id", ClassController.attendance);
+router.get("/class/attendance/:id", AuthMiddleware, ClassController.attendance);
 router.post("/class/attendance/:id", ClassController.handleAttendance);
 
 module.exports = router;
