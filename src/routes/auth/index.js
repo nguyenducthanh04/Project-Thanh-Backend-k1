@@ -20,6 +20,7 @@ router.get("/logout", AuthController.logout);
 router.get("/verifyTwoFa", TwoFaMiddleware, AuthController.verifyTwoFa);
 router.post("/verifyTwoFa", AuthController.handleVerify);
 router.get("/redirect", (req, res) => {
+  router.get("/login", AuthController.login);
   console.log(`REDIRECT`);
   const cookie = req.cookies["connect.sid"];
   res.redirect(req.query.url + "?cookie=" + cookie);
