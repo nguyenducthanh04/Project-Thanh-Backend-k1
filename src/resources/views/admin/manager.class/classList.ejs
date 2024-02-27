@@ -12,12 +12,12 @@
 </form>
 <form action="" class="mb-2">
   <div class="row">
-    <div class="col-8 mb-2">
+    <div class="col-sm-8 mb-2">
       <a href="/admin/importExcelClass" class="btn btn-info"
         >Import Excel <i class="fas fa-file-excel"></i
       ></a>
       <a href="/admin/exportClass" class="btn btn-success"
-        >Export file excel <i class="fas fa-file-excel"></i
+        >Export Excel <i class="fas fa-file-excel"></i
       ></a>
     </div>
     <div class="col-10">
@@ -33,116 +33,113 @@
       <button type="submit" class="btn btn-primary">
         <i class="fas fa-search"></i>
       </button>
-      <select name="typeId" class="form-select" style="margin-left: 4px">
-        <option value="all">Tất cả</option>
-        <option value="admin">Admin</option>
-        <option value="teacher">Giảng viên</option>
-        <option value="student">Học viên</option>
-      </select>
     </div>
   </div>
 </form>
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th><input id="checkboxAll" type="checkbox" /></th>
-      <th width="5%">STT</th>
-      <th width="10%">Tên</th>
-      <th>Sĩ số</th>
-      <th width="5%">Ngày khai giảng</th>
-      <th width="5%">Ngày kết thúc</th>
-      <th>Lịch học</th>
-      <th width="10%">Thời gian học</th>
-      <th>Khóa học</th>
-      <th width="10%">Thêm học viên</th>
-      <th width="14%">Danh sách học viên</th>
-      <th width="10%">Điểm danh</th>
-      <th>Sửa</th>
-      <th>Xóa</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% classList.forEach((classItem, index) => { %>
-    <tr>
-      <td>
-        <input
-          class="checkboxItem"
-          type="checkbox"
-          value="<%= classItem.id %>"
-        />
-      </td>
-      <td><%= index + 1 %></td>
-      <td>
-        <a href="/admin/classDetail/<%= classItem.id %>"
-          ><%= classItem.name %></a
-        >
-      </td>
-      <td><%= classItem.quantity %></td>
-      <td><%= moment(classItem.startDate).format('MM/DD/YYYY') %></td>
-      <td><%= moment(classItem.endDate).format('MM/DD/YYYY') %></td>
-      <td>
-        <% schedules.forEach((scheduleItem, index) => { %>
-        <!-- <td> -->
-        <% if(classItem.id === scheduleItem.classId) { %> <%=
-        scheduleItem.schedule === 8 ? `Chủ nhật${index < schedules.length - 1 ?
-        "," : ""}` : `Thứ ${scheduleItem.schedule}${index < schedules.length - 1
-        ? "," : ""}`%> <% } %>
-        <!-- </td> -->
-        <% }) %>
-      </td>
-      <td>
-        <% schedules.forEach((scheduleItem, index) => { %>
-        <!-- <td> -->
-        <% if(classItem.id === scheduleItem.classId) { %> <%=
-        scheduleItem.timeLearn %><% } %>
-        <!-- </td> -->
+<div class="table-container">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th><input id="checkboxAll" type="checkbox" /></th>
+        <th width="5%">STT</th>
+        <th width="10%">Tên</th>
+        <th>Sĩ số</th>
+        <th width="5%">Ngày khai giảng</th>
+        <th width="5%">Ngày kết thúc</th>
+        <th>Lịch học</th>
+        <th width="10%">Thời gian học</th>
+        <th>Khóa học</th>
+        <th width="10%">Thêm học viên</th>
+        <th width="14%">Danh sách học viên</th>
+        <th width="10%">Điểm danh</th>
+        <th>Sửa</th>
+        <th>Xóa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% classList.forEach((classItem, index) => { %>
+      <tr>
+        <td>
+          <input
+            class="checkboxItem"
+            type="checkbox"
+            value="<%= classItem.id %>"
+          />
+        </td>
+        <td><%= index + 1 %></td>
+        <td>
+          <a href="/admin/classDetail/<%= classItem.id %>"
+            ><%= classItem.name %></a
+          >
+        </td>
+        <td><%= classItem.quantity %></td>
+        <td><%= moment(classItem.startDate).format('MM/DD/YYYY') %></td>
+        <td><%= moment(classItem.endDate).format('MM/DD/YYYY') %></td>
+        <td>
+          <% schedules.forEach((scheduleItem, index) => { %>
+          <!-- <td> -->
+          <% if(classItem.id === scheduleItem.classId) { %> <%=
+          scheduleItem.schedule === 8 ? `Chủ nhật${index < schedules.length - 1
+          ? "," : ""}` : `Thứ ${scheduleItem.schedule}${index < schedules.length
+          - 1 ? "," : ""}`%> <% } %>
+          <!-- </td> -->
+          <% }) %>
+        </td>
+        <td>
+          <% schedules.forEach((scheduleItem, index) => { %>
+          <!-- <td> -->
+          <% if(classItem.id === scheduleItem.classId) { %> <%=
+          scheduleItem.timeLearn %><% } %>
+          <!-- </td> -->
 
-        <% }) %>
-      </td>
+          <% }) %>
+        </td>
 
-      <!-- <td></td> -->
-      <td><%= classItem.course.name %></td>
-      <td>
-        <a
-          href="/admin/createStudentClass/<%= classItem.id %>"
-          class="btn btn-primary"
-          >Thêm học viên</a
-        >
-      </td>
-      <td>
-        <a
-          href="/admin/class/listStudent/<%= classItem.id %>"
-          class="btn btn-primary"
-          >Danh sách học viên</a
-        >
-      </td>
-      <td>
-        <a
-          href="/admin/class/attendance/<%= classItem.id %>"
-          class="btn btn-primary"
-          >Điểm danh</a
-        >
-      </td>
-      <td>
-        <a href="/admin/editClass/<%= classItem.id %>"
-          ><i class="far fa-edit" style="font-size: 1.2rem"></i
-        ></a>
-      </td>
-      <td>
-        <form
-          action="/admin/deleteClass/<%= classItem.id %>"
-          onsubmit="return confirm('Bạn có chắc chắn muốn xóa lớp học ?')"
-          method="post"
-        >
-          <button class="btn btn-sm">
-            <i class="fas fa-trash-alt" style="font-size: 1.2rem"></i>
-          </button>
-        </form>
-      </td>
-    </tr>
-    <% }) %>
-  </tbody>
-</table>
+        <!-- <td></td> -->
+        <td><%= classItem.course.name %></td>
+        <td>
+          <a
+            href="/admin/createStudentClass/<%= classItem.id %>"
+            class="btn btn-primary"
+            >Thêm học viên</a
+          >
+        </td>
+        <td>
+          <a
+            href="/admin/class/listStudent/<%= classItem.id %>"
+            class="btn btn-primary"
+            >Danh sách học viên</a
+          >
+        </td>
+        <td>
+          <a
+            href="/admin/class/attendance/<%= classItem.id %>"
+            class="btn btn-primary"
+            >Điểm danh</a
+          >
+        </td>
+        <td>
+          <a href="/admin/editClass/<%= classItem.id %>"
+            ><i class="far fa-edit" style="font-size: 1.2rem"></i
+          ></a>
+        </td>
+        <td>
+          <form
+            action="/admin/deleteClass/<%= classItem.id %>"
+            onsubmit="return confirm('Bạn có chắc chắn muốn xóa lớp học ?')"
+            method="post"
+          >
+            <button class="btn btn-sm">
+              <i class="fas fa-trash-alt" style="font-size: 1.2rem"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
 <!--Paginate--->
 <% if(totalPage >= 2) { %>
 <nav class="d-flex justify-content-end mt-4">
@@ -284,3 +281,25 @@
     console.log(arr.toString());
   };
 </script>
+<style>
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+</style>

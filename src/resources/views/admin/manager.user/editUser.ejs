@@ -43,7 +43,7 @@
   </div>
   <div class="mb-3">
     <label for="">Chức vụ</label>
-    <select name="typeId" class="form-select">
+    <select name="typeId" class="form-control">
         <option value="<%= %>">Chọn chức vụ</option>
         <% typeList.forEach(({id, name}) => { %>
             <option value="<%= id %>" <%= name === typeDetail ? 'selected' : " "%> ><%= name %></option>
