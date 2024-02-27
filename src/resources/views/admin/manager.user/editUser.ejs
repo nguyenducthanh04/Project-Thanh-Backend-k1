@@ -41,6 +41,15 @@
       value="<%= userDetail.address %>"
     />
   </div>
+  <div class="mb-3">
+    <label for="">Chức vụ</label>
+    <select name="typeId" class="form-select">
+        <option value="<%= %>">Chọn chức vụ</option>
+        <% typeList.forEach(({id, name}) => { %>
+            <option value="<%= id %>" <%= name === typeDetail ? 'selected' : " "%> ><%= name %></option>
+      <%  }) %>
+    </select>
+</div>
   <div class="d-grid">
     <button class="btn btn-success">Lưu</button>
     <a href="/admin" class="btn btn-danger">Hủy</a>
