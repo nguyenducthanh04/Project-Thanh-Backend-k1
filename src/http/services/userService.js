@@ -1,5 +1,7 @@
 const model = require("../../models/index");
 const User = model.User;
+const Type = model.types;
+
 module.exports = {
   getAllUsers: async () => {
     try {
@@ -10,7 +12,11 @@ module.exports = {
   },
   getUserByPk: async (id) => {
     try {
-      return await User.findByPk(id);
+      return await User.findByPk(id, {
+        include: {
+          model: Type,
+        },
+      });
     } catch (error) {
       res.status(500).send("Đã xảy ra lỗi. Chúng tôi đang tìm cách cải thiện.");
     }

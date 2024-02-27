@@ -302,6 +302,8 @@ class UserController {
       const success = req.flash("success");
       const { id } = req.params;
       const userDetail = await userService.getUserByPk(id);
+      const typeDetail = userDetail.type.name;
+      console.log(typeDetail);
       const typeList = await typeService.getAllType();
       const permissions = await permissionUser(req);
       res.render("admin/manager.user/editUser", {
@@ -313,6 +315,7 @@ class UserController {
         success,
         title,
         moduleName,
+        typeDetail,
         permissions,
         isPermission,
       });
