@@ -33,6 +33,7 @@
         <select
           id="daySelect"
           name="schedule"
+          class="form-control"
           onchange="showTimeInput()"
           class="mb-2"
         >
@@ -47,13 +48,13 @@
         ><br />
         <div class="time-group">
           <label for="startTime"></label>
-          <input type="time" id="startTime" name="startTime" required value="<%= timeLearn.split('-')[0] %>" />
+          <input type="time" id="startTime" class="form-control" name="startTime" required value="<%= timeLearn.split('-')[0] %>" />
   
           <label for="endTime">-</label>
-          <input type="time" id="endTime" name="endTime" required value="<%= timeLearn.split('-')[1] %>"/>
+          <input type="time" id="endTime" class="form-control" name="endTime" required value="<%= timeLearn.split('-')[1] %>"/>
         </div>
         <br />
-        <button class="btn btn-danger remove-time" type="button"> xóa </button>
+        <button class="btn btn-danger remove-time" type="button"> Xóa </button>
       </div>
     <span class="text-danger"><%= getError(errors, 'schedule') %></span>
       <!-- end -->
@@ -113,7 +114,7 @@
   </div>
   <div class="mb-3">
     <label for="">Khóa học</label>
-    <select name="courseId" class="form-select">
+    <select name="courseId" class="form-control">
       <option value="<%= %>">Chọn khóa học</option>
       <% courseList.forEach(({id, name}) => { %>
       <option value="<%= id %>"<%= name === course ? 'selected' : " "%>><%= name %></option>
