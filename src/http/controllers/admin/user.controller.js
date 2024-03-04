@@ -1,6 +1,7 @@
 const model = require("../../../models/index");
 const bcrypt = require("bcrypt");
 const { Op, where } = require("sequelize");
+const nodemailer = require("nodemailer");
 const { PER_PAGE } = process.env;
 // const flash = require("connect-flash");
 const moment = require("moment");
@@ -279,8 +280,25 @@ class UserController {
     try {
       const errors = validationResult(req);
       if (errors.isEmpty()) {
+        const email = req.body.email;
+        const { password } = req.body;
         req.body.password = make(req.body.password);
         await User.create(req.body);
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: "dducthanh04@gmail.com",
+            pass: "midn lcia tcly pcbn",
+          },
+        });
+        transporter.sendMail({
+          from: `Thanh Nguyen <dducthanh04@gmail.com>`, // sender address
+          to: email, // list of receivers
+          subject: "Mật khẩu người dùng", // Subject line
+          html: `Mật khẩu của bạn là <strong>${password}</strong>. Vui lòng đăng nhập vào <a href="class.ducthanhdev.id.vn">class.ducthanhdev.id.vn</a> để đổi mật khẩu mới!`, // html body
+        });
         req.flash("success", "Thêm thành công!");
         return res.redirect("/admin/createUser");
       } else {
