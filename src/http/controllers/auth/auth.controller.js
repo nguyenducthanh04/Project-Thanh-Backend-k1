@@ -178,7 +178,7 @@ module.exports = {
         to: email, // list of receivers
         subject: "Reset password", // Subject line
         html: ` <p>Click vào link dưới đây để đặt lại mật khẩu</p>
-      <a href="http://127.0.0.1:3000/auth/resetPass/${token}">Link đặt lại mật khẩu</a>`, // html body
+      <a href="https://class.ducthanhdev.id.vn/auth/resetPass/${token}">Link đặt lại mật khẩu</a>`, // html body
       });
       req.flash("success", "Gửi yêu cầu đặt lại mật khẩu thành công!");
       res.redirect("/auth/login");
