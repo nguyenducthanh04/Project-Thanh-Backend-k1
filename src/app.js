@@ -17,7 +17,7 @@ const studentRouter = require("./routes/students/index");
 const teacherRouter = require("./routes/teacher/index");
 const adminRouter = require("./routes/admin/index");
 const authRouter = require("./routes/auth/index");
-
+const cors = require("cors");
 var app = express();
 app.use(
   session({
@@ -26,6 +26,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(cors());
 app.use(expressLayouts);
 app.use(flash());
 app.use(passport.initialize());
